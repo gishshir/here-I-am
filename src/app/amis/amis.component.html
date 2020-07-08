@@ -1,0 +1,26 @@
+
+<div class="content">
+    <h2>Mes amis</h2>
+
+        
+        <!-- liste des amis -->
+        <div>
+        
+            <ul class="amis">
+                <li *ngFor="let ami of amis" [class.selected]="ami === selectedAmi" (click)="onSelect(ami)">
+                    <span class="badge">{{ami.id}}</span>
+                    <app-ami-state-icon [amiState]="ami.etat"></app-ami-state-icon>
+                    <span style="padding: 10px;">{{ami.pseudo}}</span>
+                    <app-ami-suivi-icon [suivre]="ami.suivre" [size]="16" ></app-ami-suivi-icon>
+                </li>
+            </ul>
+
+        </div>
+
+        <!-- ami selectionné -->
+        <app-ami-detail *ngIf="selectedAmi" [amiDetail] = "selectedAmi"></app-ami-detail>
+    
+
+
+</div>
+

@@ -1,0 +1,13 @@
+<div class="content">
+    <header class="card">
+        <h3>{{amiDetail.pseudo }}</h3> 
+    </header>
+    
+    <div>
+        <app-ami-state-icon [amiState]="amiDetail.etat"></app-ami-state-icon> 
+        {{amiDetail.etat}}
+    </div>
+    <div *ngIf="amiDetail.etat != 'Arret'" >
+        <input type="checkbox" name="suivi"  [(ngModel)] = "amiDetail.suivre" />Suivre le trajet
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="content">
+  
+    <div class="card">
+        <span class="badge"><app-trajet-state-icon [trajetState]="trajetDetail.etat"></app-trajet-state-icon> </span>
+        <span style="padding: 10px;">Mon trajet</span>
+    </div>
+
+    <div>départ: {{getStartDate()}}</div>
+    <div *ngIf="trajetDetail.etat == 'Ended'">arrivée: {{getEndDate()}}</div>
+
+    <!-- duree du trajet -->
+     <app-trajet-duree #timer [trajetEnCours]="trajetDetail" style="margin-top: 30px"></app-trajet-duree>
+
+    <!-- changement etat du trajet-->
+    <div *ngIf="trajetDetail.etat != 'Ended'" style="margin-top: 30px">
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Started'" name="pause" (click)="mettreEnPause()" >pause</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre" (click)="reprendreTrajet()">reprendre</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat != 'Ended'" name="terminer" (click)="arreterTrajet(); timer.calculDuree()">terminer</button>
+    </div>
+        
+</div>
+    

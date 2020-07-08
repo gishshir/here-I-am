@@ -13,6 +13,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies" : [
+                "moment"
+            ],
             "outputPath": "dist/here-I-am",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -26,7 +29,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/moment/dist/moment.js"
+            ]
           },
           "configurations": {
             "production": {

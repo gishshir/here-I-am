@@ -14,6 +14,7 @@ import { AmiSuiviIconComponent } from './amis/ami-suivi-icon/ami-suivi-icon.comp
 import { TrajetStateIconComponent } from './trajets/trajet-state-icon/trajet-state-icon.component';
 import { TrajetDetailComponent } from './trajets/trajet-detail/trajet-detail.component';
 import { TrajetDureeComponent } from './trajets/trajet-duree/trajet-duree.component';
+import { TrajetMeansIconComponent } from './trajets/trajet-means-icon/trajet-means-icon.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TrajetDureeComponent } from './trajets/trajet-duree/trajet-duree.compon
     AmiSuiviIconComponent,
     TrajetStateIconComponent,
     TrajetDetailComponent,
-    TrajetDureeComponent
+    TrajetDureeComponent,
+    TrajetMeansIconComponent
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,12 @@
-<p>starting works!</p>
+<h2>Démarrer un nouveau trajet</h2>
+
+<div class="means">
+
+  <span  class="ico" *ngFor="let mean of trajetMeansEnum" [class.selected]="mean == selectedMean"  >    
+    <app-trajet-means-icon [trajetMeans]="mean" [taille]="48"  
+    (click)="onSelect(mean)"></app-trajet-means-icon>
+  </span>
+
+</div>
+
+<h3>Type: {{diplaySelectedMeanDescription()}}</h3>

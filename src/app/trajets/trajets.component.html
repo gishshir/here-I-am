@@ -10,6 +10,7 @@
                 [class.selected]="trajet === selectedTrajet" 
                 (click)="onSelect(trajet)">
                     <span class="badge">{{trajet.id}}</span>
+                    <app-trajet-means-icon [trajetMeans]="trajet.means"></app-trajet-means-icon>
                     <app-trajet-state-icon [trajetState]="trajet.etat"></app-trajet-state-icon>
                     <span style="padding: 10px;">{{trajet.etat}}</span>
                     <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>

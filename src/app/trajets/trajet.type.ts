@@ -1,4 +1,5 @@
 import { TrajetState } from "./trajet-etat.enum";
+import { TrajetMeans } from "./trajet-means.enum";
 
 export interface Trajet {
 
@@ -6,4 +7,5 @@ export interface Trajet {
     startDate: number;
     endDate: number;
     etat: TrajetState;
+    means:TrajetMeans;
 }

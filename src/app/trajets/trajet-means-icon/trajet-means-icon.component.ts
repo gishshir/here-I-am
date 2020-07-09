@@ -8,7 +8,7 @@ import { TrajetMeans } from '../trajet-means.enum';
 })
 export class TrajetMeansIconComponent implements OnInit {
 
-  @Input() trajetMeans: TrajetMeans;
+  @Input() trajetMean: TrajetMeans;
   @Input() taille:number = 24;
 
   constructor() { }
@@ -17,7 +17,7 @@ export class TrajetMeansIconComponent implements OnInit {
   }
 
   getDescription() : string{
-    return TrajetMeansIconComponent.displayName (this.trajetMeans);
+    return TrajetMeansIconComponent.displayName (this.trajetMean);
   }
 
   static displayName (mean: TrajetMeans):string {

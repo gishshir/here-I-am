@@ -3,6 +3,7 @@ import { LoggerService } from '../logger.service';
 import { TRAJETS }  from './mock-trajets';
 import { TrajetState } from './trajet-etat.enum';
 import { Trajet } from './trajet.type';
+import { TrajetMeans } from './trajet-means.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,41 @@ export class TrajetService {
 
   constructor(private logger:LoggerService) { }
 
+  trajets: Trajet[] = TRAJETS;
+
   getTrajets (userid: number)  {
 
-    return TRAJETS;
+    return this.trajets;
+  }
+
+  chercherTrajetEnCours () {
+
+    let trajet:Trajet = this.trajets.find (t => 
+
+      t.etat !== TrajetState.ended
+    );
+
+    return trajet;
+  }
+
+  chercherDernierTrajet () : Trajet {
+
+    if (this.trajets && this.trajets.length > 0) {
+      return this.trajets[this.trajets.length - 1];
+    } else return null;
+  }
+
+  demarrerNouveauTrajet (userId: number, mean: TrajetMeans) : Trajet {
+
+    let trajet : Trajet =  new Trajet();
+    trajet.id = this.trajets.length + 1;
+    trajet.startDate = new Date().getTime();
+    trajet.etat = TrajetState.started;
+    trajet.mean = mean;
+
+    this.trajets.push (trajet);
+
+    return trajet;
   }
 
   changerStatus (trajetId:number, newState: TrajetState): Trajet {
@@ -36,7 +69,7 @@ export class TrajetService {
 
     let trajet = null;
 
-    return TRAJETS.find (t => t.id == trajetid);
+    return this.trajets.find (t => t.id == trajetid);
 
   }
 }

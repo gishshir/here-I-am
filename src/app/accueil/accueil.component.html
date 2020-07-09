@@ -18,7 +18,7 @@
         <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
       </a>
   
-      <a class="card" routerLink="/go-starting" routerLinkActive="active">
+      <a [style.display]="showCardNouveauTrajet() ? 'block' : 'none'" class="card" routerLink="/go-starting" routerLinkActive="active">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-6.9-6.43-1.93.51 4.14 7.17-4.97 1.33-1.97-1.54-1.45.39 2.59 4.49L21 11.49c.81-.23 1.28-1.05 1.07-1.85z"/></svg>
   
         <span>Commencer un trajet</span>
@@ -27,4 +27,12 @@
       </a>
       
   
+    </div>
+
+    <div *ngIf="dernierTrajet" style="margin-top: 30px; text-align:center;">
+        
+        <h3 *ngIf="dernierTrajet.etat == 'Ended'">Mon dernier trajet</h3>
+        <h3 *ngIf="dernierTrajet.etat != 'Ended'">Mon trajet en cours...</h3>
+
+        <app-trajet-detail [trajetDetail]="dernierTrajet" (eventChangeState)="onChangeState($event)"></app-trajet-detail>
     </div>

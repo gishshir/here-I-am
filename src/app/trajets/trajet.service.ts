@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../logger.service';
+import { HttpClient } from '@angular/common/http';
+
 import { TRAJETS }  from './mock-trajets';
 import { TrajetState } from './trajet-etat.enum';
 import { Trajet } from './trajet.type';
@@ -10,7 +12,7 @@ import { TrajetMeans } from './trajet-means.enum';
 })
 export class TrajetService {
 
-  constructor(private logger:LoggerService) { }
+  constructor(private logger:LoggerService, private http: HttpClient) { }
 
   trajets: Trajet[] = TRAJETS;
 
@@ -38,11 +40,15 @@ export class TrajetService {
 
   demarrerNouveauTrajet (userId: number, mean: TrajetMeans) : Trajet {
 
-    let trajet : Trajet =  new Trajet();
-    trajet.id = this.trajets.length + 1;
-    trajet.startDate = new Date().getTime();
-    trajet.etat = TrajetState.started;
-    trajet.mean = mean;
+    let trajet : Trajet =  {
+
+      id : this.trajets.length + 1,
+      startDate : new Date().getTime(),
+      endDate : null,
+      etat : TrajetState.started,
+      mean : mean
+    };
+   
 
     this.trajets.push (trajet);
 

@@ -8,6 +8,6 @@
         {{amiDetail.etat}}
     </div>
     <div *ngIf="amiDetail.etat != 'Arret'" >
-        <input type="checkbox" name="suivi"  [(ngModel)] = "amiDetail.suivre" />Suivre le trajet
+        <input type="checkbox" name="suivi"  [ngModel] = "amiDetail.suivre" (click)="updateSuivreAmi()" />Suivre le trajet
     </div>
 </div>

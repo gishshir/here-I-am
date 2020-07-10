@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import 'moment/locale/fr';
 
+export const PHP_API_SERVER = "http://whereIAm.localhost";
 
 @Injectable({
   providedIn: 'root'

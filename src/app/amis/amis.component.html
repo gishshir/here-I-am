@@ -18,7 +18,7 @@
         </div>
 
         <!-- ami selectionné -->
-        <app-ami-detail *ngIf="selectedAmi" [amiDetail] = "selectedAmi"></app-ami-detail>
+        <app-ami-detail *ngIf="selectedAmi" [amiDetail] = "selectedAmi" (eventChangeSuivre)="onChange($event)"></app-ami-detail>
     
 
 

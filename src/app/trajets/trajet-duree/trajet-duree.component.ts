@@ -31,7 +31,7 @@ export class TrajetDureeComponent implements OnInit {
   private intervalId:number = -1;
   private calculDuree () :void {
 
-    this.color = this._trajetEnCours.etat === TrajetState.ended ? 'brown' : 'lightgreen';
+    this.definirColor();
     this.stopTimer();
     if (this._trajetEnCours.etat === TrajetState.ended) {
       this.duree = this.toolsService.formatDuree (this._trajetEnCours.startDate, this._trajetEnCours.endDate);
@@ -42,6 +42,17 @@ export class TrajetDureeComponent implements OnInit {
     }
 } 
 
+  private definirColor() : void {
+    
+    let color: string;
+    switch(this._trajetEnCours.etat) {
+      case TrajetState.ended: color = 'brown'; break;
+      case TrajetState.pausing: color =  'yellow'; break;
+      case TrajetState.started: color =  'lightgreen'; break;
+      default: color =  'grey';
+    }
+    this.color = color;
+  }
   ngOnDestroy() { this.stopTimer(); }    
   private stopTimer() {
     this.duree = "";

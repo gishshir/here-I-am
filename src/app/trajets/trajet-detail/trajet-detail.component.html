@@ -14,8 +14,8 @@
 
     <!-- changement etat du trajet-->
     <div *ngIf="trajetDetail.etat != 'Ended'">
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Started'" name="pause" (click)="mettreEnPause()" >pause</button>
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre" (click)="reprendreTrajet()">reprendre</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Started'" name="pause" (click)="mettreEnPause(); timer.definirColor()" >pause</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre" (click)="reprendreTrajet(); timer.definirColor()">reprendre</button>
         <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat != 'Ended'" name="terminer" (click)="arreterTrajet(); timer.calculDuree()">terminer</button>
     </div>
         

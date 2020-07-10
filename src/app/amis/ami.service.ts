@@ -40,27 +40,46 @@ export class AmiService {
 
     let url = PHP_API_SERVER + "/ami/update.php";
   
-    return this.http.put<Message>(url, amiToUpdate, httpOptions);
-      /* .pipe (
+    return this.http.put<Message>(url, amiToUpdate, httpOptions)
+       .pipe (
+         // call observer.error(...) si http code != 200
          catchError (this.handleError)
-       );*/
+         // sinon call observer.next(body), puis observer.complete()
+       );
   }
 
-  
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
+  /*
+  * HttpErrorResponse
+  * .error : body de la reponse - ex {"message": "toto", "error": true} ou autre chose!
+  * .headers: [header...]
+  * .message: "Http failure.... 400"
+  * .status: 400
+  * .url: "http://..../update.php" par ex
+  */
+  private handleError(httpError: HttpErrorResponse): Observable<never> {
+
+    let message = 'Erreur technique! consulter la sortie console';
+
+    if (httpError.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
+      console.error('An error occurred:', httpError.error.message);
+
     } else {
+
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
       console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+        `Backend returned code ${httpError.status}, ` +
+        `body was: ${httpError.error}`);
+
+      // message metier depuis api
+      if (httpError.status == 400 && httpError.error.message) {
+        message = httpError.error.message;
+      }
     }
     // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
+    // call observer.error(...)
+    return throwError(message);
   };
 
   getAmiState (etat : string) : AmiState {

@@ -8,6 +8,7 @@ import { catchError } from 'rxjs/operators';
 import { Ami } from './ami.type';
 import { AmiState } from './ami.etat.enum';
 import { PHP_API_SERVER } from '../tools.service';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -39,10 +40,10 @@ export class AmiService {
 
     let url = PHP_API_SERVER + "/ami/update.php";
   
-    return this.http.put<any>(url, amiToUpdate, httpOptions)
-       .pipe (
+    return this.http.put<Message>(url, amiToUpdate, httpOptions);
+      /* .pipe (
          catchError (this.handleError)
-       );
+       );*/
   }
 
   

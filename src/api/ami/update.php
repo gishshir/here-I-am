@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
 
         $id =  $amiFromRequest->get_id();
         if ($id < 1) {
-            sendHttpMessage ("ami.id ".$id." non valide!", 400);
+            sendHttpMessage ("ami.id ".$id." non valide!", 400, true);
         }
 
         //
@@ -27,11 +27,11 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
 
                 // mise à jour etat de suivi uniquement
                 $amiBdd->set_suivre($amiFromRequest->is_suivre()); 
-                sendHttpMessage ("Update OK!", 200);
+                sendHttpMessage ("Update OK!", 200, false);
             }
         }
         
-        sendHttpMessage ("ami.id ".$id." n'existe pas!", 400);
+        sendHttpMessage ("ami.id ".$id." n'existe pas!", 400, true);
 
     }
 

@@ -1,8 +1,7 @@
 
 <div class="content">
     <h2>Mes amis</h2>
-
-        
+    
         <!-- liste des amis -->
         <div>
         
@@ -17,8 +16,10 @@
 
         </div>
 
+        <app-notification [message]="response"></app-notification>
+
         <!-- ami selectionné -->
-        <app-ami-detail *ngIf="selectedAmi" [amiDetail] = "selectedAmi" (eventChangeSuivre)="onChange($event)"></app-ami-detail>
+        <app-ami-detail *ngIf="selectedAmi" [amiDetail] = "selectedAmi" (eventMessage)="onMessage($event)"></app-ami-detail>
     
 
 

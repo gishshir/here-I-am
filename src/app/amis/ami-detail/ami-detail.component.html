@@ -10,9 +10,4 @@
     <div *ngIf="amiDetail.etat != 'Arret'" >
         <input type="checkbox" name="suivi"  [ngModel] = "amiDetail.suivre" (click)="updateSuivreAmi()" />Suivre le trajet
     </div>
-
-
-    <div *ngIf="response"  [style.background-color]="response.error?'red':'green'" style="margin: 30px; padding: 10px;">
-        {{response.message}}
-    </div>
 </div>

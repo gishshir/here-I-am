@@ -2,8 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Ami } from '../ami.type';
 import { AmiState } from '../ami.etat.enum';
 import { AmiService } from '../ami.service';
-import { Message } from '../../message.type';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { Message } from '../../common/message.type';
 
 @Component({
   selector: 'app-ami-detail',
@@ -12,10 +11,18 @@ import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 })
 export class AmiDetailComponent implements OnInit {
 
-  @Input() amiDetail: Ami;
-  @Output() eventChangeSuivre = new EventEmitter<Ami>();
+  _amiDetail: Ami;
+  //@Output() eventChangeSuivre = new EventEmitter<Ami>();
+  @Output() eventMessage = new EventEmitter<Message>();
 
-  response: Message;
+  @Input() 
+  set amiDetail (ami: Ami) {
+    this._amiDetail = ami;
+  }
+
+  get amiDetail (): Ami {
+    return this._amiDetail;
+  }
 
   constructor(private amiService: AmiService) { }
 
@@ -24,22 +31,21 @@ export class AmiDetailComponent implements OnInit {
 
   updateSuivreAmi () {
 
-    this.response = null;
-
     // mettre à jour la bdd distante
     this.amiDetail.suivre = !this.amiDetail.suivre;
 
     this.amiService.updateAmi(this.amiDetail).subscribe(
       (resp: Message) => {
-        this.response = resp;
-        this.eventChangeSuivre.emit(this.amiDetail);
+        //this.response = resp;
+        //this.eventChangeSuivre.emit(this.amiDetail);
+        this.eventMessage.emit (resp);
       },
       (error:string) => {
-        this.response = {
-          message: error,
+        let response = {
+          msg: error,
           error: true
         };
-        
+        this.eventMessage.emit (response);
       }
 
     );

@@ -1,8 +1,17 @@
 <?php
 
-  function sendHttpMessageAndExit (string $message) {
+  
+function sendHttpDatasAndExit (array $datas){
+   http_response_code(200);
+   echo json_encode ($datas);
+   exit;
+  }
+
+function sendHttpMessageAndExit (string $message) {
      _sendHttpMessage ($message, false);
   }
+
+  
   function sendHttpErrorAndExit (string $errorMessage) {
      _sendHttpMessage ($errorMessage, true);
   }
@@ -13,7 +22,7 @@
     http_response_code($code);
 
     $response = array();
-    $response["message"] = $message;
+    $response["msg"] = $message;
     $response["error"] = $error;
 
     echo json_encode($response);

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Trajet } from '../trajet.type';
 import { TrajetState } from '../trajet-etat.enum';
-import { ToolsService } from 'src/app/tools.service';
+import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
 import { TrajetDureeComponent } from '../trajet-duree/trajet-duree.component';
 

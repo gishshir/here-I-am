@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Ami } from './ami.type';
 import { AmiService } from './ami.service';
 import { AmiState } from './ami.etat.enum';
-import { LoggerService } from '../logger.service';
+import { LoggerService } from '../common/logger.service';
+import { Message } from '../common/message.type';
 
 @Component({
   selector: 'app-amis',
@@ -14,6 +15,8 @@ export class AmisComponent implements OnInit {
   amis :Ami[];
   selectedAmi :Ami;
 
+  response: Message;
+
   constructor(private amiService: AmiService, private logger: LoggerService) {
 
       this.refreshList();
@@ -22,6 +25,11 @@ export class AmisComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // reception d'un evenement de message
+  onMessage(response: Message) {
+    this.response = response;
+  }
+  // reception d'un evenement de modification d'un Ami
   onChange (ami: Ami) {
     // rafraichir la liste complète
     this.logger.log ("event de modification de l'ami: " + ami.id);
@@ -31,17 +39,25 @@ export class AmisComponent implements OnInit {
   private refreshList() :void {
     this.logger.log ("rafraichir la liste des amis");
     this.amis = [];
-    this.amiService.getListeAmis().subscribe((datas: Ami[]) => {
-     
-       datas.forEach(a => {
-          
-          this.amis.push (this.amiService.buildAmiFromJs (a));
-       })
-    });
+    this.amiService.getListeAmis().subscribe(
+      // next
+      (datas: Ami[]) => {   
+                        datas.forEach(a => {  
+                          this.amis.push (this.amiService.buildAmiFromJs (a));
+                        })
+       },
+       // error
+       (error:string) =>  this.response = {
+                            msg: error,
+                            error: true
+                    }
+       
+    )
   }
 
   onSelect(ami: Ami) {
     this.selectedAmi = ami;
+    this.response = null;
   }
 
 }

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Trajet } from './trajet.type';
 import { TrajetService } from './trajet.service';
 import { TrajetState } from './trajet-etat.enum';
-import { ToolsService } from '../tools.service';
-import { LoggerService } from '../logger.service';
+import { ToolsService } from '../common/tools.service';
+import { LoggerService } from '../common/logger.service';
 
 
 

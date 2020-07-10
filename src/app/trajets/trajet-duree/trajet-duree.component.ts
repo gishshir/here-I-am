@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { ToolsService } from 'src/app/tools.service';
+import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetState } from '../trajet-etat.enum';
 import { Trajet } from '../trajet.type';
 

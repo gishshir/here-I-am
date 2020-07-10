@@ -16,6 +16,8 @@ import { TrajetStateIconComponent } from './trajets/trajet-state-icon/trajet-sta
 import { TrajetDetailComponent } from './trajets/trajet-detail/trajet-detail.component';
 import { TrajetDureeComponent } from './trajets/trajet-duree/trajet-duree.component';
 import { TrajetMeansIconComponent } from './trajets/trajet-means-icon/trajet-means-icon.component';
+import { CommonComponent } from './common/common.component';
+import { NotificationComponent } from './common/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { TrajetMeansIconComponent } from './trajets/trajet-means-icon/trajet-mea
     TrajetStateIconComponent,
     TrajetDetailComponent,
     TrajetDureeComponent,
-    TrajetMeansIconComponent
+    TrajetMeansIconComponent,
+    CommonComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserModule,

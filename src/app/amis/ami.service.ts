@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AMIS } from './mock-amis';
-import { LoggerService } from '../logger.service';
+import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { Ami } from './ami.type';
 import { AmiState } from './ami.etat.enum';
-import { PHP_API_SERVER } from '../tools.service';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { PHP_API_SERVER } from '../common/tools.service';
+import { CommonService } from '../common/common.service';
+import { Message } from '../common/message.type';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -19,9 +20,11 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class AmiService {
+export class AmiService extends CommonService{
 
-  constructor(private logger:LoggerService, private http: HttpClient) { }
+  constructor(private logger:LoggerService, private http: HttpClient) {
+    super();
+   }
 
   // appel asynchrone
   getListeAmis() : Observable<any>{
@@ -29,7 +32,8 @@ export class AmiService {
 
     let url = PHP_API_SERVER + "/ami/read.php";
 
-    return this.http.get<Ami[]>(url);
+    return this.http.get<Ami[]>(url)
+    .pipe (catchError (super.handleError));
 
     //return AMIS;
   }
@@ -43,44 +47,12 @@ export class AmiService {
     return this.http.put<Message>(url, amiToUpdate, httpOptions)
        .pipe (
          // call observer.error(...) si http code != 200
-         catchError (this.handleError)
+         catchError (super.handleError)
          // sinon call observer.next(body), puis observer.complete()
        );
   }
 
-  /*
-  * HttpErrorResponse
-  * .error : body de la reponse - ex {"message": "toto", "error": true} ou autre chose!
-  * .headers: [header...]
-  * .message: "Http failure.... 400"
-  * .status: 400
-  * .url: "http://..../update.php" par ex
-  */
-  private handleError(httpError: HttpErrorResponse): Observable<never> {
-
-    let message = 'Erreur technique! consulter la sortie console';
-
-    if (httpError.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', httpError.error.message);
-
-    } else {
-
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${httpError.status}, ` +
-        `body was: ${httpError.error}`);
-
-      // message metier depuis api
-      if (httpError.status == 400 && httpError.error.message) {
-        message = httpError.error.message;
-      }
-    }
-    // return an observable with a user-facing error message
-    // call observer.error(...)
-    return throwError(message);
-  };
+ 
 
   getAmiState (etat : string) : AmiState {
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoggerService } from '../logger.service';
+import { LoggerService } from '../common/logger.service';
 import { HttpClient } from '@angular/common/http';
 
 import { TRAJETS }  from './mock-trajets';

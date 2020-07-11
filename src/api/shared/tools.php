@@ -1,5 +1,5 @@
 <?php
-
+require 'config.php';
   
 function sendHttpDatasAndExit (array $datas){
    http_response_code(200);
@@ -10,6 +10,10 @@ function sendHttpDatasAndExit (array $datas){
 function sendHttpMessageAndExit (string $message) {
      _sendHttpMessage ($message, false);
   }
+
+  function sendHttpResultAndExit (Result $result) {
+   _sendHttpMessage ($result->get_msg(), $result->is_error());
+}
 
   
   function sendHttpErrorAndExit (string $errorMessage) {
@@ -27,6 +31,22 @@ function sendHttpMessageAndExit (string $message) {
 
     echo json_encode($response);
     exit;
+ }
+
+ function buildResultAndDataError (string $message): ResultAndDatas {
+   $result = new ResultAndDatas();
+   $result->set_error(true);
+   $result->set_msg($message);
+   $result->set_datas (null);
+   return $result; 
+ }
+ function buildResultAndData (string $message, array $datas) : ResultAndDatas {
+
+   $result = new ResultAndDatas();
+   $result->set_error(false);
+   $result->set_msg($message);
+   $result->set_datas ($datas);
+   return $result;
  }
 
 ?>

@@ -1,19 +1,23 @@
 <?php
-require_once '../config/database.php';
+require_once '../dao/amidao.php';
 
 
 
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
-    global $listAmis;
 
-    $listjson = array();
-    foreach ($listAmis as $ami) {
-        //echo var_dump($ami->toArray()); 
-        array_push ($listjson, $ami->toArray());
+    $resultAndDatas = displayListAmis();
+    
+    if ($resultAndDatas->is_error()) {
+
+        sendHttpResultAndExit ($resultAndDatas);
+
+    } else {
+
+        sendHttpDatasAndExit($resultAndDatas->get_datasAsJson());    
+
     }
     
-    sendHttpDatasAndExit($listjson);
 
 }
 

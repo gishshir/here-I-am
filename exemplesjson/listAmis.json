@@ -1,0 +1,44 @@
+[
+	{
+		"personne": {
+			"id": 2,
+			"pseudo": "Fanfan laTulipe",
+			"etat": "Arret"
+		},
+		"relation": {
+			"id": 5,
+			"suivre": false,
+			"suiviPar": false,
+			"notificationVers": false,
+			"notifiePar": false
+		}
+	},
+	{
+		"personne": {
+			"id": 4,
+			"pseudo": "LaBelle au Bois dormant",
+			"etat": "Arret"
+		},
+		"relation": {
+			"id": 7,
+			"suivre": false,
+			"suiviPar": false,
+			"notificationVers": false,
+			"notifiePar": false
+		}
+	},
+	{
+		"personne": {
+			"id": 5,
+			"pseudo": "Petit Chaperon Rouge",
+			"etat": "Arret"
+		},
+		"relation": {
+			"id": 8,
+			"suivre": false,
+			"suiviPar": false,
+			"notificationVers": false,
+			"notifiePar": false
+		}
+	}
+]

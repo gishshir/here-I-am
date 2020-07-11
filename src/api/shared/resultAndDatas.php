@@ -25,7 +25,7 @@ class ResultAndDatas extends Resultat {
     
     private array $datas;
     
-    // array d'objets
+    // array d'objets ayant une methode toArray()
     function get_datas() : array {
         return $this->datas;
     }

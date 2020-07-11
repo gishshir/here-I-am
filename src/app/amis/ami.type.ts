@@ -1,8 +1,8 @@
-import  { AmiState } from './ami.etat.enum';
+import { AmiState } from './ami.etat.enum';
 
 export interface Ami {
 
-    id: number;
+    relationid: number;
     pseudo: string;
     etat: AmiState;
     suivre: boolean;

@@ -8,7 +8,7 @@ require '../shared/tools.php';
 */
 function getCurrentUserId () :int {
    // TODO implementer
-    return 1;
+    return 2;
 }
 
 function _sqlErrorMessageBindAndExecute ($stmt) : string {

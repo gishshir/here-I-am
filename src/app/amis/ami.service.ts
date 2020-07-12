@@ -69,7 +69,7 @@ export class AmiService extends CommonService {
 
     let ami: Ami = {
 
-      "relationid": amijs.relation.id,
+      "idrelation": amijs.relation.id,
       "pseudo": amijs.personne.pseudo,
       "etat": this.getAmiState(amijs.personne.etat),
       "suivre": amijs.relation.suivre

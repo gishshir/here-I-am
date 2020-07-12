@@ -1,5 +1,7 @@
 <?php
 
+
+
 class Resultat {
     
     private string $msg;
@@ -17,31 +19,32 @@ class Resultat {
     function is_error() : bool{
         return $this->error;
     }
-
-
 }
 
 class ResultAndDatas extends Resultat {
     
-    private array $datas;
+    private ?array $datas;
     
     // array d'objets ayant une methode toArray()
-    function get_datas() : array {
+    function get_datas() : ?array {
         return $this->datas;
     }
-    function set_datas (array $datas) {
+    function set_datas (?array $datas) {
         $this->datas = $datas;
     }
 
-    // array de json
-    function get_datasAsJson () : array {
+    // array d'array
+    function get_datasAsArrays ()  {
 
-        $listjson = array();
+        // tableau de tableau
+        $tab = array();
         foreach ($this->datas as $data) { 
-            array_push ($listjson, $data->toArray());
+            array_push($tab, $data->toArray());
         }
-        return $listjson;
+        return $tab;
     }
+
+
     
 }
 

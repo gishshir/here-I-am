@@ -33,7 +33,7 @@ export class AmisComponent implements OnInit {
   // reception d'un evenement de modification d'un Ami
   onChange(ami: Ami) {
     // rafraichir la liste complète
-    this.logger.log("event de modification de l'ami (rel): " + ami.relationid);
+    this.logger.log("event de modification de l'ami (rel): " + ami.idrelation);
     this.refreshList();
   }
 

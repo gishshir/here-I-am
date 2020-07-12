@@ -3,15 +3,54 @@
 require 'dao.php';
 require_once '../entities/amiinfo.php';
 
+
+
+
+
+
+function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
+
+    $result; $stmt;
+   
+    $con = connectMaBase();
+    $req_updateSuiviAmi = "update relation SET a_suivi_b = ?  WHERE id = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_updateSuiviAmi);
+        if ($stmt->bind_param("ii", $asuivib, $id) ) {
+
+            $id = $relationId;
+            $asuivib = $suivre;
+
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $result = buildResultat ($nbligneImpactees > 0?"update suivi de la relation reussi!":"Pas de modification!");            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultAndDataError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $result;
+    
+}
+
 /*
 * construit la liste des amis de l'utilisateur courant
 */
 function displayListAmis() : ResultAndDatas {
     
     $idCurrentUser = getCurrentUserId();
-    $resultAnDatas;
-    $erreur;
-       
+    $resultAndDatas; $stmt;
+      
     $con = connectMaBase();
     $req_ListAmis = "select amiid, relid, a_suivi_b, a_notification_b, b_suivi_a, b_notification_a, pseudo, etat
 
@@ -27,11 +66,15 @@ function displayListAmis() : ResultAndDatas {
     and personid != ?) as amisetrel
     
     left join relation on relid = relation.id
-    left join utilisateur on amiid = utilisateur.id";                    
+    left join utilisateur on amiid = utilisateur.id";    
+    
+    try {
 
-    if ($stmt = $con->prepare($req_ListAmis)) {
+        $stmt = _prepare ($con, $req_ListAmis);
+        echo gettype ($stmt);
+        if ($stmt->bind_param("ii", $idCurrentUser, $idCurrentUser)) {
 
-        if ($stmt->bind_param("ii", $idCurrentUser, $idCurrentUser) && $stmt->execute()) {
+            $stmt = _execute($stmt);
 
             $listeAmis = array();
             $infoAmi = null;
@@ -60,25 +103,22 @@ function displayListAmis() : ResultAndDatas {
                 array_push ($listeAmis, $infoAmi);
             }  // --- fin du fetch
 
-            $stmt->close();
 
-            $resultAnDatas = buildResultAndData("Récupération liste amis réussie!", $listeAmis);
+            $resultAndDatas = buildResultAndData("Récupération liste amis réussie!", $listeAmis);
 
         } else {
-            $erreur = _sqlErrorMessageBindAndExecute($stmt);
+            throw new Exception( _sqlErrorMessageBind($stmt));
         }
-        $con->close();
 
-    } else {
-        $erreur = _sqlErrorMessagePrepare ($con);
+    }
+    catch (Exception $e) {
+        $resultAndDatas = buildResultAndDataError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
     }
 
-    if (isset($erreur)) {
-        $resultAnDatas = buildResultAndDataError($erreur);
-    }
-      
-
-    return $resultAnDatas;
+    return $resultAndDatas;
 }
 
 

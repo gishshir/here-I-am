@@ -33,6 +33,10 @@ function xssPreventFromPost (string $postKey):?string {
     
     return xssPreventFromArray ($_POST, $postKey);    
 }
+function xssPreventFromPut (string $putKey):?string {
+    
+    return xssPreventFromArray ($_PUT, $putKey);    
+}
 function xssPreventFromGet (string $getKey):?string {
     
     return xssPreventFromArray ($_GET, $getKey);    

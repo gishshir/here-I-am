@@ -1,24 +1,32 @@
 <?php
 require 'config.php';
-  
-function sendHttpDatasAndExit (array $datas){
-   http_response_code(200);
-   echo json_encode ($datas);
-   exit;
-  }
 
-function sendHttpMessageAndExit (string $message) {
-     _sendHttpMessage ($message, false);
-  }
+// reponse http simple avec message
+function sendHttpResponseAndExit (Resultat $resultat) {
 
-  function sendHttpResultAndExit (Result $result) {
-   _sendHttpMessage ($result->get_msg(), $result->is_error());
+   if ($resultat->is_error()) {
+      _sendHttpMessage ($resultat->get_msg(), true);
+
+  } else {
+      _sendHttpMessage ($resultat->get_msg(), false);   
+  }
+} 
+
+// reponse http avec datas
+function sendHttpDatasAndExit (ResultAndDatas $resultAndDatas) {
+
+   if ($resultAndDatas->is_error()) {
+
+      _sendHttpMessage ($resultAndDatas->get_msg(), true);
+
+  } else {
+
+      http_response_code(200);
+      echo (string) json_encode($resultAndDatas->get_datasAsArrays());
+      exit;
+
+  }
 }
-
-  
-  function sendHttpErrorAndExit (string $errorMessage) {
-     _sendHttpMessage ($errorMessage, true);
-  }
 
  function _sendHttpMessage (string $message, bool $error) {
 
@@ -33,12 +41,21 @@ function sendHttpMessageAndExit (string $message) {
     exit;
  }
 
+
+ 
  function buildResultAndDataError (string $message): ResultAndDatas {
    $result = new ResultAndDatas();
    $result->set_error(true);
    $result->set_msg($message);
    $result->set_datas (null);
    return $result; 
+ }
+ function buildResultat (string $message) : Resultat {
+
+   $result = new Resultat();
+   $result->set_error(false);
+   $result->set_msg($message);
+   return $result;
  }
  function buildResultAndData (string $message, array $datas) : ResultAndDatas {
 

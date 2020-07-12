@@ -1,9 +1,7 @@
 <?php
-require_once '../dao/dao.php';
+require_once '../dao/amidao.php';
 
 if($_SERVER["REQUEST_METHOD"] == "PUT")  {
-
-   $listAmis = getListeAmis();
     
     
     // read-only stream that allows us to read raw data from the request body
@@ -11,30 +9,22 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
 
     if (isset($postdata) && !empty ($postdata)) {
 
-        $body = json_decode ($postdata);
-        $amiFromRequest = Ami::fromJson ($body);
+        $bodyobj = json_decode ($postdata);
 
-        $id =  $amiFromRequest->get_id();
-        if ($id < 1) {
-            sendHttpErrorAndExit ("ami.id ".$id." non valide!");
+        $idrelation = (int)$bodyobj->idrelation;
+        $suivre = (bool) $bodyobj->suivre;
+
+        if ($idrelation == null || $idrelation < 1) {
+            sendHttpErrorAndExit ("idrelation ".$idrelation." non valide!");
         }
 
-        //
-        for($i = 0; $i < count($listAmis); ++$i) {
-
-            $amiBdd = $listAmis[$i];
-            if ($id == $amiBdd->get_id()){
-
-                // mise à jour etat de suivi uniquement
-                $amiBdd->set_suivre($amiFromRequest->is_suivre()); 
-                sendHttpMessageAndExit ("Update OK!");
-            }
-        }
+        $resultat = updateSuiviRelation($idrelation, $suivre);
+        sendHttpResponseAndExit($resultat);
         
-        sendHttpErrorAndExit ("ami.id ".$id." n'existe pas!");
 
     }
 
 }
+
 
 ?>

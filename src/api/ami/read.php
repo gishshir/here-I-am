@@ -7,17 +7,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
 
     $resultAndDatas = displayListAmis();
-    
-    if ($resultAndDatas->is_error()) {
+    sendHttpDatasAndExit($resultAndDatas);
 
-        sendHttpResultAndExit ($resultAndDatas);
-
-    } else {
-
-        sendHttpDatasAndExit($resultAndDatas->get_datasAsJson());    
-
-    }
-    
+    /*$test = "[{'type': 'toto'},{'type': 'titi'}]";
+    echo json_encode ($test);*/
 
 }
 

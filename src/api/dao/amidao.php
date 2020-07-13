@@ -71,7 +71,7 @@ function displayListAmis() : ResultAndDatas {
     try {
 
         $stmt = _prepare ($con, $req_ListAmis);
-        echo gettype ($stmt);
+        
         if ($stmt->bind_param("ii", $idCurrentUser, $idCurrentUser)) {
 
             $stmt = _execute($stmt);

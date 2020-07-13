@@ -10,13 +10,13 @@ import { Trajet } from '../trajet.type';
 export class TrajetDureeComponent implements OnInit {
 
 
-  duree:string;
+  duree: string;
   color: string;
 
   private _trajetEnCours: Trajet;
 
-  @Input ()
-  set trajetEnCours (trajet: Trajet) {
+  @Input()
+  set trajetEnCours(trajet: Trajet) {
     if (trajet) {
       this._trajetEnCours = trajet;
       this.calculDuree();
@@ -25,51 +25,51 @@ export class TrajetDureeComponent implements OnInit {
 
   message: string = "";
 
-  constructor (private toolsService: ToolsService) {
+  constructor(private toolsService: ToolsService) {
   }
 
-  private intervalId:number = -1;
-  private calculDuree () :void {
+  private intervalId: number = -1;
+  private calculDuree(): void {
 
     this.definirColor();
     this.stopTimer();
     if (this._trajetEnCours.etat === TrajetState.ended) {
-      this.duree = this.toolsService.formatDuree (this._trajetEnCours.startDate, this._trajetEnCours.endDate);
+      this.duree = this.toolsService.formatDuree(this._trajetEnCours.starttime, this._trajetEnCours.endtime);
     } else {
       // décompte du temps écoulé depuis startDate jusqu'à maintenant
       this.startTimer();
 
     }
-} 
+  }
 
-  private definirColor() : void {
-    
+  private definirColor(): void {
+
     let color: string;
-    switch(this._trajetEnCours.etat) {
+    switch (this._trajetEnCours.etat) {
       case TrajetState.ended: color = 'brown'; break;
-      case TrajetState.pausing: color =  'yellow'; break;
-      case TrajetState.started: color =  'lightgreen'; break;
-      default: color =  'grey';
+      case TrajetState.pausing: color = 'yellow'; break;
+      case TrajetState.started: color = 'lightgreen'; break;
+      default: color = 'grey';
     }
     this.color = color;
   }
-  ngOnDestroy() { this.stopTimer(); }    
+  ngOnDestroy() { this.stopTimer(); }
   private stopTimer() {
     this.duree = "";
     if (this.intervalId >= 0) {
-       clearInterval(this.intervalId);
+      clearInterval(this.intervalId);
     }
   }
-  private startTimer() :void {
+  private startTimer(): void {
 
-    this.intervalId = window.setInterval (() => {
+    this.intervalId = window.setInterval(() => {
 
-      this.duree = this.toolsService.formatDureeFromNow (this._trajetEnCours.startDate);
+      this.duree = this.toolsService.formatDureeFromNow(this._trajetEnCours.starttime);
     }, 1000);
   }
 
   ngOnInit(): void {
-    
+
   }
 
 }

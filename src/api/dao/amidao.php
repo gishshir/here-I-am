@@ -1,12 +1,7 @@
 <?php
 
-require 'dao.php';
+require_once 'dao.php';
 require_once '../entities/amiinfo.php';
-
-
-
-
-
 
 function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
 

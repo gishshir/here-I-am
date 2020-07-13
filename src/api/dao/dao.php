@@ -8,7 +8,7 @@ require '../shared/tools.php';
 */
 function getCurrentUserId () :int {
    // TODO implementer
-    return 2;
+    return 1;
 }
 
 function _prepare ($con, $sql) : mysqli_stmt {

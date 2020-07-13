@@ -15,20 +15,32 @@ export class AccueilComponent implements OnInit {
 
   constructor(private trajetService: TrajetService) {
 
-    this.dernierTrajet = trajetService.chercherDernierTrajet();
-   }
+    this.refreshDernierTrajet();
+  }
+
+  refreshDernierTrajet(): void {
+
+    this.dernierTrajet = null;
+    this.trajetService.chercherDernierTrajet({
+
+      onGetTrajet: t => this.dernierTrajet = t,
+      onError: m => console.log(m)
+
+    }, true);
+
+  }
 
   ngOnInit(): void {
   }
 
-  showCardNouveauTrajet () : boolean {
+  showCardNouveauTrajet(): boolean {
 
     return this.dernierTrajet == null || this.dernierTrajet.etat === TrajetState.ended;
   }
 
-  onChangeState (trajetState: TrajetState) : void {
-    
-    this.dernierTrajet = this.trajetService.chercherDernierTrajet();
+  onChangeState(trajetState: TrajetState): void {
+
+    this.refreshDernierTrajet();
   }
 
 }

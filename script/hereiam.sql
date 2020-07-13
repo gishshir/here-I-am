@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 11 juil. 2020 à 11:25
+-- Généré le : lun. 13 juil. 2020 à 08:40
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -100,6 +100,29 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `trajet`
+--
+
+CREATE TABLE `trajet` (
+  `id` int(11) NOT NULL,
+  `userid` int(11) NOT NULL COMMENT 'id de l''initiateur du trajet',
+  `starttime` int(10) NOT NULL DEFAULT 0 COMMENT 'timestamp début trajet en secondes',
+  `endtime` int(10) NOT NULL DEFAULT -1 COMMENT 'timestamp fin trajet en secondes',
+  `etat` varchar(20) NOT NULL DEFAULT 'Started' COMMENT 'Started, Ended, Pausing'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `trajet`
+--
+
+INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`) VALUES
+(1, 1, 1588382988, 1588391220, 'Ended'),
+(2, 1, 1591252320, 1591283643, 'Ended'),
+(3, 1, 1591048838, -1, 'Started');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `utilisateur`
 --
 
@@ -107,19 +130,20 @@ CREATE TABLE `utilisateur` (
   `id` int(11) NOT NULL,
   `login` varchar(60) NOT NULL,
   `password` varchar(30) NOT NULL,
-  `pseudo` varchar(30) NOT NULL
+  `pseudo` varchar(30) NOT NULL,
+  `etat` varchar(10) NOT NULL DEFAULT 'Arret' COMMENT 'Arret, EnChemin, Pause'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id`, `login`, `password`, `pseudo`) VALUES
-(1, 'login1', 'pwd1', 'Jojo les gros bras'),
-(2, 'login2', 'pwd2', 'Fanfan la Tulipe'),
-(3, 'login3', 'pwd3', 'Savate le vagabon'),
-(4, 'login4', 'pwd4', 'La Belle au Bois dormant'),
-(5, 'login5', 'pwd5', 'Petit Chaperon Rouge');
+INSERT INTO `utilisateur` (`id`, `login`, `password`, `pseudo`, `etat`) VALUES
+(1, 'login1', 'pwd1', 'Jojo les gros bras', 'Arret'),
+(2, 'login2', 'pwd2', 'Fanfan la Tulipe', 'Arret'),
+(3, 'login3', 'pwd3', 'Savate le vagabon', 'Arret'),
+(4, 'login4', 'pwd4', 'La Belle au Bois dormant', 'Arret'),
+(5, 'login5', 'pwd5', 'Petit Chaperon Rouge', 'Arret');
 
 --
 -- Index pour les tables déchargées
@@ -142,6 +166,13 @@ ALTER TABLE `relation`
   ADD KEY `person_b` (`person_b`);
 
 --
+-- Index pour la table `trajet`
+--
+ALTER TABLE `trajet`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IND_USER` (`userid`);
+
+--
 -- Index pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
@@ -158,6 +189,12 @@ ALTER TABLE `utilisateur`
 --
 ALTER TABLE `relation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT pour la table `trajet`
+--
+ALTER TABLE `trajet`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`

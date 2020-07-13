@@ -15,41 +15,41 @@ export class TrajetDetailComponent implements OnInit {
   @Input() trajetDetail: Trajet;
   @Output() eventChangeState = new EventEmitter<TrajetState>();
 
-  constructor(private toolsService: ToolsService, private trajetService:TrajetService) { }
+  constructor(private toolsService: ToolsService, private trajetService: TrajetService) { }
 
-  getStartDate() : string{
+  getStartDate(): string {
 
-    return this.toolsService.formatDateAndTime(this.trajetDetail.startDate);
+    return this.toolsService.formatDateAndTime(this.trajetDetail.starttime);
   }
 
-  getEndDate() : string {
+  getEndDate(): string {
 
-    if (this.trajetDetail.endDate < 0) {
+    if (this.trajetDetail.endtime < 0) {
       return "";
     }
-    return this.toolsService.formatDateAndTime (this.trajetDetail.endDate);
+    return this.toolsService.formatDateAndTime(this.trajetDetail.endtime);
   }
 
-  getDuree() : string {
-    if (this.trajetDetail.endDate < 0) {
-      return this.toolsService.formatDureeFromNow (this.trajetDetail.startDate);
+  getDuree(): string {
+    if (this.trajetDetail.endtime < 0) {
+      return this.toolsService.formatDureeFromNow(this.trajetDetail.starttime);
     }
-    return this.toolsService.formatDuree (this.trajetDetail.startDate, this.trajetDetail.endDate);
+    return this.toolsService.formatDuree(this.trajetDetail.starttime, this.trajetDetail.endtime);
   }
 
-  private onChangeState(state: TrajetState):void {
+  private onChangeState(state: TrajetState): void {
     this.trajetDetail = this.trajetService.changerStatus(this.trajetDetail.id, state);
     this.eventChangeState.emit(state);
 
   }
-  mettreEnPause():void {
-    this.onChangeState (TrajetState.pausing);
+  mettreEnPause(): void {
+    this.onChangeState(TrajetState.pausing);
   }
-  reprendreTrajet() :void {
-    this.onChangeState (TrajetState.started);
+  reprendreTrajet(): void {
+    this.onChangeState(TrajetState.started);
   }
-  arreterTrajet() : void {
-    this.onChangeState (TrajetState.ended);
+  arreterTrajet(): void {
+    this.onChangeState(TrajetState.ended);
   }
   ngOnInit(): void {
   }

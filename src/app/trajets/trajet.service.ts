@@ -4,11 +4,10 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { PHP_API_SERVER } from '../common/tools.service';
 import { TrajetState } from './trajet-etat.enum';
 import { Trajet } from './trajet.type';
 import { TrajetMeans } from './trajet-means.enum';
-import { CommonService } from '../common/common.service';
+import { CommonService, PHP_API_SERVER, Handler } from '../common/common.service';
 import { Message } from '../common/message.type';
 
 @Injectable({
@@ -23,6 +22,7 @@ export class TrajetService extends CommonService {
   cachedtrajets: Trajet[];
 
 
+  // ============================================
   private _callListeTrajets(): Observable<any> {
 
     let url = PHP_API_SERVER + "/trajet/read.php";
@@ -43,15 +43,12 @@ export class TrajetService extends CommonService {
       },
       // error
       (error: string) => {
-        let response = {
-          msg: error,
-          error: true
-        };
-        if (handler) { handler.onError(response); }
+        this._propageErrorToHandler(error, handler);
       }
 
     )
   }
+  // ============================================
 
 
   chercherTrajetEnCours(handler: TrajetHandler): void {
@@ -84,11 +81,20 @@ export class TrajetService extends CommonService {
     }
   }
 
+  // ===========================================================
+  private _callCreateTrajet(newTrajet: Trajet): Observable<any> {
+
+    let url = PHP_API_SERVER + "/trajet/create.php";
+
+    return this.http.post<Trajet>(url, newTrajet, this.httpOptions)
+      .pipe(catchError(super.handleError));
+
+  }
   demarrerNouveauTrajet(userId: number, mean: TrajetMeans): Trajet {
 
     let trajet: Trajet = {
 
-      id: this.cachedtrajets.length + 1,
+      id: -1,
       starttime: new Date().getTime(),
       endtime: null,
       etat: TrajetState.started,
@@ -100,6 +106,7 @@ export class TrajetService extends CommonService {
 
     return trajet;
   }
+  // ===========================================================
 
   changerStatus(trajetId: number, newState: TrajetState): Trajet {
 
@@ -126,15 +133,13 @@ export class TrajetService extends CommonService {
   }
 }
 
-export interface TrajetsHandler {
+export interface TrajetsHandler extends Handler {
 
   onGetList(liste: Trajet[]): void;
-  onError(message: Message): void;
 
 }
 
-export interface TrajetHandler {
+export interface TrajetHandler extends Handler {
 
   onGetTrajet(trajet?: Trajet): void;
-  onError(message: Message): void;
 }

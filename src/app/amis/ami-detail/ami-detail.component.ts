@@ -15,12 +15,12 @@ export class AmiDetailComponent implements OnInit {
   //@Output() eventChangeSuivre = new EventEmitter<Ami>();
   @Output() eventMessage = new EventEmitter<Message>();
 
-  @Input() 
-  set amiDetail (ami: Ami) {
+  @Input()
+  set amiDetail(ami: Ami) {
     this._amiDetail = ami;
   }
 
-  get amiDetail (): Ami {
+  get amiDetail(): Ami {
     return this._amiDetail;
   }
 
@@ -29,26 +29,17 @@ export class AmiDetailComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  updateSuivreAmi () {
+  updateSuivreAmi() {
 
     // mettre à jour la bdd distante
     this.amiDetail.suivre = !this.amiDetail.suivre;
 
-    this.amiService.updateAmi(this.amiDetail).subscribe(
-      (resp: Message) => {
-        //this.response = resp;
-        //this.eventChangeSuivre.emit(this.amiDetail);
-        this.eventMessage.emit (resp);
-      },
-      (error:string) => {
-        let response = {
-          msg: error,
-          error: true
-        };
-        this.eventMessage.emit (response);
-      }
+    this.amiService.updateAmi(this.amiDetail, {
 
-    );
+      onMessage: m => this.eventMessage.emit(m),
+      onError: e => this.eventMessage.emit(e)
+    });
+
 
   }
 

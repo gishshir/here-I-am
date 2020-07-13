@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 13 juil. 2020 à 08:40
+-- Généré le : lun. 13 juil. 2020 à 12:12
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -108,17 +108,18 @@ CREATE TABLE `trajet` (
   `userid` int(11) NOT NULL COMMENT 'id de l''initiateur du trajet',
   `starttime` int(10) NOT NULL DEFAULT 0 COMMENT 'timestamp début trajet en secondes',
   `endtime` int(10) NOT NULL DEFAULT -1 COMMENT 'timestamp fin trajet en secondes',
-  `etat` varchar(20) NOT NULL DEFAULT 'Started' COMMENT 'Started, Ended, Pausing'
+  `etat` varchar(20) NOT NULL DEFAULT 'Started' COMMENT 'Started, Ended, Pausing',
+  `mean` varchar(20) NOT NULL DEFAULT 'Pied' COMMENT '"Pied", "Velo", "Moto", "Voiture", "Bus", "Train", "Avion", "Bateau"'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `trajet`
 --
 
-INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`) VALUES
-(1, 1, 1588382988, 1588391220, 'Ended'),
-(2, 1, 1591252320, 1591283643, 'Ended'),
-(3, 1, 1591048838, -1, 'Started');
+INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`, `mean`) VALUES
+(1, 1, 1588382988, 1588391220, 'Ended', 'Pied'),
+(2, 1, 1591252320, 1591283643, 'Ended', 'Pied'),
+(3, 1, 1591048838, -1, 'Started', 'Pied');
 
 -- --------------------------------------------------------
 

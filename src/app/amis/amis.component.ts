@@ -40,20 +40,12 @@ export class AmisComponent implements OnInit {
   private refreshList(): void {
     this.logger.log("rafraichir la liste des amis");
     this.amis = [];
-    this.amiService.getListeAmis().subscribe(
-      // next
-      (datas: AmiInfo[]) => {
-        datas.forEach(a => {
-          this.amis.push(this.amiService.buildAmiFromJs(a));
-        })
-      },
-      // error
-      (error: string) => this.response = {
-        msg: error,
-        error: true
+    this.amiService.getListeAmis(
+      {
+        onGetList: list => this.amis = list,
+        onError: e => this.response = e
       }
-
-    )
+    );
   }
 
   onSelect(ami: Ami) {

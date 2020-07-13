@@ -7,15 +7,10 @@ import { catchError } from 'rxjs/operators';
 import { AmiInfo } from './amiinfo.type';
 import { Ami } from './ami.type';
 import { AmiState } from './ami.etat.enum';
-import { PHP_API_SERVER } from '../common/tools.service';
-import { CommonService } from '../common/common.service';
+import { CommonService, PHP_API_SERVER, Handler } from '../common/common.service';
 import { Message } from '../common/message.type';
 
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json'
-  })
-};
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +21,9 @@ export class AmiService extends CommonService {
     super();
   }
 
-  // appel asynchrone
-  getListeAmis(): Observable<any> {
+  // =============================================
+  private _callListeAmis(): Observable<any> {
+
     this.logger.log("getListeAmis()");
 
     let url = PHP_API_SERVER + "/ami/read.php";
@@ -37,19 +33,56 @@ export class AmiService extends CommonService {
 
   }
 
-  updateAmi(amiToUpdate: Ami): Observable<any> {
+
+  getListeAmis(handler: AmisHandler): void {
+
+    this._callListeAmis().subscribe(
+
+      // next
+      (datas: AmiInfo[]) => {
+        let amis: Ami[] = [];
+        datas.forEach(a => {
+          amis.push(this.buildAmiFromJs(a));
+        });
+        handler.onGetList(amis);
+      },
+      // error
+      (error: string) => {
+        this._propageErrorToHandler(error, handler);
+      }
+
+    );
+
+  }
+  // =============================================
+
+  // =====================================================
+  private _callUpdate(amiToUpdate: Ami): Observable<any> {
 
     this.logger.log("updateEtatAmi()");
 
     let url = PHP_API_SERVER + "/ami/update.php";
 
-    return this.http.put<Message>(url, amiToUpdate, httpOptions)
+    return this.http.put<Message>(url, amiToUpdate, this.httpOptions)
       .pipe(
         // call observer.error(...) si http code != 200
         catchError(super.handleError)
         // sinon call observer.next(body), puis observer.complete()
       );
   }
+  updateAmi(amiToUpdate: Ami, handler: AmiHandler): any {
+
+    this._callUpdate(amiToUpdate).subscribe(
+      (resp: Message) => {
+        handler.onMessage(resp);
+      },
+      (error: string) => {
+        this._propageErrorToHandler(error, handler);
+      }
+
+    );
+  }
+  // =====================================================
 
 
 
@@ -78,3 +111,16 @@ export class AmiService extends CommonService {
     return ami;
   }
 }
+
+export interface AmisHandler extends Handler {
+
+  onGetList(liste: Ami[]): void;
+
+}
+
+export interface AmiHandler extends Handler {
+
+  onMessage(message: Message): void;
+}
+
+

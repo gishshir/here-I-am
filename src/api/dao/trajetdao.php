@@ -11,7 +11,7 @@ function displayListTrajets() : ResultAndDatas {
     $resultAndDatas; $stmt;
       
     $con = connectMaBase();
-    $req_ListTrajets = "select id, starttime, endtime, etat FROM trajet WHERE userid = ?";
+    $req_ListTrajets = "select id, starttime, endtime, etat, mean FROM trajet WHERE userid = ?";
 
 
     try {
@@ -24,7 +24,7 @@ function displayListTrajets() : ResultAndDatas {
 
             $listeTrajets = array();
             $trajet = null;
-            $stmt->bind_result ($resId, $resStartTime, $resEndTime, $resEtat);
+            $stmt->bind_result ($resId, $resStartTime, $resEndTime, $resEtat, $resMean);
                    
             // fetch row ..............
             while($stmt->fetch()) {
@@ -35,6 +35,7 @@ function displayListTrajets() : ResultAndDatas {
                 $trajet->set_starttime($resStartTime);
                 $trajet->set_endtime($resEndTime);
                 $trajet->set_etat($resEtat);
+                $trajet->set_mean($resMean);
 
                 array_push ($listeTrajets, $trajet);
             }  // --- fin du fetch

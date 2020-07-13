@@ -7,10 +7,13 @@ class Trajet  {
     
     public static $STATE = array ("Started", "Ended", "Pausing");
 
+    public static $MEANS = array ("Pied", "Velo", "Moto", "Voiture", "Bus", "Train", "Avion", "Bateau");
+
     private int $id;
     private int $starttime;
     private int $endtime;
     private string $etat;
+    private string $mean;
 
     function get_id (): int {
         return $this->id;
@@ -23,6 +26,12 @@ class Trajet  {
     }
     function get_etat () : string {
         return $this->etat;
+    }
+    function set_mean (string $mean) {
+        $this->mean = $mean;
+    }
+    function get_mean () : string {
+        return $this->mean;
     }
     function get_starttime (): int {
         return $this->starttime;
@@ -42,7 +51,8 @@ class Trajet  {
             "id"=>$this->id,
             "starttime"=>$this->starttime,
             "endtime"=>$this->endtime,
-            "etat"=>$this->etat
+            "etat"=>$this->etat,
+            "mean"=>$this->mean
         );
         return $info;
     }

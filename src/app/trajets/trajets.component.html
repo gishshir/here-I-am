@@ -19,7 +19,9 @@
 
     <app-notification [message]="response"></app-notification>
 
-    <app-trajet-detail *ngIf="selectedTrajet" [trajetDetail]="selectedTrajet"></app-trajet-detail>
+    <app-trajet-detail *ngIf="selectedTrajet" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
+        (eventChangeState)="onChangeState($event)">
+    </app-trajet-detail>
 
 
     <div>Aujourd'hui nous sommes le {{today}}</div>

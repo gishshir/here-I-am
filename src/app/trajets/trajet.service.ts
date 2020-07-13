@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Observer } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { TrajetState } from './trajet-etat.enum';
 import { Trajet } from './trajet.type';
 import { TrajetMeans } from './trajet-means.enum';
-import { CommonService, PHP_API_SERVER, Handler } from '../common/common.service';
+import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 
 @Injectable({
@@ -51,6 +51,19 @@ export class TrajetService extends CommonService {
   // ============================================
 
 
+  chercherTrajetById(idtrajet: number): Trajet {
+
+    if (this.cachedtrajets) {
+      let trajet: Trajet = this.cachedtrajets.find(t =>
+
+        t.id === idtrajet
+      );
+
+      return trajet;
+    } else {
+      return null;
+    }
+  }
   chercherTrajetEnCours(handler: TrajetHandler): void {
 
     let trajet: Trajet = this.cachedtrajets.find(t =>
@@ -59,6 +72,10 @@ export class TrajetService extends CommonService {
     );
     handler.onGetTrajet(trajet);
 
+  }
+
+  clearCache(): void {
+    this.cachedtrajets = null;
   }
 
   chercherDernierTrajet(handler: TrajetHandler, refresh: boolean): void {
@@ -90,7 +107,7 @@ export class TrajetService extends CommonService {
       .pipe(catchError(super.handleError));
 
   }
-  demarrerNouveauTrajet(userId: number, mean: TrajetMeans): Trajet {
+  demarrerNouveauTrajet(mean: TrajetMeans, handler: TrajetHandler): void {
 
     let trajet: Trajet = {
 
@@ -101,28 +118,63 @@ export class TrajetService extends CommonService {
       mean: mean
     };
 
+    this._callCreateTrajet(trajet).subscribe(
+      // next
+      (data: Trajet) => {
+        this.cachedtrajets.push(data)
+        handler.onGetTrajet(data);
+      },
+      // error
+      (error: string) => {
+        this._propageErrorToHandler(error, handler);
+      }
+    );
 
-    this.cachedtrajets.push(trajet);
-
-    return trajet;
   }
   // ===========================================================
 
-  changerStatus(trajetId: number, newState: TrajetState): Trajet {
+
+  // ===========================================================
+  private _callUpdateTrajet(trajetToUpdate: Trajet): Observable<any> {
+
+    let url = PHP_API_SERVER + "/trajet/update.php";
+
+    return this.http.put<Message>(url, trajetToUpdate, this.httpOptions)
+      .pipe(
+        catchError(super.handleError)
+      );
+  }
+
+  updateTrajet(trajetToUpdate: Trajet, handler: MessageHandler): void {
+
+    this._callUpdateTrajet(trajetToUpdate).subscribe(
+      this._createMessageObserver(handler)
+    );
+
+  }
+  changerStatusTrajet(trajetId: number, newState: TrajetState, handler: MessageHandler): void {
 
     let trajet: Trajet = this.getTrajetById(trajetId);
     if (trajet != null) {
-      trajet.etat = newState;
 
-      if (trajet.etat === TrajetState.ended) {
-        trajet.endtime = new Date().getTime();
+      let trajetToUpdate: Trajet = {
+
+        id: trajetId,
+        etat: newState,
+        starttime: trajet.starttime,
+        endtime: trajet.endtime,
+        mean: trajet.mean
       }
-      return trajet;
+
+      this.updateTrajet(trajetToUpdate, handler);
     }
 
-    return trajet;
-
   }
+  // ===========================================================
+
+
+
+
 
   getTrajetById(trajetid: number): Trajet {
 

@@ -1,8 +1,10 @@
 <div class="content">
-  
+
     <div class="card">
         <app-trajet-means-icon [trajetMean]="trajetDetail.mean"></app-trajet-means-icon>
-        <span class="badge"><app-trajet-state-icon [trajetState]="trajetDetail.etat"></app-trajet-state-icon> </span>
+        <span class="badge">
+            <app-trajet-state-icon [trajetState]="trajetDetail.etat"></app-trajet-state-icon>
+        </span>
         <span style="padding: 10px;">Mon trajet</span>
     </div>
 
@@ -10,14 +12,16 @@
     <div *ngIf="trajetDetail.etat == 'Ended'">arrivée: {{getEndDate()}}</div>
 
     <!-- duree du trajet -->
-     <app-trajet-duree #timer [trajetEnCours]="trajetDetail"></app-trajet-duree>
+    <app-trajet-duree #timer [trajetEnCours]="trajetDetail"></app-trajet-duree>
 
     <!-- changement etat du trajet-->
     <div *ngIf="trajetDetail.etat != 'Ended'">
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Started'" name="pause" (click)="mettreEnPause(); timer.definirColor()" >pause</button>
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre" (click)="reprendreTrajet(); timer.definirColor()">reprendre</button>
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat != 'Ended'" name="terminer" (click)="arreterTrajet(); timer.calculDuree()">terminer</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Started'" name="pause"
+            (click)="mettreEnPause()">pause</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Pausing'"
+            name="reprendre" (click)="reprendreTrajet()">reprendre</button>
+        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
+            (click)="arreterTrajet()">terminer</button>
     </div>
-        
+
 </div>
-    

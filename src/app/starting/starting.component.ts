@@ -5,6 +5,7 @@ import { Trajet } from '../trajets/trajet.type';
 import { TrajetService } from '../trajets/trajet.service';
 import { TrajetState } from '../trajets/trajet-etat.enum';
 import { TrajetDureeComponent } from '../trajets/trajet-duree/trajet-duree.component';
+import { Message } from '../common/message.type';
 
 
 
@@ -15,12 +16,12 @@ import { TrajetDureeComponent } from '../trajets/trajet-duree/trajet-duree.compo
 })
 export class StartingComponent implements OnInit {
 
-  
-  trajetMeansEnum : TrajetMeans[] = [];
+
+  trajetMeansEnum: TrajetMeans[] = [];
   selectedMean: TrajetMeans;
   nouveauTrajet: Trajet;
 
-  diplaySelectedMeanDescription ():string {
+  diplaySelectedMeanDescription(): string {
 
     if (this.selectedMean) {
       return TrajetMeansIconComponent.displayName(this.selectedMean);
@@ -29,31 +30,41 @@ export class StartingComponent implements OnInit {
     }
   }
 
- 
-  arreterTrajet () : void {
 
-    this.nouveauTrajet = this.trajetService.changerStatus (this.nouveauTrajet.id, TrajetState.ended);
-    
+  arreterTrajet(): void {
+
+    this.trajetService.changerStatusTrajet(this.nouveauTrajet.id, TrajetState.ended, {
+
+      onMessage: (m: Message) => {
+        this.nouveauTrajet.etat = TrajetState.ended;
+      },
+      onError: (error: Message) => console.log(error.msg)
+    });
+
   }
-  demarrerNouveauTrajet () :void {
+  demarrerNouveauTrajet(): void {
 
-    this.nouveauTrajet = this.trajetService.demarrerNouveauTrajet(1, this.selectedMean);
+    this.trajetService.demarrerNouveauTrajet(this.selectedMean, {
+
+      onGetTrajet: t => this.nouveauTrajet = t,
+      onError: e => console.log(e)
+    });
   }
 
 
   constructor(private trajetService: TrajetService) {
-    let trajetMeansKeys : string[] =  Object.keys(TrajetMeans);
-    trajetMeansKeys.forEach (v => {
+    let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
+    trajetMeansKeys.forEach(v => {
 
-      let m:TrajetMeans = <TrajetMeans>TrajetMeans[v];
+      let m: TrajetMeans = <TrajetMeans>TrajetMeans[v];
       if (m) {
         this.trajetMeansEnum.push(m);
       }
     });
 
-   }
+  }
 
-   onSelect(mean: TrajetMeans) {
+  onSelect(mean: TrajetMeans) {
     this.selectedMean = mean;
   }
   ngOnInit(): void {

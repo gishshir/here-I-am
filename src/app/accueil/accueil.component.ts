@@ -18,9 +18,15 @@ export class AccueilComponent implements OnInit {
     this.refreshDernierTrajet();
   }
 
+  onChangeState(trajetState: TrajetState): void {
+
+    this.refreshDernierTrajet();
+  }
+
   refreshDernierTrajet(): void {
 
     this.dernierTrajet = null;
+    this.trajetService.clearCache();
     this.trajetService.chercherDernierTrajet({
 
       onGetTrajet: t => this.dernierTrajet = t,
@@ -38,9 +44,6 @@ export class AccueilComponent implements OnInit {
     return this.dernierTrajet == null || this.dernierTrajet.etat === TrajetState.ended;
   }
 
-  onChangeState(trajetState: TrajetState): void {
 
-    this.refreshDernierTrajet();
-  }
 
 }

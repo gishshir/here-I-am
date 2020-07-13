@@ -2,6 +2,46 @@
 require_once 'dao.php';
 require_once '../entities/trajet.php';
 
+
+/*
+* met à jour d'un trajet (TrajetState)
+*/
+function updateTrajet (Trajet $trajet) : Resultat {
+
+    $result; $stmt;
+   
+    $con = connectMaBase();
+    $req_updateEtatTrajet = "update trajet SET etat = ?, endtime = ?  WHERE id = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_updateEtatTrajet);
+        if ($stmt->bind_param("sii", $etat, $endtime, $id) ) {
+
+            $id = $trajet->get_id();
+            $endtime = $trajet->get_endtime();
+            $etat = $trajet->get_etat();
+
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $result = buildResultat ($nbligneImpactees > 0?"update etat du trajet reussi!":"Pas de modification!");            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultAndDataError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $result;
+
+}
+
 /*
 * construit la liste des trajets de l'utilisateur courant
 */

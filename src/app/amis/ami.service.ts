@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { AmiInfo } from './amiinfo.type';
 import { Ami } from './ami.type';
 import { AmiState } from './ami.etat.enum';
-import { CommonService, PHP_API_SERVER, Handler } from '../common/common.service';
+import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 
 
@@ -59,8 +59,6 @@ export class AmiService extends CommonService {
   // =====================================================
   private _callUpdate(amiToUpdate: Ami): Observable<any> {
 
-    this.logger.log("updateEtatAmi()");
-
     let url = PHP_API_SERVER + "/ami/update.php";
 
     return this.http.put<Message>(url, amiToUpdate, this.httpOptions)
@@ -70,16 +68,10 @@ export class AmiService extends CommonService {
         // sinon call observer.next(body), puis observer.complete()
       );
   }
-  updateAmi(amiToUpdate: Ami, handler: AmiHandler): any {
-
+  updateAmi(amiToUpdate: Ami, handler: MessageHandler): any {
+    this.logger.log("updateAmi()");
     this._callUpdate(amiToUpdate).subscribe(
-      (resp: Message) => {
-        handler.onMessage(resp);
-      },
-      (error: string) => {
-        this._propageErrorToHandler(error, handler);
-      }
-
+      this._createMessageObserver(handler)
     );
   }
   // =====================================================
@@ -122,5 +114,4 @@ export interface AmiHandler extends Handler {
 
   onMessage(message: Message): void;
 }
-
 

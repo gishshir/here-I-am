@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Observer } from 'rxjs';
 import { Message } from './message.type';
 
 const HTTP_OPTIONS = {
@@ -65,8 +65,30 @@ export class CommonService {
       handler.onError(errorMsg);
     }
   }
+
+  // observer générique envoyant des obj Message
+  // et gérant proprement les erreurs
+  protected _createMessageObserver(handler: MessageHandler): Observer<Message> {
+
+    return {
+
+      next: (resp: Message) => {
+        handler.onMessage(resp);
+      },
+      error: (error: string) => {
+        this._propageErrorToHandler(error, handler);
+      },
+      complete: () => console.log("complete")
+
+    }
+  }
 }
 
 export interface Handler {
   onError(message: Message): void;
+}
+
+export interface MessageHandler extends Handler {
+
+  onMessage(message: Message): void;
 }

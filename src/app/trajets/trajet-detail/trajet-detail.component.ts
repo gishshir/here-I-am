@@ -4,6 +4,8 @@ import { TrajetState } from '../trajet-etat.enum';
 import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
 import { TrajetDureeComponent } from '../trajet-duree/trajet-duree.component';
+import { Message } from 'src/app/common/message.type';
+
 
 @Component({
   selector: 'app-trajet-detail',
@@ -14,8 +16,12 @@ export class TrajetDetailComponent implements OnInit {
 
   @Input() trajetDetail: Trajet;
   @Output() eventChangeState = new EventEmitter<TrajetState>();
+  @Output() eventMessage = new EventEmitter<Message>();
 
-  constructor(private toolsService: ToolsService, private trajetService: TrajetService) { }
+  constructor(private toolsService: ToolsService, private trajetService: TrajetService) {
+    console.log("trajet-detail-component constructeur...");
+  }
+
 
   getStartDate(): string {
 
@@ -38,8 +44,17 @@ export class TrajetDetailComponent implements OnInit {
   }
 
   private onChangeState(state: TrajetState): void {
-    this.trajetDetail = this.trajetService.changerStatus(this.trajetDetail.id, state);
-    this.eventChangeState.emit(state);
+
+    this.trajetService.changerStatusTrajet(this.trajetDetail.id, state, {
+
+      onMessage: (m: Message) => {
+        this.trajetDetail.etat = state;
+        this.eventMessage.emit(m);
+        this.eventChangeState.emit(state);
+      },
+      onError: (error: Message) => this.eventMessage.emit(error)
+    });
+
 
   }
   mettreEnPause(): void {

@@ -25,36 +25,42 @@ export class TrajetsComponent implements OnInit {
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
     private logger: LoggerService) {
     this.today = toolsService.formatDate(new Date().getTime());
-    this.refreshList();
+    this.refreshList(-1);
   }
 
-  private refreshList(): void {
+  // reception d'un evenement de message
+  onMessage(response: Message) {
+    this.response = response;
+  }
+
+  // event en provenant de trajet-detail
+  onChangeState(state: TrajetState): void {
+
+    this.logger.log("onChangeState(): " + state);
+    // on rafraichit la liste des trajets
+    this.refreshList(this.selectedTrajet.id);
+  }
+
+
+  /**
+   * Rafraichissement de la liste et nouveau pointeur sur selectedTrajet
+   * @param selectedid 
+   */
+  private refreshList(selectedid: number): void {
     this.logger.log("rafraichir la liste des trajets");
 
     this.trajetService.getListeTrajets({
 
-      onGetList: list => this.trajets = list,
+      onGetList: list => {
+        this.trajets = list;
+        this.selectedTrajet = this.trajetService.chercherTrajetById(selectedid);
+      },
       onError: m => this.response = m
     });
 
 
   }
 
-
-  /*this.trajetService.mettreEnCache(this.trajets = []);
-  this.trajetService.getListeTrajets().subscribe(
-    // next
-    (datas: Trajet[]) => {
-      this.trajets = datas;
-      this.trajetService.mettreEnCache(this.trajets);
-    },
-    // error
-    (error: string) => this.response = {
-      msg: error,
-      error: true
-    }
-
-  )*/
 
 
   // started & pausing: date de depart
@@ -83,13 +89,6 @@ export class TrajetsComponent implements OnInit {
     }
   }
 
-  // event en provenant de trajet-detail
-  onChangeState(state: TrajetState): void {
-
-    this.logger.log("onChangeState(): " + state);
-    // on rafraichit la liste
-    this.refreshList();
-  }
 
 
   onSelect(trajet: Trajet) {

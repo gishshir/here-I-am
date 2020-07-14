@@ -26,13 +26,12 @@ export class AccueilComponent implements OnInit {
   refreshDernierTrajet(): void {
 
     this.dernierTrajet = null;
-    this.trajetService.clearCache();
     this.trajetService.chercherDernierTrajet({
 
       onGetTrajet: t => this.dernierTrajet = t,
       onError: m => console.log(m)
 
-    }, true);
+    });
 
   }
 

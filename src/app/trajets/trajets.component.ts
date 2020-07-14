@@ -53,7 +53,7 @@ export class TrajetsComponent implements OnInit {
 
       onGetList: list => {
         this.trajets = list;
-        this.selectedTrajet = this.trajetService.chercherTrajetById(selectedid);
+        this.selectedTrajet = this.getTrajetById(selectedid);
       },
       onError: m => this.response = m
     });
@@ -67,7 +67,7 @@ export class TrajetsComponent implements OnInit {
   // ended: date fin trajet
   getStartOrEndDate(trajetid: number): string {
 
-    let trajet = this.trajetService.getTrajetById(trajetid);
+    let trajet = this.getTrajetById(trajetid);
     if (trajet != null) {
 
       let timestamp: number;
@@ -87,6 +87,12 @@ export class TrajetsComponent implements OnInit {
     } else {
       return "";
     }
+  }
+
+  private getTrajetById(trajetid: number): Trajet {
+
+    return this.trajets.find(t => t.id == trajetid);
+
   }
 
 

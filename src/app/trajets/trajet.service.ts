@@ -19,8 +19,6 @@ export class TrajetService extends CommonService {
     super();
   }
 
-  cachedtrajets: Trajet[];
-
 
   // ============================================
   private _callListeTrajets(): Observable<any> {
@@ -34,11 +32,9 @@ export class TrajetService extends CommonService {
   getListeTrajets(handler?: TrajetsHandler): void {
     this.logger.log("construire la liste des trajets");
 
-    this.cachedtrajets = [];
     this._callListeTrajets().subscribe(
       // next
       (datas: Trajet[]) => {
-        this.cachedtrajets = datas;
         if (handler) { handler.onGetList(datas); }
       },
       // error
@@ -51,51 +47,23 @@ export class TrajetService extends CommonService {
   // ============================================
 
 
-  chercherTrajetById(idtrajet: number): Trajet {
+  private _callDernierTrajet(): Observable<any> {
 
-    if (this.cachedtrajets) {
-      let trajet: Trajet = this.cachedtrajets.find(t =>
+    let url = PHP_API_SERVER + "/trajet/read_one.php";
 
-        t.id === idtrajet
-      );
-
-      return trajet;
-    } else {
-      return null;
-    }
+    return this.http.get<Trajet[]>(url)
+      .pipe(catchError(super.handleError));
   }
-  chercherTrajetEnCours(handler: TrajetHandler): void {
+  chercherDernierTrajet(handler: TrajetHandler): void {
 
-    let trajet: Trajet = this.cachedtrajets.find(t =>
+    this._callDernierTrajet().subscribe(
+      // next
+      (data: Trajet) => handler.onGetTrajet(data)
+      ,
+      // error
+      (error: string) => this._propageErrorToHandler(error, handler)
 
-      t.etat !== TrajetState.ended
     );
-    handler.onGetTrajet(trajet);
-
-  }
-
-  clearCache(): void {
-    this.cachedtrajets = null;
-  }
-
-  chercherDernierTrajet(handler: TrajetHandler, refresh: boolean): void {
-
-    if (this.cachedtrajets && this.cachedtrajets.length > 0) {
-
-      handler.onGetTrajet(this.cachedtrajets[this.cachedtrajets.length - 1]);
-
-    } else {
-
-      if (refresh) {
-        this.getListeTrajets({
-          onGetList: l => this.chercherDernierTrajet(handler, false),
-          onError: e => handler.onError(e)
-        });
-      } else {
-        handler.onGetTrajet(null);
-      }
-
-    }
   }
 
   // ===========================================================
@@ -120,14 +88,11 @@ export class TrajetService extends CommonService {
 
     this._callCreateTrajet(trajet).subscribe(
       // next
-      (data: Trajet) => {
-        this.cachedtrajets.push(data)
-        handler.onGetTrajet(data);
-      },
+      (data: Trajet) => handler.onGetTrajet(data)
+      ,
       // error
-      (error: string) => {
-        this._propageErrorToHandler(error, handler);
-      }
+      (error: string) => this._propageErrorToHandler(error, handler)
+
     );
 
   }
@@ -154,36 +119,22 @@ export class TrajetService extends CommonService {
   }
   changerStatusTrajet(trajetId: number, newState: TrajetState, handler: MessageHandler): void {
 
-    let trajet: Trajet = this.getTrajetById(trajetId);
-    if (trajet != null) {
 
-      let trajetToUpdate: Trajet = {
+    let trajetToUpdate: Trajet = {
 
-        id: trajetId,
-        etat: newState,
-        starttime: trajet.starttime,
-        endtime: trajet.endtime,
-        mean: trajet.mean
-      }
-
-      this.updateTrajet(trajetToUpdate, handler);
+      id: trajetId,
+      etat: newState,
+      starttime: -1,
+      endtime: -1,
+      mean: null
     }
 
+    this.updateTrajet(trajetToUpdate, handler);
   }
   // ===========================================================
 
-
-
-
-
-  getTrajetById(trajetid: number): Trajet {
-
-    let trajet = null;
-
-    return this.cachedtrajets.find(t => t.id == trajetid);
-
-  }
 }
+
 
 export interface TrajetsHandler extends Handler {
 

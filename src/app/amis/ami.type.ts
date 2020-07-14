@@ -6,4 +6,5 @@ export interface Ami {
     pseudo: string;
     etat: AmiState;
     suivre: boolean;
+    notifier: boolean;
 }

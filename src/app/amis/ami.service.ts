@@ -57,7 +57,7 @@ export class AmiService extends CommonService {
   // =============================================
 
   // =====================================================
-  private _callUpdate(amiToUpdate: Ami): Observable<any> {
+  private _callUpdate(amiToUpdate: object): Observable<any> {
 
     let url = PHP_API_SERVER + "/ami/update.php";
 
@@ -68,9 +68,15 @@ export class AmiService extends CommonService {
         // sinon call observer.next(body), puis observer.complete()
       );
   }
-  updateAmi(amiToUpdate: Ami, handler: MessageHandler): any {
+  updateSuivreAmi(amiToUpdate: Ami, handler: MessageHandler): any {
     this.logger.log("updateAmi()");
-    this._callUpdate(amiToUpdate).subscribe(
+    this._callUpdate({ idrelation: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
+      this._createMessageObserver(handler)
+    );
+  }
+  updateNotifierAmi(amiToUpdate: Ami, handler: MessageHandler): any {
+    this.logger.log("updateAmi()");
+    this._callUpdate({ idrelation: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
       this._createMessageObserver(handler)
     );
   }
@@ -94,10 +100,11 @@ export class AmiService extends CommonService {
 
     let ami: Ami = {
 
-      "idrelation": amijs.relation.id,
-      "pseudo": amijs.personne.pseudo,
-      "etat": this.getAmiState(amijs.personne.etat),
-      "suivre": amijs.relation.suivre
+      idrelation: amijs.relation.id,
+      pseudo: amijs.personne.pseudo,
+      etat: this.getAmiState(amijs.personne.etat),
+      suivre: amijs.relation.suivre,
+      notifier: amijs.relation.notifier
 
     };
     return ami;

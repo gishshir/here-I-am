@@ -11,18 +11,44 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
 
         $bodyobj = json_decode ($postdata);
 
-        $idrelation = (int)$bodyobj->idrelation;
-        $suivre = (bool) $bodyobj->suivre;
+        // modification suivi d'une relation
+        if (isset($bodyobj->suivre)) {
 
-        if ($idrelation == null || $idrelation < 1) {
-            sendHttpErrorAndExit ("idrelation ".$idrelation." non valide!");
+            $idrelation = (int)$bodyobj->idrelation;
+            $suivre = (bool) $bodyobj->suivre;
+
+            if ($idrelation == null || $idrelation < 1) {
+                sendHttpErrorAndExit ("idrelation ".$idrelation." non valide!");
+            }
+
+            $resultat = updateSuiviRelation($idrelation, $suivre);
+            sendHttpResponseAndExit($resultat);
+        } 
+        //modification notification d'une relation
+        else if (isset($bodyobj->notifier)) {
+
+            $idrelation = (int)$bodyobj->idrelation;
+            $notifier = (bool) $bodyobj->notifier;
+
+            if ($idrelation == null || $idrelation < 1) {
+                sendHttpErrorAndExit ("idrelation ".$idrelation." non valide!");
+            }
+            $listIdRelationEtNotifier = array ($bodyobj);
+            $resultat = updateNotifierAmis($listIdRelationEtNotifier);
+            sendHttpResponseAndExit($resultat);
         }
 
-        $resultat = updateSuiviRelation($idrelation, $suivre);
-        sendHttpResponseAndExit($resultat);
-        
+        // modification des notifications d'une liste d'amis
+        else {
+            $listIdRelationEtNotifier = $bodyobj;
+            $resultat = updateNotifierAmis($listIdRelationEtNotifier);
+            sendHttpResponseAndExit($resultat);
+
+        }
 
     }
+        
+
 
 }
 

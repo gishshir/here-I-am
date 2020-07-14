@@ -34,12 +34,29 @@ export class AmiDetailComponent implements OnInit {
     // mettre à jour la bdd distante
     this.amiDetail.suivre = !this.amiDetail.suivre;
 
-    this.amiService.updateAmi(this.amiDetail, {
+    this.amiService.updateSuivreAmi(this.amiDetail, {
 
-      onMessage: m => this.eventMessage.emit(m),
-      onError: e => this.eventMessage.emit(e)
+      onMessage: (m: Message) => this.eventMessage.emit(m),
+      onError: (e: Message) => {
+        this.eventMessage.emit(e);
+        this.amiDetail.suivre = !this.amiDetail.suivre;
+      }
     });
 
+  }
+  updateNotifierAmi() {
+
+    // mettre à jour la bdd distante
+    this.amiDetail.notifier = !this.amiDetail.notifier;
+
+    this.amiService.updateNotifierAmi(this.amiDetail, {
+
+      onMessage: (m: Message) => this.eventMessage.emit(m),
+      onError: (e: Message) => {
+        this.eventMessage.emit(e);
+        this.amiDetail.notifier = !this.amiDetail.notifier;
+      }
+    });
 
   }
 

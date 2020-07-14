@@ -18,6 +18,7 @@ import { TrajetDureeComponent } from './trajets/trajet-duree/trajet-duree.compon
 import { TrajetMeansIconComponent } from './trajets/trajet-means-icon/trajet-means-icon.component';
 import { CommonComponent } from './common/common.component';
 import { NotificationComponent } from './common/notification/notification.component';
+import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { NotificationComponent } from './common/notification/notification.compon
     TrajetDureeComponent,
     TrajetMeansIconComponent,
     CommonComponent,
-    NotificationComponent
+    NotificationComponent,
+    AmisNotifierComponent
   ],
   imports: [
     BrowserModule,

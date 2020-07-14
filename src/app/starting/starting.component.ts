@@ -6,6 +6,8 @@ import { TrajetService } from '../trajets/trajet.service';
 import { TrajetState } from '../trajets/trajet-etat.enum';
 import { TrajetDureeComponent } from '../trajets/trajet-duree/trajet-duree.component';
 import { Message } from '../common/message.type';
+import { Ami } from '../amis/ami.type';
+import { AmiService } from '../amis/ami.service';
 
 
 
@@ -21,6 +23,20 @@ export class StartingComponent implements OnInit {
   selectedMean: TrajetMeans;
   nouveauTrajet: Trajet;
 
+  constructor(private trajetService: TrajetService, private amiService: AmiService) {
+    let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
+    trajetMeansKeys.forEach(v => {
+
+      let m: TrajetMeans = <TrajetMeans>TrajetMeans[v];
+      if (m) {
+        this.trajetMeansEnum.push(m);
+      }
+    });
+
+    this.chercherListAmis();
+
+  }
+
   diplaySelectedMeanDescription(): string {
 
     if (this.selectedMean) {
@@ -30,6 +46,19 @@ export class StartingComponent implements OnInit {
     }
   }
 
+  listAmis: Ami[];
+  chercherListAmis(): Ami[] {
+
+    if (this.listAmis == null) {
+
+      this.amiService.getListeAmis({
+        onGetList: (l: Ami[]) => this.listAmis = l,
+        onError: (e: Message) => console.log(e.msg)
+      });
+    }
+
+    return this.listAmis;
+  }
 
   arreterTrajet(): void {
 
@@ -50,17 +79,7 @@ export class StartingComponent implements OnInit {
   }
 
 
-  constructor(private trajetService: TrajetService) {
-    let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
-    trajetMeansKeys.forEach(v => {
 
-      let m: TrajetMeans = <TrajetMeans>TrajetMeans[v];
-      if (m) {
-        this.trajetMeansEnum.push(m);
-      }
-    });
-
-  }
 
   onSelect(mean: TrajetMeans) {
     this.selectedMean = mean;

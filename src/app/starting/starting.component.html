@@ -12,18 +12,19 @@
 
 <div>
 
-  <h3>Notification</h3>
-  <input type="radio" name="amis" value="tous" checked />Tous mes amis
-  <input type="radio" name="amis" value="choisir" />Choisir...
-</div>
 
-<div [style.display]="nouveauTrajet? 'block':'none'">
-  <app-trajet-duree #timer [trajetEnCours]="nouveauTrajet"></app-trajet-duree>
-</div>
+  <div [style.display]="nouveauTrajet? 'block':'none'">
+    <app-trajet-duree #timer [trajetEnCours]="nouveauTrajet"></app-trajet-duree>
+  </div>
 
-<div style="margin-top: 30px;">
-  <button *ngIf="selectedMean && nouveauTrajet == null" style="background-color: lightgreen;"
-    (click)="demarrerNouveauTrajet()">Démarrer un trajet</button>
-  <button *ngIf="nouveauTrajet && nouveauTrajet.etat != 'Ended'" style="background-color: orangered; margin-left: 10px;"
-    (click)="arreterTrajet()">Arrêter le trajet</button>
-</div>
+  <div style="margin-top: 30px;">
+    <button *ngIf="selectedMean && nouveauTrajet == null" style="background-color: lightgreen;"
+      (click)="demarrerNouveauTrajet()">Démarrer un trajet</button>
+    <button *ngIf="nouveauTrajet && nouveauTrajet.etat != 'Ended'"
+      style="background-color: orangered; margin-left: 10px;" (click)="arreterTrajet()">Arrêter le trajet</button>
+  </div>
+
+  <!--liste des amis à notifier-->
+  <div>
+    <app-amis-notifier [amis]="listAmis"></app-amis-notifier>
+  </div>

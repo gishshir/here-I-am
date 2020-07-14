@@ -1,0 +1,14 @@
+<!-- liste des amis à notifier-->
+<h3>Liste des amis à notifier</h3>
+
+
+<div>
+    <ul class="amis">
+        <li *ngFor="let ami of amis">
+            <input type="checkbox" [ngModel]="ami.notifier" (click)="notifierAmi(ami)" />
+            <span class="badge">{{ami.id}}</span>
+            <span style="padding: 10px;">{{ami.pseudo}}</span>
+        </li>
+    </ul>
+
+</div>

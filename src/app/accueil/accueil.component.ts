@@ -28,7 +28,15 @@ export class AccueilComponent implements OnInit {
     this.dernierTrajet = null;
     this.trajetService.chercherDernierTrajet({
 
-      onGetTrajet: t => this.dernierTrajet = t,
+      onGetTrajet: t => {
+        if (this.dernierTrajet && this.dernierTrajet.id == t.id) {
+          this.dernierTrajet.etat = t.etat;
+          this.dernierTrajet.starttime = t.starttime;
+          this.dernierTrajet.endtime = t.endtime;
+        } else {
+          this.dernierTrajet = t
+        }
+      },
       onError: m => console.log(m)
 
     });

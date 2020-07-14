@@ -49,8 +49,21 @@ export class TrajetDureeComponent implements OnInit {
     this._etat = trajet.etat;
     this._endtime = trajet.endtime;
 
+    // changement de trajet
     if (oldstarttime != this._starttime) {
-      this.startCalculDuree();
+
+      this.stopTimer();
+      this.definirColor();
+
+      if (this._etat === TrajetState.ended) {
+        this.calculDureeEtatEnded();
+      } else {
+        // décompte du temps écoulé depuis startDate jusqu'à maintenant
+        this.startTimer();
+
+      }
+
+      // changement etat d'un meme trajet
     } else if (oldetat != this._etat) {
 
       this.definirColor();
@@ -67,25 +80,10 @@ export class TrajetDureeComponent implements OnInit {
     this.duree = this.toolsService.formatDuree(this._starttime, this._endtime);
   }
 
-  private startCalculDuree(): void {
-    this.definirColor();
-    this.calculDuree();
-  }
 
-  private calculDuree(): void {
-
-    if (this._etat === TrajetState.ended) {
-      this.calculDureeEtatEnded();
-    } else {
-      this.stopTimer();
-      // décompte du temps écoulé depuis startDate jusqu'à maintenant
-      this.startTimer();
-
-    }
-  }
 
   private definirColor(): void {
-
+    console.log("definir color");
     let color: string;
     switch (this._etat) {
       case TrajetState.ended: color = 'brown'; break;
@@ -97,6 +95,7 @@ export class TrajetDureeComponent implements OnInit {
   }
   ngOnDestroy() { this.stopTimer(); }
   private stopTimer() {
+    console.log("stop timer");
     this.duree = "";
     if (this.intervalId >= 0) {
       clearInterval(this.intervalId);
@@ -104,6 +103,7 @@ export class TrajetDureeComponent implements OnInit {
   }
   private startTimer(): void {
 
+    console.log("start timer");
     this.intervalId = window.setInterval(() => {
 
       this.duree = this.toolsService.formatDureeFromNow(this._starttime);

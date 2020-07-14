@@ -110,14 +110,19 @@ export class TrajetService extends CommonService {
       );
   }
 
-  updateTrajet(trajetToUpdate: Trajet, handler: MessageHandler): void {
+  updateTrajet(trajetToUpdate: Trajet, handler: TrajetHandler): void {
 
     this._callUpdateTrajet(trajetToUpdate).subscribe(
-      this._createMessageObserver(handler)
+      // next
+      (data: Trajet) => handler.onGetTrajet(data)
+      ,
+      // error
+      (error: string) => this._propageErrorToHandler(error, handler)
+
     );
 
   }
-  changerStatusTrajet(trajetId: number, newState: TrajetState, handler: MessageHandler): void {
+  changerStatusTrajet(trajetId: number, newState: TrajetState, handler: TrajetHandler): void {
 
 
     let trajetToUpdate: Trajet = {

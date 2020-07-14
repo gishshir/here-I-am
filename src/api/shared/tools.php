@@ -38,7 +38,11 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
  } else {
 
      http_response_code(200);
-     echo (string) json_encode($resultAndEntity->get_entity()->toArray());
+     if ($resultAndEntity->get_entity()) {
+        echo (string) json_encode($resultAndEntity->get_entity()->toArray());
+     } else {
+        echo "";
+     }
      exit;
 
  }
@@ -80,7 +84,7 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
    return $result;
  }
 
- function buildResultAndEntity (string $message, IEntity $entity) : ResultAndEntity {
+ function buildResultAndEntity (string $message, ?IEntity $entity) : ResultAndEntity {
 
   $result = new ResultAndEntity();
   $result->set_error(false);

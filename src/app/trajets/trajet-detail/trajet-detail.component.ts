@@ -15,7 +15,7 @@ import { Message } from 'src/app/common/message.type';
 export class TrajetDetailComponent implements OnInit {
 
   @Input() trajetDetail: Trajet;
-  @Output() eventChangeState = new EventEmitter<TrajetState>();
+  @Output() eventChangeState = new EventEmitter<Trajet>();
   @Output() eventMessage = new EventEmitter<Message>();
 
   constructor(private toolsService: ToolsService, private trajetService: TrajetService) {
@@ -47,10 +47,10 @@ export class TrajetDetailComponent implements OnInit {
 
     this.trajetService.changerStatusTrajet(this.trajetDetail.id, state, {
 
-      onMessage: (m: Message) => {
-        this.trajetDetail.etat = state;
-        this.eventMessage.emit(m);
-        this.eventChangeState.emit(state);
+      onGetTrajet: (t: Trajet) => {
+        this.trajetDetail = t;
+        this.eventMessage.emit({ msg: "changement état réussi!", error: false });
+        this.eventChangeState.emit(this.trajetDetail);
       },
       onError: (error: Message) => this.eventMessage.emit(error)
     });

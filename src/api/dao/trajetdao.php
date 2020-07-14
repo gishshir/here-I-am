@@ -47,6 +47,29 @@ function createTrajet (Trajet $trajet) :ResultAndEntity {
     return $resultAndEntity;
 }
 
+//========================================================================================
+/**
+ * Retourne le trajet par son id si existe
+ */
+function findTrajetById (int $id) : ResultAndEntity {
+
+    $con = connectMaBase();
+
+    $resultAndEntity = _findTrajetById ($con, $id);
+    _closeAll(null, $con);
+    
+    return $resultAndEntity;
+
+}
+function _findTrajetById (mysqli $con, int $id) : ResultAndEntity {
+
+    $req_trajetById = "select id, starttime, endtime, etat, mean FROM trajet WHERE id = ?";
+    return _findTrajet ($con, $req_trajetById, $id, "Récupération du trajet reussie!");
+    
+}
+//========================================================================================
+
+//========================================================================================
 /**
  * Retourne le dernier (le plus récent) trajet de l'utilisateur courant si ce trajet existe
  */
@@ -60,21 +83,31 @@ function findLastTrajet () : ResultAndEntity {
     return $resultAndEntity;
 
 }
+
 function _findLastTrajet (mysqli $con) : ResultAndEntity {
 
     $idCurrentUser = getCurrentUserId();
-
-    $resultAndEntity; $stmt;
 
     $req_lastTrajet = "select t2.id, t2.starttime, t2.endtime, t2.etat, t2.mean from trajet t2
     where starttime =
     (SELECT MAX(starttime) FROM trajet t1 where t1.userid = t2.userid)
     and t2.userid = ?";
+    
+    return _findTrajet ($con, $req_lastTrajet, $idCurrentUser, "Récupération dernier trajet reussie!");
+    
+}
+//========================================================================================
+
+function _findTrajet (mysqli $con, string $req_sql, $idToBind, string $message) : ResultAndEntity {
+
+
+    $resultAndEntity; $stmt;
+
     try {
 
-        $stmt = _prepare ($con, $req_lastTrajet);
+        $stmt = _prepare ($con, $req_sql);
         
-        if ($stmt->bind_param("i", $idCurrentUser)) {
+        if ($stmt->bind_param("i", $idToBind)) {
 
             $stmt = _execute($stmt);
 
@@ -84,13 +117,11 @@ function _findLastTrajet (mysqli $con) : ResultAndEntity {
             // fetch row ..............
             if ($stmt->fetch()) {
               $trajet = _buildTrajet ($resId, $resStartTime, $resEndTime, $resEtat, $resMean);
-              $resultAndEntity = buildResultAndEntity("Récupération du dernier trajet réussie!", $trajet);
+              $resultAndEntity = buildResultAndEntity($message, $trajet);
 
             }  else {
                 $resultAndEntity = buildResultAndEntity("Pas de trajet trouvé!", null);
-            }
-
-            
+            }            
 
         } else {
             throw new Exception( _sqlErrorMessageBind($stmt));
@@ -111,9 +142,9 @@ function _findLastTrajet (mysqli $con) : ResultAndEntity {
 /*
 * met à jour d'un trajet (TrajetState)
 */
-function updateTrajet (Trajet $trajet) : Resultat {
+function updateTrajet (Trajet $trajet) : ResultAndEntity {
 
-    $result; $stmt;
+    $resultAndEntity; $stmt;
    
     $con = connectMaBase();
     $req_updateEtatTrajet = "update trajet SET etat = ?, endtime = ?  WHERE id = ?";
@@ -130,20 +161,22 @@ function updateTrajet (Trajet $trajet) : Resultat {
             $stmt = _execute ($stmt);
             
             $nbligneImpactees = $stmt->affected_rows ;
-            $result = buildResultat ($nbligneImpactees > 0?"update etat du trajet reussi!":"Pas de modification!");            
+            $resultAndEntity = _findTrajetById ($con, $trajet->get_id());
+            $message = $nbligneImpactees > 0?"update etat du trajet reussi!":"Pas de modification!";
+            $resultAndEntity->set_msg ($message);
 
         } else {
             throw new Exception( _sqlErrorMessageBind($stmt));
         }
     }
     catch (Exception $e) {
-        $result = buildResultAndDatasError($e->getMessage());
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
     }
     finally {
         _closeAll($stmt, $con);
     }
 
-    return $result;
+    return $resultAndEntity;
 
 }
 

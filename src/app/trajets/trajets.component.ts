@@ -34,11 +34,32 @@ export class TrajetsComponent implements OnInit {
   }
 
   // event en provenant de trajet-detail
-  onChangeState(state: TrajetState): void {
+  onChangeState(trajet: Trajet): void {
 
-    this.logger.log("onChangeState(): " + state);
+    this.logger.log("onChangeState(): " + trajet.etat);
     // on rafraichit la liste des trajets
-    this.refreshList(this.selectedTrajet.id);
+    this.selectedTrajet = trajet;
+    this.updateList(trajet);
+  }
+
+  // update de la liste en mémoire
+  // pas la peine de faire un appel remote!
+  private updateList(trajet: Trajet): void {
+
+    let list: Trajet[] = [];
+
+    this.trajets.forEach(t => {
+
+      if (t.id != trajet.id) {
+        list.push(t);
+      } else {
+        // nouvelle ref
+        list.push(trajet);
+      }
+    });
+
+    this.trajets = list;
+
   }
 
 
@@ -98,6 +119,7 @@ export class TrajetsComponent implements OnInit {
 
 
   onSelect(trajet: Trajet) {
+    this.response = null;
     this.selectedTrajet = trajet;
   }
 

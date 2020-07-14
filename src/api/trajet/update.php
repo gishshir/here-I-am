@@ -27,8 +27,8 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
         $trajet->set_etat($etat);
         $trajet->set_endtime($endtime);
 
-        $resultat = updateTrajet($trajet);
-        sendHttpResponseAndExit($resultat);
+        $resultAndEntity = updateTrajet($trajet);
+        sendHttpEntityAndExit($resultAndEntity);
         
 
     }

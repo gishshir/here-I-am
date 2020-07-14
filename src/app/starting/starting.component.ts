@@ -35,9 +35,7 @@ export class StartingComponent implements OnInit {
 
     this.trajetService.changerStatusTrajet(this.nouveauTrajet.id, TrajetState.ended, {
 
-      onMessage: (m: Message) => {
-        this.nouveauTrajet.etat = TrajetState.ended;
-      },
+      onGetTrajet: (t: Trajet) => this.nouveauTrajet = t,
       onError: (error: Message) => console.log(error.msg)
     });
 

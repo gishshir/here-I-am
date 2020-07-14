@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 14 juil. 2020 à 14:17
+-- Généré le : mar. 14 juil. 2020 à 17:42
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -40,15 +40,15 @@ CREATE TABLE `person_rel` (
 --
 
 INSERT INTO `person_rel` (`personid`, `relationid`, `position`, `suivre`, `notifier`) VALUES
-(1, 5, 'B', 1, 0),
-(1, 7, 'A', 1, 0),
-(1, 8, 'A', 0, 0),
+(1, 5, 'B', 0, 0),
+(1, 7, 'A', 1, 1),
+(1, 8, 'A', 1, 1),
 (2, 5, 'A', 0, 0),
 (2, 6, 'A', 1, 0),
 (3, 6, 'B', 0, 1),
 (3, 10, 'A', 0, 0),
 (3, 11, 'A', 0, 0),
-(4, 7, 'B', 0, 0),
+(4, 7, 'B', 0, 1),
 (4, 11, 'B', 0, 0),
 (5, 8, 'B', 0, 0),
 (5, 10, 'B', 0, 0);
@@ -110,10 +110,10 @@ CREATE TABLE `relation` (
 --
 
 INSERT INTO `relation` (`id`, `person_a`, `person_b`, `a_suivi_b`, `a_notification_b`, `b_suivi_a`, `b_notification_a`) VALUES
-(5, 2, 1, 0, 0, 1, 0),
+(5, 2, 1, 0, 0, 0, 0),
 (6, 2, 3, 1, 0, 0, 1),
-(7, 1, 4, 1, 0, 0, 0),
-(8, 1, 5, 0, 0, 0, 0),
+(7, 1, 4, 1, 1, 0, 1),
+(8, 1, 5, 1, 1, 0, 0),
 (10, 3, 5, 0, 0, 0, 0),
 (11, 3, 4, 0, 0, 0, 0);
 
@@ -169,7 +169,34 @@ INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`, `mean`) VA
 (11, 2, 1594713700, 1594718650, 'Ended', 'Velo'),
 (12, 2, 1594718673, 1594718717, 'Ended', 'Pied'),
 (13, 2, 1594718728, 1594719565, 'Ended', 'Bateau'),
-(14, 2, 1594719632, 1594719656, 'Ended', 'Bus');
+(14, 2, 1594719632, 1594719656, 'Ended', 'Bus'),
+(15, 1, 1594737487, 1594737524, 'Ended', 'Voiture'),
+(16, 1, 1594738996, 1594739001, 'Ended', 'Voiture'),
+(17, 1, 1594739387, 1594739437, 'Ended', 'Bus'),
+(18, 1, 1594739890, -1, 'Pausing', 'Moto'),
+(19, 4, 1594741034, -1, 'Pausing', 'Voiture'),
+(20, 2, 1594741217, -1, 'Started', 'Moto');
+
+--
+-- Déclencheurs `trajet`
+--
+DELIMITER $$
+CREATE TRIGGER `after_insert_trajet` AFTER INSERT ON `trajet` FOR EACH ROW UPDATE utilisateur 
+SET etat = 'EnChemin'
+WHERE id = NEW.userid
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_update_trajet` AFTER UPDATE ON `trajet` FOR EACH ROW UPDATE utilisateur 
+SET etat = 
+ CASE NEW.etat
+ WHEN 'Started' THEN 'EnChemin' 
+ WHEN 'Pausing' THEN 'Pause'
+ WHEN 'Ended' THEN 'Arret'
+ END 
+WHERE id = NEW.userid
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -191,9 +218,9 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `login`, `password`, `pseudo`, `etat`) VALUES
 (1, 'login1', 'pwd1', 'Jojo les gros bras', 'Arret'),
-(2, 'login2', 'pwd2', 'Fanfan la Tulipe', 'Arret'),
+(2, 'login2', 'pwd2', 'Fanfan la Tulipe', 'EnChemin'),
 (3, 'login3', 'pwd3', 'Savate le vagabon', 'Arret'),
-(4, 'login4', 'pwd4', 'La Belle au Bois dormant', 'Arret'),
+(4, 'login4', 'pwd4', 'La Belle au Bois dormant', 'Pause'),
 (5, 'login5', 'pwd5', 'Petit Chaperon Rouge', 'Arret');
 
 --
@@ -245,7 +272,7 @@ ALTER TABLE `relation`
 -- AUTO_INCREMENT pour la table `trajet`
 --
 ALTER TABLE `trajet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`

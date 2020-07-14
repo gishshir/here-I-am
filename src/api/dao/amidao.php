@@ -3,20 +3,25 @@
 require_once 'dao.php';
 require_once '../entities/amiinfo.php';
 
+// attention mise à jour de la table person_rel
+// la table relation mise à jour par trigger
 function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
 
     $result; $stmt;
+
+    $idCurrentUser = getCurrentUserId();
    
     $con = connectMaBase();
-    $req_updateSuiviAmi = "update relation SET a_suivi_b = ?  WHERE id = ?";
+    $req_updateSuiviAmi = "update person_rel SET suivre = ?  WHERE personid = ? and relationid = ?";
 
     try {
 
         $stmt = _prepare ($con, $req_updateSuiviAmi);
-        if ($stmt->bind_param("ii", $asuivib, $id) ) {
+        if ($stmt->bind_param("iii", $psuivre, $ppersonid, $prelationid) ) {
 
-            $id = $relationId;
-            $asuivib = $suivre;
+            $psuivre = $suivre;
+            $ppersonid = $idCurrentUser;
+            $prelationid = $relationId;
 
             $stmt = _execute ($stmt);
             

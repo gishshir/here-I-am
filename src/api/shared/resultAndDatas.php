@@ -21,6 +21,20 @@ class Resultat {
     }
 }
 
+class ResultAndEntity extends Resultat {
+    
+    private ?IEntity $entity;
+    
+    
+    // objet ayant une methode toArray()
+    function get_entity() : ?IEntity {
+        return $this->entity;
+    }
+    function set_entity (?IEntity $entity) {
+        $this->entity = $entity;
+    }
+    
+}
 class ResultAndDatas extends Resultat {
     
     private ?array $datas;
@@ -43,8 +57,6 @@ class ResultAndDatas extends Resultat {
         }
         return $tab;
     }
-
-
     
 }
 

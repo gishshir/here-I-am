@@ -3,6 +3,111 @@ require_once 'dao.php';
 require_once '../entities/trajet.php';
 
 
+
+function createTrajet (Trajet $trajet) :ResultAndEntity {
+
+    $resultAndEntity; $stmt;
+   
+    $con = connectMaBase();
+    $req_createTrajet = "insert INTO trajet(userid, starttime, endtime, etat, mean) 
+    VALUES (?, ?, ?, ?, ?)";
+
+    try {
+
+        $stmt = _prepare ($con, $req_createTrajet);
+        if ($stmt->bind_param("iiiss", $userid, $starttime, $endtime, $etat, $mean) ) {
+
+            $userid = getCurrentUserId();
+            $starttime = $trajet->get_starttime();
+            $endtime = $trajet->get_endtime();
+            $etat = $trajet->get_etat();
+            $mean = $trajet->get_mean();
+
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            if ($nbligneImpactees == 1) {
+
+                $resultAndEntity = _findLastTrajet($con);
+            } else {
+                throw new Exception("Pas de modification!!");    
+            }
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $resultAndEntity;
+}
+
+/**
+ * Retourne le dernier (le plus récent) trajet de l'utilisateur courant si ce trajet existe
+ */
+function findLastTrajet () : ResultAndEntity {
+
+    $con = connectMaBase();
+
+    $resultAndEntity = _findLastTrajet ($con);
+    _closeAll(null, $con);
+    
+    return $resultAndEntity;
+
+}
+function _findLastTrajet (mysqli $con) : ResultAndEntity {
+
+    $idCurrentUser = getCurrentUserId();
+
+    $resultAndEntity; $stmt;
+
+    $req_lastTrajet = "select t2.id, t2.starttime, t2.endtime, t2.etat, t2.mean from trajet t2
+    where starttime =
+    (SELECT MAX(starttime) FROM trajet t1 where t1.userid = t2.userid)
+    and t2.userid = ?";
+    try {
+
+        $stmt = _prepare ($con, $req_lastTrajet);
+        
+        if ($stmt->bind_param("i", $idCurrentUser)) {
+
+            $stmt = _execute($stmt);
+
+            $trajet = null;
+            $stmt->bind_result ($resId, $resStartTime, $resEndTime, $resEtat, $resMean);
+                   
+            // fetch row ..............
+            if ($stmt->fetch()) {
+              $trajet = _buildTrajet ($resId, $resStartTime, $resEndTime, $resEtat, $resMean);
+              $resultAndEntity = buildResultAndEntity("Récupération du dernier trajet réussie!", $trajet);
+
+            }  else {
+                $resultAndEntity = buildResultAndEntity("Pas de trajet trouvé!", null);
+            }
+
+            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $resultAndEntity;
+    
+}
+
 /*
 * met à jour d'un trajet (TrajetState)
 */
@@ -32,7 +137,7 @@ function updateTrajet (Trajet $trajet) : Resultat {
         }
     }
     catch (Exception $e) {
-        $result = buildResultAndDataError($e->getMessage());
+        $result = buildResultAndDatasError($e->getMessage());
     }
     finally {
         _closeAll($stmt, $con);
@@ -69,19 +174,12 @@ function displayListTrajets() : ResultAndDatas {
             // fetch row ..............
             while($stmt->fetch()) {
 
-                $trajet = new Trajet();
-
-                $trajet->set_id($resId);
-                $trajet->set_starttime($resStartTime);
-                $trajet->set_endtime($resEndTime);
-                $trajet->set_etat($resEtat);
-                $trajet->set_mean($resMean);
-
+                $trajet = _buildTrajet ($resId, $resStartTime, $resEndTime, $resEtat, $resMean);
                 array_push ($listeTrajets, $trajet);
             }  // --- fin du fetch
 
 
-            $resultAndDatas = buildResultAndData("Récupération liste trajets réussie!", $listeTrajets);
+            $resultAndDatas = buildResultAndDatas("Récupération liste trajets réussie!", $listeTrajets);
 
         } else {
             throw new Exception( _sqlErrorMessageBind($stmt));
@@ -89,7 +187,7 @@ function displayListTrajets() : ResultAndDatas {
 
     }
     catch (Exception $e) {
-        $resultAndDatas = buildResultAndDataError($e->getMessage());
+        $resultAndDatas = buildResultAndDatasError($e->getMessage());
     }
     finally {
         _closeAll($stmt, $con);
@@ -97,4 +195,17 @@ function displayListTrajets() : ResultAndDatas {
 
     return $resultAndDatas;
 }
+function _buildTrajet (int $id, int $starttime, int $endtime, string $etat, string $mean) {
+
+    $trajet = new Trajet();
+
+    $trajet->set_id($id);
+    $trajet->set_starttime($starttime);
+    $trajet->set_endtime($endtime);
+    $trajet->set_etat($etat);
+    $trajet->set_mean($mean);
+
+    return $trajet;
+}
+
 ?>

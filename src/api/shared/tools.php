@@ -28,6 +28,22 @@ function sendHttpDatasAndExit (ResultAndDatas $resultAndDatas) {
   }
 }
 
+// reponse http avec entity
+function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
+
+  if ($resultAndEntity->is_error()) {
+
+     _sendHttpMessage ($resultAndEntity->get_msg(), true);
+
+ } else {
+
+     http_response_code(200);
+     echo (string) json_encode($resultAndEntity->get_entity()->toArray());
+     exit;
+
+ }
+}
+
  function _sendHttpMessage (string $message, bool $error) {
 
     $code = $error?400:200;
@@ -42,8 +58,14 @@ function sendHttpDatasAndExit (ResultAndDatas $resultAndDatas) {
  }
 
 
- 
- function buildResultAndDataError (string $message): ResultAndDatas {
+ function buildResultAndEntityError (string $message): ResultAndEntity {
+  $result = new ResultAndEntity();
+  $result->set_error(true);
+  $result->set_msg($message);
+  $result->set_entity (null);
+  return $result; 
+}
+ function buildResultAndDatasError (string $message): ResultAndDatas {
    $result = new ResultAndDatas();
    $result->set_error(true);
    $result->set_msg($message);
@@ -57,7 +79,17 @@ function sendHttpDatasAndExit (ResultAndDatas $resultAndDatas) {
    $result->set_msg($message);
    return $result;
  }
- function buildResultAndData (string $message, array $datas) : ResultAndDatas {
+
+ function buildResultAndEntity (string $message, IEntity $entity) : ResultAndEntity {
+
+  $result = new ResultAndEntity();
+  $result->set_error(false);
+  $result->set_msg($message);
+  $result->set_entity ($entity);
+  return $result;
+}
+
+ function buildResultAndDatas (string $message, array $datas) : ResultAndDatas {
 
    $result = new ResultAndDatas();
    $result->set_error(false);

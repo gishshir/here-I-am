@@ -3,7 +3,7 @@
 /*
 * représentation d'une ligne de la table trajet
 */
-class Trajet  {
+class Trajet implements IEntity {
     
     public static $STATE = array ("Started", "Ended", "Pausing");
 

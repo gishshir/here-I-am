@@ -2,6 +2,7 @@
 
 require 'resultAndDatas.php';
 require 'security.php';
+require '../entities/ientity.php';
 
 
 header("Access-Control-Allow-Origin: http://localhost:4200");

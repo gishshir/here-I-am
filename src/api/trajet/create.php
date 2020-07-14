@@ -12,12 +12,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST")  {
      if (isset($postdata) && !empty ($postdata)) {
  
          $bodyobj = json_decode ($postdata);
-         echo var_dump($bodyobj);
-
+         
+         $mean = (string) $bodyobj->mean;
+ 
+         $trajet = new Trajet();
+         $trajet->set_etat("Started");
+         $trajet->set_starttime (time());
+         $trajet->set_endtime(-1);
+         $trajet->set_mean($mean);
+ 
+         $resultAndEntity = createTrajet($trajet);
+         sendHttpEntityAndExit($resultAndEntity);
      }
-
-    /*$resultAndDatas = createTrajet($trajet);
-    sendHttpDatasAndExit($resultAndDatas);*/
 
 
 }

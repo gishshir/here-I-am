@@ -28,7 +28,7 @@ function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
         }
     }
     catch (Exception $e) {
-        $result = buildResultAndDataError($e->getMessage());
+        $result = buildResultAndDatasError($e->getMessage());
     }
     finally {
         _closeAll($stmt, $con);
@@ -99,7 +99,7 @@ function displayListAmis() : ResultAndDatas {
             }  // --- fin du fetch
 
 
-            $resultAndDatas = buildResultAndData("Récupération liste amis réussie!", $listeAmis);
+            $resultAndDatas = buildResultAndDatas("Récupération liste amis réussie!", $listeAmis);
 
         } else {
             throw new Exception( _sqlErrorMessageBind($stmt));
@@ -107,7 +107,7 @@ function displayListAmis() : ResultAndDatas {
 
     }
     catch (Exception $e) {
-        $resultAndDatas = buildResultAndDataError($e->getMessage());
+        $resultAndDatas = buildResultAndDatasError($e->getMessage());
     }
     finally {
         _closeAll($stmt, $con);

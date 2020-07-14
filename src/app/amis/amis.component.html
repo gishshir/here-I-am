@@ -1,27 +1,25 @@
-
 <div class="content">
     <h2>Mes amis</h2>
-    
-        <!-- liste des amis -->
-        <div>
-        
-            <ul class="amis">
-                <li *ngFor="let ami of amis" [class.selected]="ami === selectedAmi" (click)="onSelect(ami)">
-                    <span class="badge">{{ami.id}}</span>
-                    <app-ami-state-icon [amiState]="ami.etat"></app-ami-state-icon>
-                    <span style="padding: 10px;">{{ami.pseudo}}</span>
-                    <app-ami-suivi-icon [suivre]="ami.suivre" [size]="16" ></app-ami-suivi-icon>
-                </li>
-            </ul>
 
-        </div>
+    <!-- liste des amis -->
+    <div>
 
-        <app-notification [message]="response"></app-notification>
+        <ul class="amis">
+            <li *ngFor="let ami of amis" [class.selected]="ami === selectedAmi" (click)="onSelect(ami)">
+                <span class="badge">{{ami.id}}</span>
+                <app-ami-state-icon [amiState]="ami.etat"></app-ami-state-icon>
+                <span style="padding: 10px;">{{ami.pseudo}}</span>
+                <app-ami-suivi-icon [suivre]="ami.suivre" [notifier]="ami.notifier" [size]="16"></app-ami-suivi-icon>
+            </li>
+        </ul>
 
-        <!-- ami selectionné -->
-        <app-ami-detail *ngIf="selectedAmi" [amiDetail] = "selectedAmi" (eventMessage)="onMessage($event)"></app-ami-detail>
-    
+    </div>
+
+    <app-notification [message]="response"></app-notification>
+
+    <!-- ami selectionné -->
+    <app-ami-detail *ngIf="selectedAmi" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"></app-ami-detail>
+
 
 
 </div>
-

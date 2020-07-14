@@ -7,8 +7,9 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AmiSuiviIconComponent implements OnInit {
 
-  @Input() size:number;
-  @Input() suivre:boolean;
+  @Input() size: number;
+  @Input() suivre: boolean;
+  @Input() notifier: boolean;
 
   constructor() { }
 

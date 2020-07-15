@@ -13,8 +13,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies" : [
-                "moment"
+            "allowedCommonJsDependencies": [
+              "moment"
             ],
             "outputPath": "dist/here-I-am",
             "index": "src/index.html",
@@ -27,7 +27,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/moment/dist/moment.js"
@@ -93,7 +93,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }
@@ -124,6 +124,12 @@
           }
         }
       }
-    }},
-  "defaultProject": "here-I-am"
+    }
+  },
+  "defaultProject": "here-I-am",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  }
 }

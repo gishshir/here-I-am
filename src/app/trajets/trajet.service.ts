@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, Observer } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -71,7 +71,7 @@ export class TrajetService extends CommonService {
 
     let url = PHP_API_SERVER + "/trajet/create.php";
 
-    return this.http.post<Trajet>(url, newTrajet, this.httpOptions)
+    return this.http.post<Trajet>(url, newTrajet, this.httpOptionsHeaderJson)
       .pipe(catchError(super.handleError));
 
   }
@@ -98,13 +98,42 @@ export class TrajetService extends CommonService {
   }
   // ===========================================================
 
+  // ===========================================================
+  private _callDeleteTrajet(id: number): Observable<any> {
+
+    let url = PHP_API_SERVER + "/trajet/delete.php";
+
+    let params: HttpParams = new HttpParams().set("id", "2");
+    let options = {
+      /*headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }),*/
+      // params: new HttpParams().set("id", "" + id)
+      body: { "id": "" + id }
+    };
+
+    return this.http.request<Message>('delete', url, options)
+      /*return this.http.put<Message>(url, this.httpOptionsHeaderJson)*/
+      .pipe(
+        catchError(super.handleError)
+      );
+  }
+
+  deleteTrajet(trajetToDelete: Trajet, handler: MessageHandler): void {
+
+    this._callDeleteTrajet(trajetToDelete.id).subscribe(
+      this._createMessageObserver(handler)
+    );
+  }
+  // ===========================================================
+
 
   // ===========================================================
   private _callUpdateTrajet(trajetToUpdate: Trajet): Observable<any> {
 
     let url = PHP_API_SERVER + "/trajet/update.php";
 
-    return this.http.put<Message>(url, trajetToUpdate, this.httpOptions)
+    return this.http.put<Message>(url, trajetToUpdate, this.httpOptionsHeaderJson)
       .pipe(
         catchError(super.handleError)
       );

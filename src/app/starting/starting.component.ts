@@ -22,6 +22,7 @@ export class StartingComponent implements OnInit {
   trajetMeansEnum: TrajetMeans[] = [];
   selectedMean: TrajetMeans;
   nouveauTrajet: Trajet;
+  listAmis: Ami[];
 
   constructor(private trajetService: TrajetService, private amiService: AmiService) {
     let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
@@ -33,7 +34,7 @@ export class StartingComponent implements OnInit {
       }
     });
 
-    this.chercherListAmis();
+    //this.chercherListAmis();
 
   }
 
@@ -46,8 +47,9 @@ export class StartingComponent implements OnInit {
     }
   }
 
-  listAmis: Ami[];
+
   chercherListAmis(): Ami[] {
+    console.log("chercherListAmis()");
 
     if (this.listAmis == null) {
 

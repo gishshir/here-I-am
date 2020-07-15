@@ -62,20 +62,17 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
  }
 
 
- function buildResultAndEntityError (string $message): ResultAndEntity {
-  $result = new ResultAndEntity();
+
+ 
+
+ //----------------------------------------------------------------------
+ function buildResultatError (string $message) : Resultat {
+
+  $result = buildResultat($message);
   $result->set_error(true);
-  $result->set_msg($message);
-  $result->set_entity (null);
-  return $result; 
+  return $result;
 }
- function buildResultAndDatasError (string $message): ResultAndDatas {
-   $result = new ResultAndDatas();
-   $result->set_error(true);
-   $result->set_msg($message);
-   $result->set_datas (null);
-   return $result; 
- }
+
  function buildResultat (string $message) : Resultat {
 
    $result = new Resultat();
@@ -83,7 +80,14 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
    $result->set_msg($message);
    return $result;
  }
+ //----------------------------------------------------------------------
 
+ //----------------------------------------------------------------------
+ function buildResultAndEntityError (string $message): ResultAndEntity {
+  $result = buildResultAndEntity($message, null);
+  $result->set_error(true);
+  return $result; 
+}
  function buildResultAndEntity (string $message, ?IEntity $entity) : ResultAndEntity {
 
   $result = new ResultAndEntity();
@@ -92,8 +96,16 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
   $result->set_entity ($entity);
   return $result;
 }
+//----------------------------------------------------------------------
 
- function buildResultAndDatas (string $message, array $datas) : ResultAndDatas {
+//----------------------------------------------------------------------
+function buildResultAndDatasError (string $message): ResultAndDatas {
+  $result = buildResultAndDatas($message, null);
+  $result->set_error(true);
+  return $result; 
+}
+
+ function buildResultAndDatas (string $message, ?array $datas) : ResultAndDatas {
 
    $result = new ResultAndDatas();
    $result->set_error(false);
@@ -101,5 +113,6 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
    $result->set_datas ($datas);
    return $result;
  }
+ //----------------------------------------------------------------------
 
 ?>

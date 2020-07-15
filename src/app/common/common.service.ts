@@ -3,9 +3,15 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, Observer } from 'rxjs';
 import { Message } from './message.type';
 
-const HTTP_OPTIONS = {
+const HTTP_OPTIONS_HEADER_JSON = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json'
+  })
+};
+
+const HTTP_OPTIONS_HEADER_URL = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/x-www-form-urlencoded'
   })
 };
 
@@ -19,7 +25,8 @@ export class CommonService {
 
   constructor() { }
 
-  protected httpOptions = HTTP_OPTIONS;
+  protected httpOptionsHeaderJson = HTTP_OPTIONS_HEADER_JSON;
+  protected httpOptionsHeaderurl = HTTP_OPTIONS_HEADER_URL;
 
   /*
  * HttpErrorResponse

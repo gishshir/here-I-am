@@ -6,7 +6,7 @@
 
         <ul class="amis">
             <li *ngFor="let ami of amis" [class.selected]="ami === selectedAmi" (click)="onSelect(ami)">
-                <span class="badge">{{ami.id}}</span>
+                <span class="badge">{{ami.idrelation}}</span>
                 <app-ami-state-icon [amiState]="ami.etat"></app-ami-state-icon>
                 <span style="padding: 10px;">{{ami.pseudo}}</span>
                 <app-ami-suivi-icon [suivre]="ami.suivre" [notifier]="ami.notifier" [size]="16"></app-ami-suivi-icon>

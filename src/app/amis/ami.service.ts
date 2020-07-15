@@ -61,7 +61,7 @@ export class AmiService extends CommonService {
 
     let url = PHP_API_SERVER + "/ami/update.php";
 
-    return this.http.put<Message>(url, amiToUpdate, this.httpOptions)
+    return this.http.put<Message>(url, amiToUpdate, this.httpOptionsHeaderJson)
       .pipe(
         // call observer.error(...) si http code != 200
         catchError(super.handleError)

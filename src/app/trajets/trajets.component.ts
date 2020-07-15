@@ -5,6 +5,8 @@ import { TrajetState } from './trajet-etat.enum';
 import { ToolsService } from '../common/tools.service';
 import { LoggerService } from '../common/logger.service';
 import { Message } from '../common/message.type';
+import { Ami } from '../amis/ami.type';
+import { AmiService } from '../amis/ami.service';
 
 
 
@@ -20,10 +22,12 @@ export class TrajetsComponent implements OnInit {
   selectedTrajet: Trajet;
   today: string;
 
+  listAmis: Ami[];
+
   response: Message;
 
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
-    private logger: LoggerService) {
+    private logger: LoggerService, private amiService: AmiService) {
     this.today = toolsService.formatDate(new Date().getTime());
     this.refreshList(-1);
   }
@@ -62,6 +66,19 @@ export class TrajetsComponent implements OnInit {
 
   }
 
+  supprimerTrajet(trajet: Trajet): void {
+
+    this.trajetService.deleteTrajet(trajet, {
+
+      onMessage: (m: Message) => {
+
+        this.response = m;
+        this.refreshList(-1);
+      },
+      onError: (e: Message) => this.response = e
+    });
+  }
+
 
   /**
    * Rafraichissement de la liste et nouveau pointeur sur selectedTrajet
@@ -81,6 +98,22 @@ export class TrajetsComponent implements OnInit {
 
 
   }
+
+
+  chercherListAmis(): Ami[] {
+    console.log("chercherListAmis()");
+
+    if (this.listAmis == null) {
+
+      this.amiService.getListeAmis({
+        onGetList: (l: Ami[]) => this.listAmis = l,
+        onError: (e: Message) => console.log(e.msg)
+      });
+    }
+
+    return this.listAmis;
+  }
+
 
 
 

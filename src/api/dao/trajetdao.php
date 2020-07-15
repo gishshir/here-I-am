@@ -3,7 +3,49 @@ require_once 'dao.php';
 require_once '../entities/trajet.php';
 
 
+/**
+ * Suppression d'un trajet par son id
+ */
 
+function deleteTrajet (int $id) : Resultat {
+
+    $result; $stmt;
+
+    $con = connectMaBase();
+    $req_deleteTrajet = "delete FROM trajet WHERE id = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_deleteTrajet);
+        if ($stmt->bind_param("i", $idtrajet) ) {
+
+            $idtrajet = $id;
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $message = $nbligneImpactees > 0?"suppression du trajet reussie!":"Pas de modification!";
+            
+            $result = buildResultat($message);
+            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultatError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $result;
+}
+
+//========================================================================================
+/*
+* Creation d'un nouveau trajet
+*/
 function createTrajet (Trajet $trajet) :ResultAndEntity {
 
     $resultAndEntity; $stmt;

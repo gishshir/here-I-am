@@ -1,13 +1,16 @@
-<!-- liste des amis à notifier-->
-<h3>Liste des amis à notifier</h3>
+<div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
+    <!-- liste des amis à notifier-->
+    <h3 hxFlex>Liste des amis à notifier</h3>
 
-<div>
-    <ul class="amis">
-        <li *ngFor="let ami of amis">
-            <input type="checkbox" [ngModel]="ami.notifier" (click)="notifierAmi(ami)" />
-            <span class="badge">{{ami.id}}</span>
-            <span style="padding: 10px;">{{ami.pseudo}}</span>
-        </li>
-    </ul>
+    <div hxFlex>
+        <ul fxLayout fxLayout="column" fxLayoutAlign="start none">
+            <li fxFlex fxLayout fxLayoutGap="5px" *ngFor="let ami of amis">
+                <input fxFlex="initial" type="checkbox" [ngModel]="ami.notifier" (click)="notifierAmi(ami)" />
+                <span fxFlex="initial">{{ami.id}}</span>
+                <span fxFlex="grow">{{ami.pseudo}}</span>
+            </li>
+        </ul>
+
+    </div>
 
 </div>

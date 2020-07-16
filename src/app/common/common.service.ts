@@ -15,7 +15,8 @@ const HTTP_OPTIONS_HEADER_URL = {
   })
 };
 
-export const PHP_API_SERVER = "http://whereIAm.localhost";
+//export const PHP_API_SERVER = "http://hereiam.localhost/api";
+export const PHP_API_SERVER = "http://hereIam-api.localhost";
 
 
 @Injectable({

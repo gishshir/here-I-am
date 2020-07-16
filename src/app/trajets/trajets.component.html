@@ -1,15 +1,15 @@
-<div class="content">
-    <h2>Mes trajets</h2>
-
+<div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center" fxLayoutGap="50px"
+    fxLayoutGap.lt-md="10px">
 
     <!-- liste de mes trajets -->
-    <div>
+    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
+        <h2 fxFlex>Mes trajets</h2>
 
-        <ul class="trajets">
-            <li *ngFor="let trajet of trajets" [class.selected]="trajet === selectedTrajet" (click)="onSelect(trajet)">
+        <div fxFlex fxLayout fxLayout="column" fxLayoutGap="20px" fxLayoutGap.xs="10px" fxLayoutAlign="start none">
+            <mat-card fxFlex *ngFor="let trajet of trajets" [class.selected]="trajet === selectedTrajet"
+                (click)="onSelect(trajet)">
 
-                <span class="trajet">
-                    <span class="badge">{{trajet.id}}</span>
+                <span>
                     <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
                     <app-trajet-state-icon class="icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
                     <span style="padding: 10px;">{{trajet.etat}}</span>
@@ -29,23 +29,26 @@
                     </svg>
                 </span>
 
-            </li>
-        </ul>
+            </mat-card>
+        </div>
+        <div>Aujourd'hui nous sommes le {{today}}</div>
 
     </div>
 
-    <app-notification [message]="response"></app-notification>
+    <!-- détail-->
+    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedTrajet">
 
-    <app-trajet-detail *ngIf="selectedTrajet" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
-        (eventChangeState)="onChangeState($event)">
-    </app-trajet-detail>
+        <h2 fxFlex="initial">Détail du trajet</h2>
+        <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
+            (eventChangeState)="onChangeState($event)">
+        </app-trajet-detail>
 
-    <!--liste des amis à notifier-->
-    <div *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
-        <app-amis-notifier [amis]="chercherListAmis()"></app-amis-notifier>
+        <!--liste des amis à notifier-->
+        <div fxFlex="initial" *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
+            <app-amis-notifier [amis]="chercherListAmis()"></app-amis-notifier>
+        </div>
+        <app-notification fxFlex="initial" *ngIf="response" fxFlex [message]="response"></app-notification>
     </div>
 
-
-    <div>Aujourd'hui nous sommes le {{today}}</div>
 
 </div>

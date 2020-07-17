@@ -27,7 +27,7 @@
 
     <!--liste des amis à notifier-->
     <div fxFlex *ngIf="nouveauTrajet == null || (nouveauTrajet && nouveauTrajet.etat != 'Ended')">
-      <app-amis-notifier [amis]="chercherListAmis()"></app-amis-notifier>
+      <app-amis-notifier></app-amis-notifier>
     </div>
 
   </div>

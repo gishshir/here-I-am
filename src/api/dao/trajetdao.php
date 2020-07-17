@@ -231,7 +231,8 @@ function displayListTrajets() : ResultAndDatas {
     $resultAndDatas; $stmt;
       
     $con = connectMaBase();
-    $req_ListTrajets = "select id, starttime, endtime, etat, mean FROM trajet WHERE userid = ?";
+    $req_ListTrajets = "select id, starttime, endtime, etat, mean FROM trajet WHERE userid = ? 
+    order by starttime DESC";
 
 
     try {

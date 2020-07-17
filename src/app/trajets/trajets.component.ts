@@ -22,13 +22,11 @@ export class TrajetsComponent implements OnInit {
   selectedTrajet: Trajet;
   today: string;
 
-  listAmis: Ami[];
-
   response: Message;
 
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
     private logger: LoggerService, private amiService: AmiService) {
-    this.today = toolsService.formatDate(new Date().getTime());
+    this.today = toolsService.formatDate(new Date().getTime() / 1000);
     this.refreshList(-1);
   }
 
@@ -98,22 +96,6 @@ export class TrajetsComponent implements OnInit {
 
 
   }
-
-
-  chercherListAmis(): Ami[] {
-    console.log("chercherListAmis()");
-
-    if (this.listAmis == null) {
-
-      this.amiService.getListeAmis({
-        onGetList: (l: Ami[]) => this.listAmis = l,
-        onError: (e: Message) => console.log(e.msg)
-      });
-    }
-
-    return this.listAmis;
-  }
-
 
 
 

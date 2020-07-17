@@ -11,19 +11,38 @@ import { Message } from 'src/app/common/message.type';
 export class AmisNotifierComponent implements OnInit {
 
   @Input()
-  amis: Ami[];
+  listAmis: Ami[];
 
-  constructor(private amiService: AmiService) { }
+  constructor(private amiService: AmiService) {
+    this.chercherListAmis();
+  }
 
   ngOnInit(): void {
   }
 
+  chercherListAmis(): Ami[] {
+
+    if (this.listAmis == null) {
+      console.log("chercherListAmis()");
+      this.amiService.getListeAmis({
+        onGetList: (l: Ami[]) => this.listAmis = l,
+        onError: (e: Message) => console.log(e.msg)
+      });
+    }
+
+    return this.listAmis;
+  }
+
+  // attention le click est déclenché avant la modification du model
   notifierAmi(ami: Ami) {
 
-    ami.notifier = !ami.notifier;
-    this.amiService.updateNotifierAmi(ami, {
+    let notifier: boolean = !ami.notifier;
+    this.amiService.updateNotifierAmi(ami, !ami.notifier, {
 
-      onMessage: (m: Message) => console.log(m.msg),
+      onMessage: (m: Message) => {
+        ami.notifier = notifier;
+        console.log(m.msg);
+      },
       onError: (e: Message) => console.log(e.msg)
 
     });

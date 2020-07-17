@@ -45,7 +45,7 @@
 
         <!--liste des amis à notifier-->
         <div fxFlex="initial" *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
-            <app-amis-notifier [amis]="chercherListAmis()"></app-amis-notifier>
+            <app-amis-notifier></app-amis-notifier>
         </div>
         <app-notification fxFlex="initial" *ngIf="response" fxFlex [message]="response"></app-notification>
     </div>

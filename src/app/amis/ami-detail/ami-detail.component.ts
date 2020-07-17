@@ -47,9 +47,8 @@ export class AmiDetailComponent implements OnInit {
   updateNotifierAmi() {
 
     // mettre à jour la bdd distante
-    this.amiDetail.notifier = !this.amiDetail.notifier;
 
-    this.amiService.updateNotifierAmi(this.amiDetail, {
+    this.amiService.updateNotifierAmi(this.amiDetail, !this.amiDetail.notifier, {
 
       onMessage: (m: Message) => this.eventMessage.emit(m),
       onError: (e: Message) => {

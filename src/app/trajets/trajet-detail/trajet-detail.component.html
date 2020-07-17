@@ -22,11 +22,11 @@
     <!-- changement etat du trajet-->
     <div fxFlex="initial" fxLayout fxLayoutGap="20px" fxLayoutAlign="space-between"
         *ngIf="trajetDetail.etat != 'Ended'">
-        <button fxFlex mat-raised-button color="Primary" *ngIf="trajetDetail.etat == 'Started'" name="pause"
+        <button fxFlex mat-raised-button color="primary" *ngIf="trajetDetail.etat == 'Started'" name="pause"
             (click)="mettreEnPause()">pause</button>
-        <button fxFlex mat-raised-button color="Warn" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre"
+        <button fxFlex mat-raised-button color="warn" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre"
             (click)="reprendreTrajet()">reprendre</button>
-        <button fxFlex mat-raised-button color="Accent" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
+        <button fxFlex mat-raised-button color="accent" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
             (click)="arreterTrajet()">terminer</button>
     </div>
 

@@ -3,55 +3,27 @@
   <!-- [flex-grow] [flex-shrink] flex-basis-->
 
   <!-- AMIS -->
-  <mat-card class="card" fxFlex="initial">
-    <mat-card-header routerLink="/go-amis" routerLinkActive="active">
-      <svg mat-card-avatar xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M16.5 5c-1.54 0-3.04.99-3.56 2.36h-1.87C10.54 5.99 9.04 5 7.5 5 5.5 5 4 6.5 4 8.5c0 2.89 3.14 5.74 7.9 10.05l.1.1.1-.1C16.86 14.24 20 11.39 20 8.5c0-2-1.5-3.5-3.5-3.5z"
-          opacity=".3" />
-        <path
-          d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
-      </svg>
-
-      <mat-card-title>Mes amis</mat-card-title>
-
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+  <mat-card class="card" fxFlex="initial" routerLink="/go-amis" routerLinkActive="active">
+    <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+      <mat-icon fxFlex="initial" class="material-icons md-48" color="primary">favorite</mat-icon>
+      <mat-card-title fxFlex="grow">Mes amis</mat-card-title>
     </mat-card-header>
   </mat-card>
 
   <!-- TRAJETS -->
-  <mat-card class="card" fxFlex="initial">
-    <mat-card-header routerLink="/go-trajets" routerLinkActive="active">
-      <svg mat-card-avatar xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M4 17h16v2H4zm13-7h-2V8H9v2H7V8H4v6h16V8h-3z" opacity=".3" />
-        <path
-          d="M20 6h-3V4c0-1.11-.89-2-2-2H9c-1.11 0-2 .89-2 2v2H4c-1.11 0-2 .89-2 2v11c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM9 4h6v2H9V4zm11 15H4v-2h16v2zm0-5H4V8h3v2h2V8h6v2h2V8h3v6z" />
-      </svg>
-
-      <span>Mes trajets</span>
-
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+  <mat-card class="card" fxFlex="initial" routerLink="/go-trajets" routerLinkActive="active">
+    <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+      <mat-icon fxFlex="initial" class="material-icons md-48" color="primary">card_travel</mat-icon>
+      <mat-card-title fxFlex="grow">Mes trajets</mat-card-title>
     </mat-card-header>
   </mat-card>
 
   <!-- NOUVEAU TRAJET -->
-  <mat-card class="card" fxFlex="initial" *ngIf="dernierTrajet == null || dernierTrajet.etat == 'Ended'">
-    <mat-card-header [style.display]="showCardNouveauTrajet() ? 'block' : 'none'" routerLink="/go-starting"
-      routerLinkActive="active">
-      <svg mat-card-avatar xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-6.9-6.43-1.93.51 4.14 7.17-4.97 1.33-1.97-1.54-1.45.39 2.59 4.49L21 11.49c.81-.23 1.28-1.05 1.07-1.85z" />
-      </svg>
-
-      <span>Commencer un trajet</span>
-
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+  <mat-card class="card" fxFlex="initial" *ngIf="dernierTrajet == null || dernierTrajet.etat == 'Ended'"
+    routerLink="/go-starting" routerLinkActive="active">
+    <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+      <mat-icon fxFlex="initial" class="material-icons md-48" color="primary">flight_takeof</mat-icon>
+      <mat-card-title fxFlex="grow">Commencer un trajet</mat-card-title>
     </mat-card-header>
   </mat-card>
 

@@ -71,6 +71,7 @@ export class StartingComponent implements OnInit {
 
   onSelect(mean: TrajetMeans) {
     this.selectedMean = mean;
+    // todo mettre à jour le moyen de trajet si trajet démarré...
   }
   ngOnInit(): void {
   }

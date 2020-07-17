@@ -1,13 +1,14 @@
 <div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
   <h2 fxFlex>Démarrer un nouveau trajet</h2>
 
-  <div fxFlex fxLayout fxLayoutAlign="center" fxLayoutGap="10px">
+  <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="initial">
 
-    <span class="ico" *ngFor="let mean of trajetMeansEnum" [class.selected]="mean == selectedMean">
+    <mat-button-toggle fxFlex="initial" *ngFor="let mean of trajetMeansEnum">
       <app-trajet-means-icon [trajetMean]="mean" [taille]="48" (click)="onSelect(mean)"></app-trajet-means-icon>
-    </span>
+    </mat-button-toggle>
 
-  </div>
+
+  </mat-button-toggle-group>
 
   <h3 fxFlex>Type: {{diplaySelectedMeanDescription()}}</h3>
 
@@ -19,10 +20,10 @@
 
     <div fxFlex fxLayout fxLayoutAlign="center" fxLayoutGap="10px">
 
-      <button fxFlex mat-raised-button *ngIf="selectedMean && nouveauTrajet == null"
-        style="background-color: lightgreen;" (click)="demarrerNouveauTrajet()">Démarrer un trajet</button>
-      <button fxFlex mat-raised-button *ngIf="nouveauTrajet && nouveauTrajet.etat != 'Ended'"
-        style="background-color: orangered;" (click)="arreterTrajet()">Arrêter le trajet</button>
+      <button fxFlex mat-raised-button color="primary" *ngIf="selectedMean && nouveauTrajet == null"
+        (click)="demarrerNouveauTrajet()">Démarrer un trajet</button>
+      <button fxFlex mat-raised-button color="accent" *ngIf="nouveauTrajet && nouveauTrajet.etat != 'Ended'"
+        (click)="arreterTrajet()">Arrêter le trajet</button>
     </div>
 
     <!--liste des amis à notifier-->

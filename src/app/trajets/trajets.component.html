@@ -6,8 +6,8 @@
         <h2 fxFlex>Mes trajets</h2>
 
         <div fxFlex fxLayout fxLayout="column" fxLayoutGap="20px" fxLayoutGap.xs="10px" fxLayoutAlign="start none">
-            <mat-card fxFlex *ngFor="let trajet of trajets" [class.selected]="trajet === selectedTrajet"
-                (click)="onSelect(trajet)">
+            <mat-card class="card" fxFlex *ngFor="let trajet of trajets"
+                [class.card-selected]="trajet === selectedTrajet" (click)="onSelect(trajet)">
 
                 <span>
                     <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>

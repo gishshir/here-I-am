@@ -3,7 +3,7 @@
   <!-- [flex-grow] [flex-shrink] flex-basis-->
 
   <!-- AMIS -->
-  <mat-card fxFlex="initial">
+  <mat-card class="card" fxFlex="initial">
     <mat-card-header routerLink="/go-amis" routerLinkActive="active">
       <svg mat-card-avatar xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
         <path d="M0 0h24v24H0V0z" fill="none" />
@@ -22,7 +22,7 @@
   </mat-card>
 
   <!-- TRAJETS -->
-  <mat-card fxFlex="initial">
+  <mat-card class="card" fxFlex="initial">
     <mat-card-header routerLink="/go-trajets" routerLinkActive="active">
       <svg mat-card-avatar xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
         <path d="M0 0h24v24H0V0z" fill="none" />
@@ -39,7 +39,7 @@
   </mat-card>
 
   <!-- NOUVEAU TRAJET -->
-  <mat-card fxFlex="initial" *ngIf="dernierTrajet == null || dernierTrajet.etat == 'Ended'">
+  <mat-card class="card" fxFlex="initial" *ngIf="dernierTrajet == null || dernierTrajet.etat == 'Ended'">
     <mat-card-header [style.display]="showCardNouveauTrajet() ? 'block' : 'none'" routerLink="/go-starting"
       routerLinkActive="active">
       <svg mat-card-avatar xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">

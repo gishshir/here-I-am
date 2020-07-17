@@ -9,7 +9,7 @@
         <div fxFlex>
 
             <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start none">
-                <mat-card fxFlex *ngFor="let ami of amis" [class.selected]="ami === selectedAmi"
+                <mat-card class="card" fxFlex *ngFor="let ami of amis" [class.card-selected]="ami === selectedAmi"
                     (click)="onSelect(ami)">
 
                     <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">

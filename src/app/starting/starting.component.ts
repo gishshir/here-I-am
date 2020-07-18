@@ -22,6 +22,7 @@ export class StartingComponent implements OnInit {
   trajetMeansEnum: TrajetMeans[] = [];
   selectedMean: TrajetMeans;
   nouveauTrajet: Trajet;
+  message: Message;
 
   constructor(private trajetService: TrajetService, private amiService: AmiService) {
     let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
@@ -35,6 +36,15 @@ export class StartingComponent implements OnInit {
 
   }
 
+  // a l'ecoute des event message
+  onMessage(m: Message) {
+    this.message = m;
+  }
+
+  onSelect(mean: TrajetMeans) {
+    this.selectedMean = mean;
+    // todo mettre à jour le moyen de trajet si trajet démarré...
+  }
 
 
   diplaySelectedMeanDescription(): string {
@@ -68,11 +78,6 @@ export class StartingComponent implements OnInit {
 
 
 
-
-  onSelect(mean: TrajetMeans) {
-    this.selectedMean = mean;
-    // todo mettre à jour le moyen de trajet si trajet démarré...
-  }
   ngOnInit(): void {
   }
 

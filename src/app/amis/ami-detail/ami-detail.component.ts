@@ -12,7 +12,7 @@ import { Message } from '../../common/message.type';
 export class AmiDetailComponent implements OnInit {
 
   _amiDetail: Ami;
-  //@Output() eventChangeSuivre = new EventEmitter<Ami>();
+
   @Output() eventMessage = new EventEmitter<Message>();
 
   @Input()

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Ami } from '../ami.type';
 import { AmiService } from '../ami.service';
 import { Message } from 'src/app/common/message.type';
@@ -12,6 +12,8 @@ export class AmisNotifierComponent implements OnInit {
 
   @Input()
   listAmis: Ami[];
+
+  @Output() eventMessage = new EventEmitter<Message>();
 
   constructor(private amiService: AmiService) {
     this.chercherListAmis();
@@ -41,9 +43,9 @@ export class AmisNotifierComponent implements OnInit {
 
       onMessage: (m: Message) => {
         ami.notifier = notifier;
-        console.log(m.msg);
+        this.eventMessage.emit(m)
       },
-      onError: (e: Message) => console.log(e.msg)
+      onError: (e: Message) => this.eventMessage.emit(e)
 
     });
   }

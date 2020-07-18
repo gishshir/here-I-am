@@ -39,8 +39,9 @@
         <div fxFlex="initial" *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
             <app-amis-notifier></app-amis-notifier>
         </div>
-        <app-notification fxFlex="initial" *ngIf="response" fxFlex [message]="response"></app-notification>
+
     </div>
 
 
 </div>
+<app-notification *ngIf="response" [message]="response"></app-notification>

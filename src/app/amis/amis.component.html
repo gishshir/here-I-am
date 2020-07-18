@@ -30,13 +30,10 @@
     <!-- détail d'un ami -->
     <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
-        <app-notification fxFlex *ngIf="response" [message]="response"></app-notification>
-
         <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
         </app-ami-detail>
-
-
-
     </div>
 
 </div>
+
+<app-notification *ngIf="response" [message]="response"></app-notification>

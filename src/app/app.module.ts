@@ -22,6 +22,7 @@ import { TrajetMeansIconComponent } from './trajets/trajet-means-icon/trajet-mea
 import { CommonComponent } from './common/common.component';
 import { NotificationComponent } from './common/notification/notification.component';
 import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
+import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.compon
     TrajetMeansIconComponent,
     CommonComponent,
     NotificationComponent,
-    AmisNotifierComponent
+    AmisNotifierComponent,
+    DialogDeleteTrajetComponent
   ],
   imports: [
     BrowserModule,
@@ -51,6 +53,7 @@ import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.compon
     FlexLayoutModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogDeleteTrajetComponent]
 })
 export class AppModule { }

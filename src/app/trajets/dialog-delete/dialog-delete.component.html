@@ -1,0 +1,18 @@
+<div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
+
+    <h2 fxFlex="initial" mat-dialog-title>Confirmation de suppression</h2>
+
+    <mat-dialog-content fxFlex="initial" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
+
+        <div fxFlex="initial">du trajet</div>
+        <app-trajet-means-icon fxFlex="initial" [trajetMean]="mean" [taille]="48"></app-trajet-means-icon>
+        <div fxFlex="grow">commencé le {{startdate}}</div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions fxFlex="initial" fxLayout fxLayoutGap="10px">
+        <button fxFlex="initial" class="mat-raised-button" (click)="close()">Annuler</button>
+        <button fxFlex="initial" class="mat-raised-button mat-primary" (click)="delete()">Supprimer</button>
+    </mat-dialog-actions>
+
+</div>

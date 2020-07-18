@@ -6,14 +6,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
 @NgModule({
   declarations: [],
   imports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule],
+    MatSnackBarModule, MatDialogModule],
   exports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule]
+    MatSnackBarModule, MatDialogModule]
 })
 export class MaterialModule { }

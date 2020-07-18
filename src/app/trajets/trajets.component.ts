@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Trajet } from './trajet.type';
 import { TrajetService } from './trajet.service';
 import { TrajetState } from './trajet-etat.enum';
 import { ToolsService } from '../common/tools.service';
 import { LoggerService } from '../common/logger.service';
 import { Message } from '../common/message.type';
-import { Ami } from '../amis/ami.type';
 import { AmiService } from '../amis/ami.service';
+import { DialogDeleteTrajetComponent } from './dialog-delete/dialog-delete.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 
 
@@ -25,7 +26,7 @@ export class TrajetsComponent implements OnInit {
   response: Message;
 
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
-    private logger: LoggerService, private amiService: AmiService) {
+    private logger: LoggerService, private amiService: AmiService, public dialog: MatDialog) {
     this.today = toolsService.formatDate(new Date().getTime() / 1000);
     this.refreshList(-1);
   }
@@ -64,7 +65,31 @@ export class TrajetsComponent implements OnInit {
 
   }
 
-  supprimerTrajet(trajet: Trajet): void {
+  confirmSupprimerTrajet(trajet: Trajet): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      id: trajet.id,
+      startdate: "" + trajet.starttime,
+      mean: trajet.mean
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteTrajetComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data) {
+          this.supprimerTrajet(trajet);
+        }
+      }
+    );
+  }
+
+  private supprimerTrajet(trajet: Trajet): void {
 
     this.trajetService.deleteTrajet(trajet, {
 
@@ -142,3 +167,5 @@ export class TrajetsComponent implements OnInit {
   }
 
 }
+
+

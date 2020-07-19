@@ -1,0 +1,31 @@
+<div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <h2 fxFlex="grow">Authentification</h2>
+
+    <form fxFlex="grow" [formGroup]="authenticationFormGroup" (ngSubmit)="onSubmit()">
+
+        <table>
+            <tr>
+                <td>
+                    Login:
+                </td>
+                <td>
+                    <input type="text" formControlName="loginControl" required>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Mot de passe:
+                </td>
+                <td>
+                    <input type="text" formControlName="pwdControl" required>
+                </td>
+            </tr>
+
+        </table>
+        <button type="submit" [disabled]="!authenticationFormGroup.valid">Valider</button>
+
+    </form>
+
+
+</div>

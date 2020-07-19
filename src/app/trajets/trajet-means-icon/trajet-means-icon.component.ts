@@ -19,7 +19,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
         left: '50px'
       })),
 
-      transition('arret => marche', [
+      transition('* => marche', [
         animate('2s')
       ]),
 

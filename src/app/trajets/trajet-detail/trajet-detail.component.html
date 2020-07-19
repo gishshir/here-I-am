@@ -3,7 +3,8 @@
     <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
 
         <mat-card-header fxFlex>
-            <app-trajet-means-icon [trajetMean]="trajetDetail.mean"></app-trajet-means-icon>
+            <app-trajet-means-icon [trajetMean]="trajetDetail.mean" [isArret]="trajetDetail.etat != 'Started'">
+            </app-trajet-means-icon>
             <span class="badge">
                 <app-trajet-state-icon [trajetState]="trajetDetail.etat"></app-trajet-state-icon>
             </span>

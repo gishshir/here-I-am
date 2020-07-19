@@ -1,4 +1,4 @@
-<span title="{{getDescription()}}" [ngSwitch]="trajetMean">
+<span title="{{getDescription()}}" [@arret-marche]="isArret ? 'arret':'marche'" [ngSwitch]="trajetMean">
 
 
     <mat-icon *ngSwitchCase="'Train'" [style.height]="taille" class="material-icons md-48" color="primary">
@@ -17,4 +17,5 @@
         directions_car</mat-icon>
     <mat-icon *ngSwitchCase="'Bus'" [style.height]="taille" class="material-icons md-48" color="primary">
         directions_bus</mat-icon>
+
 </span>

@@ -5,10 +5,17 @@
     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==" />
   <h3 fxFlex="1 1 auto">Application de mise en pratique d'Angular</h3>
 
+
+  <!--logout-->
+  <a fxFlex="initial" aria-label="déconnection" title="Logout" (click)="onLogout()">
+    <mat-icon class="material-icons md-48" color="primary">toggle_off</mat-icon>
+  </a>
+
+
   <!--go login-->
   <a fxFlex="initial" aria-label="Accès à la page d'authentification" title="Login" routerLink="/go-login"
     routerLinkActive="active">
-    <mat-icon class="material-icons md-48" color="primary">vpn_key</mat-icon>
+    <mat-icon class="material-icons md-48" color="primary">login</mat-icon>
   </a>
 
   <!--go accueil-->
@@ -23,7 +30,8 @@
   <!-- The routed views render in the <router-outlet>-->
   <router-outlet></router-outlet>
 
-
+  <app-logout [logout]="logout" (eventMessage)="onMessage($event)"></app-logout>
+  <app-notification *ngIf="response" [message]="response"></app-notification>
 
   <!-- Footer -->
   <footer>

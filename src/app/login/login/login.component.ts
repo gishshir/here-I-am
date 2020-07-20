@@ -5,11 +5,11 @@ import { Message } from 'src/app/common/message.type';
 import { User } from '../user.type';
 
 @Component({
-  selector: 'app-app-login',
-  templateUrl: './app-login.component.html',
-  styleUrls: ['./app-login.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
-export class AppLoginComponent implements OnInit {
+export class LoginComponent implements OnInit {
 
   response: Message;
 

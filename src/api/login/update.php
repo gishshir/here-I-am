@@ -2,6 +2,7 @@
 
 include '../dao/logindao.php';
 
+// authentification d'un utilisateur
 if($_SERVER["REQUEST_METHOD"] == "PUT")  {
     
     

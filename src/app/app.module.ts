@@ -24,8 +24,9 @@ import { CommonComponent } from './common/common.component';
 import { NotificationComponent } from './common/notification/notification.component';
 import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
 import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete.component';
-import { AppLoginComponent } from './login/app-login/app-login.component';
+import { LoginComponent } from './login/login/login.component';
 import { HttpRequestInterceptor } from './common/http-request-interceptor';
+import { LogoutComponent } from './login/logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { HttpRequestInterceptor } from './common/http-request-interceptor';
     NotificationComponent,
     AmisNotifierComponent,
     DialogDeleteTrajetComponent,
-    AppLoginComponent
+    LoginComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,

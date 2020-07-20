@@ -18,6 +18,24 @@ export class LoginService extends CommonService {
     super();
   }
 
+
+  // ============================================
+  private _callLogout(): Observable<any> {
+
+    let url = PHP_API_SERVER + "/login/delete.php";
+
+    return this.http.delete<Message>(url, this.httpOptionsHeaderJson)
+      .pipe(catchError(super.handleError));
+  }
+
+  logout(handler: MessageHandler): void {
+    this.logger.log("logout");
+
+    this._callLogout().subscribe(super._createMessageObserver(handler));
+  }
+  // ============================================
+
+
   // ============================================
   private _callLogin(userToLogin: User): Observable<any> {
 
@@ -28,7 +46,7 @@ export class LoginService extends CommonService {
   }
 
   login(login: string, password: string, handler: UserHandler): void {
-    this.logger.log("login");
+    this.logger.log("login " + login);
 
     let user = new User();
     user.login = login;

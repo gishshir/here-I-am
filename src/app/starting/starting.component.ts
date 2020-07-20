@@ -22,7 +22,7 @@ export class StartingComponent implements OnInit {
   trajetMeansEnum: TrajetMeans[] = [];
   selectedMean: TrajetMeans;
   nouveauTrajet: Trajet;
-  listAmis: Ami[];
+  message: Message;
 
   constructor(private trajetService: TrajetService, private amiService: AmiService) {
     let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
@@ -34,9 +34,18 @@ export class StartingComponent implements OnInit {
       }
     });
 
-    //this.chercherListAmis();
-
   }
+
+  // a l'ecoute des event message
+  onMessage(m: Message) {
+    this.message = m;
+  }
+
+  onSelect(mean: TrajetMeans) {
+    this.selectedMean = mean;
+    // todo mettre à jour le moyen de trajet si trajet démarré...
+  }
+
 
   diplaySelectedMeanDescription(): string {
 
@@ -48,19 +57,6 @@ export class StartingComponent implements OnInit {
   }
 
 
-  chercherListAmis(): Ami[] {
-    console.log("chercherListAmis()");
-
-    if (this.listAmis == null) {
-
-      this.amiService.getListeAmis({
-        onGetList: (l: Ami[]) => this.listAmis = l,
-        onError: (e: Message) => console.log(e.msg)
-      });
-    }
-
-    return this.listAmis;
-  }
 
   arreterTrajet(): void {
 
@@ -82,10 +78,6 @@ export class StartingComponent implements OnInit {
 
 
 
-
-  onSelect(mean: TrajetMeans) {
-    this.selectedMean = mean;
-  }
   ngOnInit(): void {
   }
 

@@ -1,26 +1,33 @@
-<div class="content">
+<div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
 
-    <div class="card">
-        <app-trajet-means-icon [trajetMean]="trajetDetail.mean"></app-trajet-means-icon>
-        <span class="badge">
-            <app-trajet-state-icon [trajetState]="trajetDetail.etat"></app-trajet-state-icon>
-        </span>
-        <span style="padding: 10px;">Mon trajet</span>
-    </div>
+    <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
 
-    <div>départ: {{getStartDate()}}</div>
-    <div *ngIf="trajetDetail.etat == 'Ended'">arrivée: {{getEndDate()}}</div>
+        <mat-card-header fxFlex>
+            <app-trajet-means-icon [trajetMean]="trajetDetail.mean" [isArret]="trajetDetail.etat != 'Started'">
+            </app-trajet-means-icon>
+            <span class="badge">
+                <app-trajet-state-icon [trajetState]="trajetDetail.etat"></app-trajet-state-icon>
+            </span>
+        </mat-card-header>
+
+        <mat-card-content fxFlex fxLayout="column" fxLayoutGap="20px">
+            <div fxFlex>départ: {{getStartDate()}}</div>
+            <div fxFlex *ngIf="trajetDetail.etat == 'Ended'">arrivée: {{getEndDate()}}</div>
+        </mat-card-content>
+
+    </mat-card>
 
     <!-- duree du trajet -->
-    <app-trajet-duree #timer [trajetEnCours]="trajetDetail"></app-trajet-duree>
+    <app-trajet-duree fxFlex="initial" [trajetEnCours]="trajetDetail"></app-trajet-duree>
 
     <!-- changement etat du trajet-->
-    <div *ngIf="trajetDetail.etat != 'Ended'">
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Started'" name="pause"
+    <div fxFlex="initial" fxLayout fxLayoutGap="20px" fxLayoutAlign="space-between"
+        *ngIf="trajetDetail.etat != 'Ended'">
+        <button fxFlex mat-raised-button color="primary" *ngIf="trajetDetail.etat == 'Started'" name="pause"
             (click)="mettreEnPause()">pause</button>
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat == 'Pausing'"
-            name="reprendre" (click)="reprendreTrajet()">reprendre</button>
-        <button style="padding: 5px; margin: 5px; display:inline;" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
+        <button fxFlex mat-raised-button color="warn" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre"
+            (click)="reprendreTrajet()">reprendre</button>
+        <button fxFlex mat-raised-button color="accent" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
             (click)="arreterTrajet()">terminer</button>
     </div>
 

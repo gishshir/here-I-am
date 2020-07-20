@@ -1,27 +1,52 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TrajetMeans } from '../trajet-means.enum';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-trajet-means-icon',
   templateUrl: './trajet-means-icon.component.html',
-  styleUrls: ['./trajet-means-icon.component.css']
+  styleUrls: ['./trajet-means-icon.component.css'],
+  animations: [
+    trigger('arret-marche', [
+
+      state('arret', style({
+        position: 'relative',
+        left: '0px'
+      })),
+
+      state('marche', style({
+        position: 'relative',
+        left: '50px'
+      })),
+
+      transition('* => marche', [
+        animate('2s')
+      ]),
+
+      transition('marche => arret', [
+        animate('0.5s')
+      ]),
+
+    ])
+  ]
 })
 export class TrajetMeansIconComponent implements OnInit {
 
   @Input() trajetMean: TrajetMeans;
-  @Input() taille:number = 24;
+  @Input() taille: number = 24;
+  @Input() isArret: boolean = true;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  getDescription() : string{
-    return TrajetMeansIconComponent.displayName (this.trajetMean);
+  getDescription(): string {
+    return TrajetMeansIconComponent.displayName(this.trajetMean);
   }
 
-  static displayName (mean: TrajetMeans):string {
-      
+  static displayName(mean: TrajetMeans): string {
+
     let description: string = "";
     switch (mean) {
 

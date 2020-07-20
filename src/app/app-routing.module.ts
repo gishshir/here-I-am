@@ -5,14 +5,16 @@ import { AccueilComponent } from './accueil/accueil.component';
 import { AmisComponent } from './amis/amis.component';
 import { TrajetsComponent } from './trajets/trajets.component';
 import { StartingComponent } from './starting/starting.component';
+import { AppLoginComponent } from './login/app-login/app-login.component';
 
 const routes: Routes = [
 
-  {path: 'go-accueil', component: AccueilComponent},
-  {path: 'go-amis', component: AmisComponent},
-  {path: 'go-trajets', component: TrajetsComponent},
-  {path: 'go-starting', component: StartingComponent},
-  { path: '',   redirectTo: '/go-accueil', pathMatch: 'full' },
+  { path: 'go-accueil', component: AccueilComponent },
+  { path: 'go-amis', component: AmisComponent },
+  { path: 'go-trajets', component: TrajetsComponent },
+  { path: 'go-starting', component: StartingComponent },
+  { path: 'go-login', component: AppLoginComponent },
+  { path: '', redirectTo: '/go-accueil', pathMatch: 'full' },
   { path: '**', component: AccueilComponent }
 ];
 

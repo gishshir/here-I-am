@@ -1,0 +1,9 @@
+<h3 mat-dialog-title>Confirmer la suppression</h3>
+<mat-dialog-content>
+    <p>Voulez-vous supprimer le trajet </p>
+    <p>démarré le {{data.startDate}} en {{data.mean}}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Non</button>
+    <button mat-button (click)="onDelete()" cdkFocusInitial>Supprimer</button>
+</mat-dialog-actions>

@@ -1,5 +1,6 @@
 <?php
 
+require 'sessionmanager.php';
 require 'resultAndDatas.php';
 require 'security.php';
 require '../entities/ientity.php';

@@ -1,0 +1,41 @@
+<div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <h2 fxFlex="grow">Authentification</h2>
+
+    <form fxFlex="grow" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center"
+        [formGroup]="authenticationFormGroup" (ngSubmit)="onSubmit()">
+
+
+
+        <mat-form-field fxFlex appearance="legacy">
+            <mat-label>login</mat-label>
+            <input matInput placeholder="login" formControlName="loginControl" required>
+            <mat-hint>Au minimum 4 caractères</mat-hint>
+            <mat-error *ngIf="loginControl.invalid && loginControl.errors.required">Le login est obligatoire!
+            </mat-error>
+            <mat-error *ngIf="loginControl.invalid && loginControl.errors.minlength">minimum
+                4 caractères!
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field fxFlex appearance="legacy">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput placeholder="mot de passe" formControlName="passwordControl" required>
+            <mat-error *ngIf="passwordControl.invalid && passwordControl.errors.required">Mot de passe obligatoire!
+            </mat-error>
+        </mat-form-field>
+
+
+
+        <button fxFlex="initial" type="submit" [disabled]="!authenticationFormGroup.valid">Valider</button>
+
+    </form>
+
+    <div *ngIf="response" [style.background-color]="response.error?'lightcoral':'lightgreen'">
+        <p>{{response.msg}}</p>
+    </div>
+
+
+</div>
+
+<app-notification *ngIf="response" [message]="response"></app-notification>

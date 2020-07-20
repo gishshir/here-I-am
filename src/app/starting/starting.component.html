@@ -1,30 +1,38 @@
-<h2>Démarrer un nouveau trajet</h2>
+<div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
+  <h2 fxFlex>Démarrer un nouveau trajet</h2>
 
-<div class="means">
+  <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="initial">
 
-  <span class="ico" *ngFor="let mean of trajetMeansEnum" [class.selected]="mean == selectedMean">
-    <app-trajet-means-icon [trajetMean]="mean" [taille]="48" (click)="onSelect(mean)"></app-trajet-means-icon>
-  </span>
+    <mat-button-toggle fxFlex="initial" *ngFor="let mean of trajetMeansEnum">
+      <app-trajet-means-icon [trajetMean]="mean" [taille]="48" (click)="onSelect(mean)"></app-trajet-means-icon>
+    </mat-button-toggle>
+
+
+  </mat-button-toggle-group>
+
+  <h3 fxFlex>Type: {{diplaySelectedMeanDescription()}}</h3>
+
+  <div fxFlex fxLayout fxLayout="column" fxLayoutGap="10px">
+
+    <div fxFlex [style.display]="nouveauTrajet? 'block':'none'">
+      <app-trajet-duree #timer [trajetEnCours]="nouveauTrajet"></app-trajet-duree>
+    </div>
+
+    <div fxFlex fxLayout fxLayoutAlign="center" fxLayoutGap="10px">
+
+      <button fxFlex mat-raised-button color="primary" *ngIf="selectedMean && nouveauTrajet == null"
+        (click)="demarrerNouveauTrajet()">Démarrer un trajet</button>
+      <button fxFlex mat-raised-button color="accent" *ngIf="nouveauTrajet && nouveauTrajet.etat != 'Ended'"
+        (click)="arreterTrajet()">Arrêter le trajet</button>
+    </div>
+
+    <!--liste des amis à notifier-->
+    <div fxFlex *ngIf="nouveauTrajet == null || (nouveauTrajet && nouveauTrajet.etat != 'Ended')">
+      <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
+    </div>
+
+  </div>
+
 
 </div>
-
-<h3>Type: {{diplaySelectedMeanDescription()}}</h3>
-
-<div>
-
-
-  <div [style.display]="nouveauTrajet? 'block':'none'">
-    <app-trajet-duree #timer [trajetEnCours]="nouveauTrajet"></app-trajet-duree>
-  </div>
-
-  <div style="margin-top: 30px;">
-    <button *ngIf="selectedMean && nouveauTrajet == null" style="background-color: lightgreen;"
-      (click)="demarrerNouveauTrajet()">Démarrer un trajet</button>
-    <button *ngIf="nouveauTrajet && nouveauTrajet.etat != 'Ended'"
-      style="background-color: orangered; margin-left: 10px;" (click)="arreterTrajet()">Arrêter le trajet</button>
-  </div>
-
-  <!--liste des amis à notifier-->
-  <div>
-    <app-amis-notifier [amis]="chercherListAmis()"></app-amis-notifier>
-  </div>
+<app-notification *ngIf="message" [message]="message"></app-notification>

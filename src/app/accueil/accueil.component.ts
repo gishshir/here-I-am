@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Trajet } from '../trajets/trajet.type';
 import { TrajetService } from '../trajets/trajet.service';
 import { TrajetState } from '../trajets/trajet-etat.enum';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 @Component({
   selector: 'app-accueil',
@@ -12,6 +13,7 @@ export class AccueilComponent implements OnInit {
 
 
   dernierTrajet: Trajet;
+  response: Message;
 
   constructor(private trajetService: TrajetService) {
 
@@ -21,6 +23,10 @@ export class AccueilComponent implements OnInit {
   onChangeState(trajet: Trajet): void {
 
     this.dernierTrajet = trajet;
+  }
+  // reception d'un evenement de message
+  onMessage(response: Message) {
+    this.response = response;
   }
 
   refreshDernierTrajet(): void {

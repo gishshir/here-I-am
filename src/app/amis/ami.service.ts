@@ -74,9 +74,9 @@ export class AmiService extends CommonService {
       this._createMessageObserver(handler)
     );
   }
-  updateNotifierAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateAmi()");
-    this._callUpdate({ idrelation: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
+  updateNotifierAmi(amiToUpdate: Ami, notifier: boolean, handler: MessageHandler): any {
+    this.logger.log("updateAmi() " + amiToUpdate.pseudo + " notifier: " + notifier);
+    this._callUpdate({ idrelation: amiToUpdate.idrelation, notifier: notifier }).subscribe(
       this._createMessageObserver(handler)
     );
   }

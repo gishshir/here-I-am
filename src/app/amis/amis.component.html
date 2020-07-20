@@ -1,25 +1,39 @@
-<div class="content">
-    <h2>Mes amis</h2>
+<div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center" fxLayoutGap="50px"
+    fxLayoutGap.lt-md="10px">
+
 
     <!-- liste des amis -->
-    <div>
+    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
+        <h2 fxFlex>Mes amis</h2>
 
-        <ul class="amis">
-            <li *ngFor="let ami of amis" [class.selected]="ami === selectedAmi" (click)="onSelect(ami)">
-                <span class="badge">{{ami.idrelation}}</span>
-                <app-ami-state-icon [amiState]="ami.etat"></app-ami-state-icon>
-                <span style="padding: 10px;">{{ami.pseudo}}</span>
-                <app-ami-suivi-icon [suivre]="ami.suivre" [notifier]="ami.notifier" [size]="16"></app-ami-suivi-icon>
-            </li>
-        </ul>
+        <div fxFlex>
+
+            <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start none">
+                <mat-card class="card" fxFlex *ngFor="let ami of amis" [class.card-selected]="ami === selectedAmi"
+                    (click)="onSelect(ami)">
+
+                    <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">
+                        <app-ami-state-icon fxFlex="initial" [amiState]="ami.etat"></app-ami-state-icon>
+                        <span fxFlex="grow">{{ami.pseudo}}</span>
+                        <app-ami-suivi-icon fxFlex="initial" [suivre]="ami.suivre" [notifier]="ami.notifier"
+                            [size]="16">
+                        </app-ami-suivi-icon>
+                    </mat-card-header>
+
+                </mat-card>
+            </div>
+
+        </div>
 
     </div>
 
-    <app-notification [message]="response"></app-notification>
+    <!-- détail d'un ami -->
+    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
-    <!-- ami selectionné -->
-    <app-ami-detail *ngIf="selectedAmi" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"></app-ami-detail>
-
-
+        <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
+        </app-ami-detail>
+    </div>
 
 </div>
+
+<app-notification *ngIf="response" [message]="response"></app-notification>

@@ -11,26 +11,24 @@ if(!empty($_GET))  {
     
         if ($service == "testConnection") {
             $result = testConnection();
-            sendHttpResultAndExit ($result);
+            sendHttpResponseAndExit ($result);
         }
 
     }   
 }
 
 
-function testConnection(): Result {
+function testConnection(): Resultat {
     
     $con = connectMaBase();
-    $result = new Result();
+    $result;
 
     if ($con != null) {
       
-      $result->set_msg("test de connection réussi! - Jeu de caractères courant :".$con->character_set_name());
-      $result->set_error(false);
+      $result = buildResultat("test de connection réussi! - Jeu de caractères courant :".$con->character_set_name());
 
     } else {
-      $result->set_msg("Echec de connection!");
-      $result->set_error(true);
+      $result = buildResultatError("Echec de connection!");
     }
                         
  

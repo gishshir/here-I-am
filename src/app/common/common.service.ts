@@ -15,7 +15,8 @@ const HTTP_OPTIONS_HEADER_URL = {
   })
 };
 
-export const PHP_API_SERVER = "http://whereIAm.localhost";
+//export const PHP_API_SERVER = "http://hereiam.localhost/api";
+export const PHP_API_SERVER = "http://hereIam-api.localhost";
 
 
 @Injectable({
@@ -30,7 +31,7 @@ export class CommonService {
 
   /*
  * HttpErrorResponse
- * .error : body de la reponse - ex {"message": "toto", "error": true} ou autre chose!
+ * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
  * .headers: [header...]
  * .message: "Http failure.... 400"
  * .status: 400
@@ -53,8 +54,8 @@ export class CommonService {
         `body was: ${httpError.error}`);
 
       // message metier depuis api
-      if (httpError.status == 400 && httpError.error.message) {
-        message = httpError.error.message;
+      if (httpError.status == 400 && httpError.error.msg) {
+        message = httpError.error.msg;
       }
     }
     // return an observable with a user-facing error message

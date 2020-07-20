@@ -2,15 +2,26 @@
 
     <h2 fxFlex="grow">Authentification</h2>
 
-    <form fxFlex="grow" [formGroup]="authenticationFormGroup" (ngSubmit)="onSubmit()">
+    <form fxFlex="grow" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center"
+        [formGroup]="authenticationFormGroup" (ngSubmit)="onSubmit()">
 
-        <table>
+        <table fxFlex>
             <tr>
                 <td>
                     Login:
                 </td>
                 <td>
                     <input type="text" formControlName="loginControl" required>
+                    <div *ngIf="loginControl.invalid && (loginControl.dirty || loginControl.touched)"
+                        class="alert alert-danger">
+
+                        <div *ngIf="loginControl.errors.required">
+                            Le login est obligatoire!
+                        </div>
+                        <div *ngIf="loginControl.errors.minlength">
+                            Le login doit avoir au minimum 4 caractères!
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -19,13 +30,29 @@
                 </td>
                 <td>
                     <input type="text" formControlName="passwordControl" required>
+                    <div *ngIf="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
+                        class="alert alert-danger">
+
+                        <div *ngIf="passwordControl.errors.required">
+                            Le mot de passe est obligatoire!
+                        </div>
+                        <div *ngIf="passwordControl.errors.minlength">
+                            Le mot de passe doit avoir au minimum 4 caractères!
+                        </div>
+                    </div>
                 </td>
+
             </tr>
 
         </table>
-        <button type="submit" [disabled]="!authenticationFormGroup.valid">Valider</button>
+
+        <button fxFlex="initial" type="submit" [disabled]="!authenticationFormGroup.valid">Valider</button>
 
     </form>
+
+    <div *ngIf="response" [style.background-color]="response.error?'lightcoral':'lightgreen'">
+        <p>{{response.msg}}</p>
+    </div>
 
 
 </div>

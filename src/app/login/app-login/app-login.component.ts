@@ -16,8 +16,8 @@ export class AppLoginComponent implements OnInit {
   authenticationFormGroup: FormGroup = this.fb.group(
 
     {
-      loginControl: ['', Validators.required],
-      passwordControl: ['', Validators.required]
+      loginControl: ['', [Validators.required, Validators.minLength(4)]],
+      passwordControl: ['', [Validators.required, Validators.minLength(4)]]
     }
 
   );

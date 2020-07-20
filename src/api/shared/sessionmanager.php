@@ -35,12 +35,14 @@ if (isset($_SESSION["ipaddress"])) {
 // pour éviter le Session Hijacking
 else {
     
+    //console.log ("creation d'une nouvelle session ".$_SERVER['REMOTE_ADDR']);
     $_SESSION['ipadress'] = $_SERVER['REMOTE_ADDR'];
     $_SESSION['useragent'] = $_SERVER['HTTP_USER_AGENT'];
     $_SESSION['lastaccess'] = time();
 }
 
 function unsetSession () {
+
     
     // remove all session variables
     session_unset();
@@ -48,5 +50,39 @@ function unsetSession () {
     // destroy the session
     session_destroy(); 
 }
+
+
+function storeCurrentUser (Utilisateur $user) : void {
+
+    $_SESSION["userid"] = $user->get_id();
+    $_SESSION["login"] = $user->get_login();
+    $_SESSION["pseudo"] = $user->get_pseudo();
+    $_SESSION["role"] = "user"; 
+}
+// retourne le user authentifié si existe
+function getCurrentUserFromSession () : ?Utilisateur {
+    
+    if (isset($_SESSION["login"])) {
+        
+        $user = new Utilisateur();
+        $user->set_id($_SESSION["userid"]);
+        $user->set_login($_SESSION["login"]);
+        $user->set_pseudo($_SESSION["pseudo"]);
+        //$user->set_role($_SESSION["role"]); 
+        return $user;
+        
+    } else {
+        return null;
+    }
+    
+}
+/*
+* retourne l'id de l'utilisateur de la session en cours
+*/
+function getCurrentUserId () :int {
+     $user = getCurrentUserFromSession();
+     return $user == null?-1:$user->get_id();
+ }
+
 
 ?>

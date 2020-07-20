@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 14 juil. 2020 à 17:42
+-- Généré le : lun. 20 juil. 2020 à 15:19
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -206,8 +206,8 @@ DELIMITER ;
 
 CREATE TABLE `utilisateur` (
   `id` int(11) NOT NULL,
-  `login` varchar(60) NOT NULL,
-  `password` varchar(30) NOT NULL,
+  `login` varchar(30) NOT NULL,
+  `password` varchar(60) NOT NULL,
   `pseudo` varchar(30) NOT NULL,
   `etat` varchar(10) NOT NULL DEFAULT 'Arret' COMMENT 'Arret, EnChemin, Pause'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -217,11 +217,11 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `login`, `password`, `pseudo`, `etat`) VALUES
-(1, 'login1', 'pwd1', 'Jojo les gros bras', 'Arret'),
-(2, 'login2', 'pwd2', 'Fanfan la Tulipe', 'EnChemin'),
-(3, 'login3', 'pwd3', 'Savate le vagabon', 'Arret'),
-(4, 'login4', 'pwd4', 'La Belle au Bois dormant', 'Pause'),
-(5, 'login5', 'pwd5', 'Petit Chaperon Rouge', 'Arret');
+(1, 'login1', '$2y$10$9u8Rq95M/j8rsYGXc4mMq.Ftyvq8J7LfPuq6rLkjdql6ddEegNaz6', 'Jojo les gros bras', 'Arret'),
+(2, 'login2', '$2y$10$MJNtcJUK.iq9Crz0ZSTQE.QVrvAH8BUFVviRfBGJSA7sckrTXYUN.', 'Fanfan la Tulipe', 'EnChemin'),
+(3, 'login3', '$2y$10$b/QNlKdDeWkVy.LMA3U/NeUk2APKLHfO8omo2CUIq6WSpBBfJN0/e', 'Savate le vagabon', 'Arret'),
+(4, 'login4', '$2y$10$pD/1/UKIt/BvBjLrJGRLCewYYqqgK9WPj5SjFl8RF3dPhfoSdA3Ou', 'La Belle au Bois dormant', 'Pause'),
+(5, 'login5', '$2y$10$Nm6/WG96MzJ/cVcZMA3TZOQO3YovWMSdMQstWlgt7oXCjkPP2v8du', 'Petit Chaperon Rouge', 'Arret');
 
 --
 -- Index pour les tables déchargées

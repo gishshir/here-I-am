@@ -1,6 +1,9 @@
 <?php
 require 'config.php';
 
+//echo "current user id: " .getCurrentUserId();
+
+
 // reponse http simple avec message
 function sendHttpResponseAndExit (Resultat $resultat) {
 

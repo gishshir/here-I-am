@@ -1,7 +1,6 @@
 <?php
 
 require_once 'dao.php';
-require_once '../entities/amiinfo.php';
 
 // attention mise à jour de la table person_rel
 // la table relation mise à jour par trigger

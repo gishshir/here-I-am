@@ -1,7 +1,6 @@
 <?php
 
 require_once 'dao.php';
-require_once '../entities/utilisateur.php';
 
 function findUtilisateurByLogin (string $login) : ResultAndEntity {
 

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
@@ -25,6 +25,7 @@ import { NotificationComponent } from './common/notification/notification.compon
 import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
 import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete.component';
 import { AppLoginComponent } from './login/app-login/app-login.component';
+import { HttpRequestInterceptor } from './common/http-request-interceptor';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,12 @@ import { AppLoginComponent } from './login/app-login/app-login.component';
     MaterialModule,
     FlexLayoutModule
   ],
-  providers: [],
+  providers: [
+    // Http Interceptor(s) -  adds with Client Credentials
+    [
+      { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }
+    ],
+  ],
   bootstrap: [AppComponent],
   entryComponents: [DialogDeleteTrajetComponent]
 })

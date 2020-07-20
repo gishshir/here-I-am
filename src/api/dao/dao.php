@@ -1,15 +1,10 @@
 <?php
 
+include '../shared/tools.php';
 require 'database.php';
-require '../shared/tools.php';
 
-/*
-* retourne l'id de l'utilisateur de la session en cours
-*/
-function getCurrentUserId () :int {
-   // TODO implementer
-    return 1;
-}
+
+
 
 function _prepare ($con, $sql) : mysqli_stmt {
 

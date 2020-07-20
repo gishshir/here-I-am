@@ -26,10 +26,7 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
 
 }
 
-//The original plaintext password.
-/*$password = 'pwd1';
-$passwordHashed = password_hash($password, PASSWORD_BCRYPT);
-echo $passwordHashed;*/
+
 
 // authentification : en cas de succès retourne le user (avec mot de passe masqué)
 function authenticate ($login, $password):ResultAndEntity {
@@ -43,20 +40,23 @@ function authenticate ($login, $password):ResultAndEntity {
         sendHttpEntityAndExit($resultAndEntity);
     }
 
-    $entity =  $resultAndEntity->get_entity();
+    $user =  $resultAndEntity->get_entity();
 
-    if ($entity != null) {
+    if ($user != null) {
 
         // verification du mot de passe
-        if (password_verify($password, $entity->get_password())) {
+        if (password_verify($password, $user->get_password())) {
             
             $success = true;
-            $_SESSION["login"] = $login;
-            $_SESSION["role"] = "user"; 
+            // TODO voir si on peut stocker User à la place
+            storeCurrentUser($user);
+
+            //test
+            //echo "current user id: " .getCurrentUserId();
             
             // on masque le password pour le retour client
-            $entity->set_password ("****");
-            $resultAndEntity = buildResultAndEntity("authentification réussie!", $entity);
+            $user->set_password ("****");
+            $resultAndEntity = buildResultAndEntity("authentification réussie!", $user);
             
         }
     }

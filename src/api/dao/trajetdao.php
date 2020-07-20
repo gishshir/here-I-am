@@ -1,6 +1,5 @@
 <?php
 require_once 'dao.php';
-require_once '../entities/trajet.php';
 
 
 /**

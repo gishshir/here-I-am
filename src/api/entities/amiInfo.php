@@ -1,7 +1,5 @@
 <?php
 
-require_once 'personne.php';
-require_once 'amirelation.php';
 
 /*
 * Bean incluant les informations complète sur un ami

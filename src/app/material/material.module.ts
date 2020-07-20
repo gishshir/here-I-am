@@ -7,14 +7,16 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 
 
 @NgModule({
   declarations: [],
   imports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule, MatDialogModule],
+    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule],
   exports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule, MatDialogModule]
+    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule]
 })
 export class MaterialModule { }

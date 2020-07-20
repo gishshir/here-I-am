@@ -5,46 +5,27 @@
     <form fxFlex="grow" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center"
         [formGroup]="authenticationFormGroup" (ngSubmit)="onSubmit()">
 
-        <table fxFlex>
-            <tr>
-                <td>
-                    Login:
-                </td>
-                <td>
-                    <input type="text" formControlName="loginControl" required>
-                    <div *ngIf="loginControl.invalid && (loginControl.dirty || loginControl.touched)"
-                        class="alert alert-danger">
 
-                        <div *ngIf="loginControl.errors.required">
-                            Le login est obligatoire!
-                        </div>
-                        <div *ngIf="loginControl.errors.minlength">
-                            Le login doit avoir au minimum 4 caractères!
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Mot de passe:
-                </td>
-                <td>
-                    <input type="text" formControlName="passwordControl" required>
-                    <div *ngIf="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
-                        class="alert alert-danger">
 
-                        <div *ngIf="passwordControl.errors.required">
-                            Le mot de passe est obligatoire!
-                        </div>
-                        <div *ngIf="passwordControl.errors.minlength">
-                            Le mot de passe doit avoir au minimum 4 caractères!
-                        </div>
-                    </div>
-                </td>
+        <mat-form-field fxFlex appearance="legacy">
+            <mat-label>login</mat-label>
+            <input matInput placeholder="login" formControlName="loginControl" required>
+            <mat-hint>Au minimum 4 caractères</mat-hint>
+            <mat-error *ngIf="loginControl.invalid && loginControl.errors.required">Le login est obligatoire!
+            </mat-error>
+            <mat-error *ngIf="loginControl.invalid && loginControl.errors.minlength">minimum
+                4 caractères!
+            </mat-error>
+        </mat-form-field>
 
-            </tr>
+        <mat-form-field fxFlex appearance="legacy">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput placeholder="mot de passe" formControlName="passwordControl" required>
+            <mat-error *ngIf="passwordControl.invalid && passwordControl.errors.required">Mot de passe obligatoire!
+            </mat-error>
+        </mat-form-field>
 
-        </table>
+
 
         <button fxFlex="initial" type="submit" [disabled]="!authenticationFormGroup.valid">Valider</button>
 

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { LoginService } from '../login.service';
+import { Message } from 'src/app/common/message.type';
+import { User } from '../user.type';
 
 @Component({
   selector: 'app-app-login',
@@ -8,21 +11,37 @@ import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms'
 })
 export class AppLoginComponent implements OnInit {
 
+  response: Message;
+
   authenticationFormGroup: FormGroup = this.fb.group(
 
     {
       loginControl: ['', Validators.required],
-      pwdControl: ['', Validators.required]
+      passwordControl: ['', Validators.required]
     }
 
   );
 
-
-
-  constructor(private fb: FormBuilder) { }
+  get loginControl(): FormControl {
+    return this.authenticationFormGroup.get("loginControl") as FormControl;
+  }
+  get passwordControl(): FormControl {
+    return this.authenticationFormGroup.get("passwordControl") as FormControl;
+  }
+  constructor(private fb: FormBuilder, private loginService: LoginService) { }
 
   onSubmit() {
     console.log("onSubmit() : " + this.authenticationFormGroup.value);
+
+
+    this.loginService.login(this.loginControl.value, this.passwordControl.value, {
+      onGetUser: (user: User) => this.response = {
+        msg: "bonjour " + user.pseudo + " !",
+        error: false
+      },
+      onError: (e: Message) => this.response = e
+    });
+
   }
 
   ngOnInit(): void {

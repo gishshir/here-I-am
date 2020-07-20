@@ -31,7 +31,7 @@ export class CommonService {
 
   /*
  * HttpErrorResponse
- * .error : body de la reponse - ex {"message": "toto", "error": true} ou autre chose!
+ * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
  * .headers: [header...]
  * .message: "Http failure.... 400"
  * .status: 400
@@ -54,8 +54,8 @@ export class CommonService {
         `body was: ${httpError.error}`);
 
       // message metier depuis api
-      if (httpError.status == 400 && httpError.error.message) {
-        message = httpError.error.message;
+      if (httpError.status == 400 && httpError.error.msg) {
+        message = httpError.error.msg;
       }
     }
     // return an observable with a user-facing error message

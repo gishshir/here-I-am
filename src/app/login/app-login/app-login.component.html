@@ -18,7 +18,7 @@
                     Mot de passe:
                 </td>
                 <td>
-                    <input type="text" formControlName="pwdControl" required>
+                    <input type="text" formControlName="passwordControl" required>
                 </td>
             </tr>
 
@@ -29,3 +29,5 @@
 
 
 </div>
+
+<app-notification *ngIf="response" [message]="response"></app-notification>

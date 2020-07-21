@@ -21,6 +21,17 @@ class Resultat {
     }
 }
 
+class ResultAndBoolean extends Resultat {
+
+    private bool $value;
+    function get_value() : bool {
+        return $this->value;
+    }
+    function set_value(bool $value) {
+        $this->value = $value;
+    }
+}
+
 class ResultAndEntity extends Resultat {
     
     private ?IEntity $entity;

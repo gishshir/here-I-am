@@ -1,6 +1,6 @@
 <?php
 
-require_once 'dao.php';
+include_once DIR_DAO.'dao.php';
 
 // attention mise à jour de la table person_rel
 // la table relation mise à jour par trigger

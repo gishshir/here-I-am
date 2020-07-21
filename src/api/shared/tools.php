@@ -1,5 +1,4 @@
 <?php
-require 'config.php';
 
 //echo "current user id: " .getCurrentUserId();
 
@@ -29,6 +28,22 @@ function sendHttpDatasAndExit (ResultAndDatas $resultAndDatas) {
       exit;
 
   }
+}
+
+// reponse http avec value boolean
+function sendHttpBooleanAndExit (ResultAndBoolean $resultAndBoolean) {
+
+  if ($resultAndBoolean->is_error()) {
+
+     _sendHttpMessage ($resultAndBoolean->get_msg(), true);
+
+ } else {
+
+     http_response_code(200);
+     echo (string) json_encode(array ("return" => $resultAndBoolean->get_value()));
+     exit;
+
+ }
 }
 
 // reponse http avec entity
@@ -81,6 +96,24 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
    $result = new Resultat();
    $result->set_error(false);
    $result->set_msg($message);
+   return $result;
+ }
+ //----------------------------------------------------------------------
+
+ //----------------------------------------------------------------------
+ function buildResultAndBooleanError (string $message) : ResultAndBoolean {
+
+  $result = buildResultatBoolean($message, false);
+  $result->set_error(true);
+  return $result;
+}
+
+ function buildResultAndBoolean (string $message, bool $value) : ResultAndBoolean {
+
+   $result = new ResultAndBoolean();
+   $result->set_error(false);
+   $result->set_msg($message);
+   $result->set_value($value);
    return $result;
  }
  //----------------------------------------------------------------------

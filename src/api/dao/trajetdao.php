@@ -1,5 +1,5 @@
 <?php
-require_once 'dao.php';
+include_once DIR_DAO.'dao.php';
 
 
 /**

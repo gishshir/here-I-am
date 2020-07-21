@@ -1,11 +1,13 @@
 <?php
-require_once '../dao/logindao.php';
+require_once '../shared/config.php';
+include_once DIR_DAO.'logindao.php';
 
 
 
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
     $resultAndEntity;
+    
     $user = getCurrentUserFromSession();
     if ($user != null) {
 

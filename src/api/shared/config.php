@@ -1,15 +1,24 @@
 <?php
 
-require '../entities/ientity.php';
-require '../entities/amirelation.php';
-require '../entities/amiinfo.php';
-require '../entities/personne.php';
-require '../entities/trajet.php';
-require '../entities/utilisateur.php';
+define('DIR_BASE',      dirname( dirname( __FILE__ ) ) . '/');
+define('DIR_DAO',    DIR_BASE . 'dao/');
+define('DIR_SHARED',    DIR_BASE . 'shared/');
+define('DIR_ENTITIES',    DIR_BASE . 'entities/');
 
-require 'sessionmanager.php';
-require 'resultAndDatas.php';
-require 'security.php';
+
+require DIR_ENTITIES.'ientity.php';
+require DIR_ENTITIES.'amirelation.php';
+require DIR_ENTITIES.'amiinfo.php';
+require DIR_ENTITIES.'personne.php';
+require DIR_ENTITIES.'trajet.php';
+require DIR_ENTITIES.'utilisateur.php';
+require DIR_ENTITIES.'account.php';
+require DIR_ENTITIES.'accountinfo.php';
+
+require DIR_SHARED.'sessionmanager.php';
+require DIR_SHARED.'resultAndDatas.php';
+require DIR_SHARED.'security.php';
+require DIR_SHARED.'tools.php';
 
 
 

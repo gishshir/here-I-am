@@ -1,5 +1,6 @@
 <?php
-require_once '../dao/trajetdao.php';
+require_once '../shared/config.php';
+require_once DIR_DAO.'trajetdao.php';
 
 
 

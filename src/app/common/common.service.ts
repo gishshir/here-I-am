@@ -3,17 +3,14 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, Observer } from 'rxjs';
 import { Message } from './message.type';
 
-const HTTP_OPTIONS_HEADER_JSON = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json'
-  })
-};
 
-const HTTP_OPTIONS_HEADER_URL = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded'
-  })
-};
+export const HTTP_HEADER_JSON = new HttpHeaders({
+  'Content-Type': 'application/json'
+});
+export const HTTP_HEADER_URL = new HttpHeaders({
+  'Content-Type': 'application/x-www-form-urlencoded'
+});
+
 
 //export const PHP_API_SERVER = "http://hereiam.localhost/api";
 export const PHP_API_SERVER = "http://hereIam-api.localhost";
@@ -26,8 +23,10 @@ export class CommonService {
 
   constructor() { }
 
-  protected httpOptionsHeaderJson = HTTP_OPTIONS_HEADER_JSON;
-  protected httpOptionsHeaderurl = HTTP_OPTIONS_HEADER_URL;
+  protected httpOptionsHeaderJson = {
+    headers: HTTP_HEADER_JSON
+  };
+
 
   /*
  * HttpErrorResponse
@@ -99,4 +98,8 @@ export interface Handler {
 export interface MessageHandler extends Handler {
 
   onMessage(message: Message): void;
+}
+
+export interface BoolResponseHandler extends Handler {
+  onResponse(value: boolean): void;
 }

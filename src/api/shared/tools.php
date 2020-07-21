@@ -40,7 +40,7 @@ function sendHttpBooleanAndExit (ResultAndBoolean $resultAndBoolean) {
  } else {
 
      http_response_code(200);
-     echo (string) json_encode(array ("return" => $resultAndBoolean->get_value()));
+     echo (string) json_encode(array ("retour" => $resultAndBoolean->get_value()));
      exit;
 
  }

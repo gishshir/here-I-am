@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { Component, OnInit, Injectable } from '@angular/core';
+import { FormControl, FormGroup, Validators, FormBuilder, ValidatorFn, ValidationErrors, AsyncValidator, AbstractControl } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { Message } from 'src/app/common/message.type';
 import { User } from '../user.type';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 
 
@@ -15,13 +17,14 @@ export class CreateAccountComponent implements OnInit {
 
   response: Message;
 
+
   createAccountFormGroup: FormGroup = this.fb.group(
 
     {
-      loginControl: ['', [Validators.required, Validators.minLength(4)]],
+      loginControl: ['', [Validators.required, Validators.minLength(4)], [new UniqueLoginValidator(this.accountService)]],
       password1Control: ['', [Validators.required, Validators.minLength(4)]],
       password2Control: ['', [Validators.required, Validators.minLength(4)]],
-      pseudoControl: ['', [Validators.required, Validators.minLength(6)]],
+      pseudoControl: ['', [Validators.required, Validators.minLength(6)], [new UniquePseudoValidator(this.accountService)]],
       emailControl: ['', [Validators.required, Validators.email]]
     },
     {
@@ -51,6 +54,14 @@ export class CreateAccountComponent implements OnInit {
   }
   onSubmit() {
     console.log("onSubmit() : " + this.createAccountFormGroup.value);
+
+    // pour tester
+    this.accountService.verifyLogin(this.loginControl.value, {
+
+      onResponse: (value: boolean) => console.log("login existe ?: " + value),
+      onError: (e: Message) => console.log(e.msg)
+
+    })
   }
 
 }
@@ -72,5 +83,34 @@ export function MustMatch(controlName: string, matchingControlName: string) {
     } else {
       matchingControl.setErrors(null);
     }
+  }
+}
+
+// asynchrone validateur : controle si le login existe déjà en bdd
+@Injectable({ providedIn: 'root' })
+export class UniqueLoginValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isLoginTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniqueLogin: true } : null)),
+      catchError(() => of(null))
+    );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class UniquePseudoValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isPseudoTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniquePseudo: true } : null)),
+      catchError(() => of(null))
+    );
   }
 }

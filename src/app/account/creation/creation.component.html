@@ -14,6 +14,7 @@
             <mat-error *ngIf="loginControl.invalid">
                 <div *ngIf="loginControl.errors.required">Le login est obligatoire!</div>
                 <div *ngIf="loginControl.errors.minlength">minimum 4 caractères!</div>
+                <div *ngIf="loginControl.errors.uniqueLogin">le login existe déjà!</div>
             </mat-error>
         </mat-form-field>
 
@@ -41,6 +42,7 @@
             <mat-error *ngIf="pseudoControl.invalid">
                 <div *ngIf="pseudoControl.errors.required">Le pseudo est obligatoire!</div>
                 <div *ngIf="pseudoControl.errors.minlength">minimum 6 caractères!</div>
+                <div *ngIf="pseudoControl.errors.uniquePseudo">le pseudo existe déjà!</div>
             </mat-error>
         </mat-form-field>
 

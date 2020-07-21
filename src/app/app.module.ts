@@ -27,7 +27,7 @@ import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-dele
 import { LoginComponent } from './account/login/login.component';
 import { HttpRequestInterceptor } from './common/http-request-interceptor';
 import { LogoutComponent } from './account/logout/logout.component';
-import { CreationComponent } from './account/creation/creation.component';
+import { CreateAccountComponent } from './account/creation/creation.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +49,7 @@ import { CreationComponent } from './account/creation/creation.component';
     DialogDeleteTrajetComponent,
     LoginComponent,
     LogoutComponent,
-    CreationComponent
+    CreateAccountComponent
   ],
   imports: [
     BrowserModule,

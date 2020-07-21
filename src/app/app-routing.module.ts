@@ -6,6 +6,7 @@ import { AmisComponent } from './amis/amis.component';
 import { TrajetsComponent } from './trajets/trajets.component';
 import { StartingComponent } from './starting/starting.component';
 import { LoginComponent } from './account/login/login.component';
+import { CreateAccountComponent } from './account/creation/creation.component';
 
 const routes: Routes = [
 
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'go-trajets', component: TrajetsComponent },
   { path: 'go-starting', component: StartingComponent },
   { path: 'go-login', component: LoginComponent },
+  { path: 'go-account-create', component: CreateAccountComponent },
   { path: '', redirectTo: '/go-accueil', pathMatch: 'full' },
   { path: '**', component: AccueilComponent }
 ];

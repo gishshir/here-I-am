@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { LoginService } from '../login.service';
+import { AccountService } from '../account.service';
 import { Message } from 'src/app/common/message.type';
 import { User } from '../user.type';
 
@@ -28,13 +28,13 @@ export class LoginComponent implements OnInit {
   get passwordControl(): FormControl {
     return this.authenticationFormGroup.get("passwordControl") as FormControl;
   }
-  constructor(private fb: FormBuilder, private loginService: LoginService) { }
+  constructor(private fb: FormBuilder, private accountService: AccountService) { }
 
   onSubmit() {
     console.log("onSubmit() : " + this.authenticationFormGroup.value);
 
 
-    this.loginService.login(this.loginControl.value, this.passwordControl.value, {
+    this.accountService.login(this.loginControl.value, this.passwordControl.value, {
       onGetUser: (user: User) => this.response = {
         msg: "bonjour " + user.pseudo + " !",
         error: false

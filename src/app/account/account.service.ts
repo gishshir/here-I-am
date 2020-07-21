@@ -12,7 +12,7 @@ import { User } from './user.type';
 @Injectable({
   providedIn: 'root'
 })
-export class LoginService extends CommonService {
+export class AccountService extends CommonService {
 
   constructor(private logger: LoggerService, private http: HttpClient) {
     super();

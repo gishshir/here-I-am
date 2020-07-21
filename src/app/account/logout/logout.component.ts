@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { LoginService } from '../login.service';
+import { AccountService } from '../account.service';
 import { Message } from 'src/app/common/message.type';
 
 @Component({
@@ -15,14 +15,14 @@ export class LogoutComponent implements OnInit {
   set logout(logout: boolean) {
 
     if (logout) {
-      this.loginService.logout({
+      this.accountService.logout({
         onMessage: (m: Message) => this.eventMessage.emit(m),
         onError: (e: Message) => this.eventMessage.emit(e)
       });
     }
   }
 
-  constructor(private loginService: LoginService) { }
+  constructor(private accountService: AccountService) { }
 
   ngOnInit(): void {
   }

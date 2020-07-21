@@ -5,7 +5,7 @@ import { AccueilComponent } from './accueil/accueil.component';
 import { AmisComponent } from './amis/amis.component';
 import { TrajetsComponent } from './trajets/trajets.component';
 import { StartingComponent } from './starting/starting.component';
-import { LoginComponent } from './login/login/login.component';
+import { LoginComponent } from './account/login/login.component';
 
 const routes: Routes = [
 

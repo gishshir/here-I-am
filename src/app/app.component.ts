@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Message } from './common/message.type';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +12,16 @@ export class AppComponent {
   logout: boolean = false;
   response: Message;
 
+  constructor(private route: Router) { }
+
   onLogout() {
     this.logout = true;
+
   }
 
   // reception d'un evenement de message
   onMessage(response: Message) {
     this.response = response;
+    this.route.navigate(['/go-accueil']);
   }
 }

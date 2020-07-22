@@ -6,7 +6,7 @@ class Account implements IEntity {
     public static $STATE = array ("open", "waiting", "close");
 
     private int $id;
-    private int $iduser;
+    private int $userid;
 
     private string $email;
     private string $etat = "waiting";
@@ -17,11 +17,11 @@ class Account implements IEntity {
     function set_id (int $id) {
         $this->id = $id;
     }
-    function get_iduser (): int {
-        return $this->iduser;
+    function get_userid (): int {
+        return $this->userid;
     }
-    function set_iduser (int $iduser) {
-        $this->iduser = $iduser;
+    function set_userid (int $userid) {
+        $this->userid = $userid;
     }
     function set_email (string $email) {
         $this->email = $email;
@@ -39,7 +39,7 @@ class Account implements IEntity {
     function toArray() : array {
         $info = array(
             "id"=>$this->id,
-            "iduser"=>$this->iduser,
+            "userid"=>$this->userid,
             "email"=>$this->email,
             "etat"=>$this->etat
         );

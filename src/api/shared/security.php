@@ -14,7 +14,7 @@ function xssPreventScript(array $tab, string $key) {
         return $value;
     }    
 }
-function xssPreventFromArray (array $tab, string $key) {
+function xssPreventFromArray (array $tab, string $key): string {
     
     $value = isset ($tab[$key])?$tab[$key]:null;
     if ($value != null) {     
@@ -22,6 +22,13 @@ function xssPreventFromArray (array $tab, string $key) {
     } else {
         return $value;
     }    
+}
+function xssPrevent (string $value): string {
+    if (isset($value) &&$value != null) {     
+        return htmlspecialchars($value,ENT_NOQUOTES , 'UTF-8');        
+    } else {
+        return $null;
+    }
 }
 function getFromPost (string $postKey):?string {
     

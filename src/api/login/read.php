@@ -3,7 +3,9 @@ require_once '../shared/config.php';
 include_once DIR_DAO.'logindao.php';
 
 
-
+/**
+ * Récupère l'utilisateur authentifié si existe
+ */
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
     $resultAndEntity;

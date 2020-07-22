@@ -4,7 +4,7 @@
 /*
 * Bean incluant les informations complète sur un compte utilisateur
 */
-class AccountInfo  {
+class AccountInfo implements IEntity {
 
     // information sur l'utilisateur'
     private Utilisateur $utilisateur;
@@ -12,6 +12,10 @@ class AccountInfo  {
     // information sur le compte cette personne
     private Account $account;
 
+
+    function get_id() : int {
+        return isset($account)?$account->get_id():-1;
+    }
 
     function get_utilisateur () : Utilisateur {
         return $this->utilisateur

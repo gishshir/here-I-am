@@ -53,10 +53,16 @@ function _existUtilisateurWithValue (string $sql, string $value, string $message
     return $resultAndBoolean;
 
 }
-
 function findUtilisateurByLogin (string $login) : ResultAndEntity {
-
     $con = connectMaBase();
+    $resultAndEntity = _findUtilisateurByLogin($con, $login);
+    $con->close();
+    return $resultAndEntity;
+
+}
+function _findUtilisateurByLogin (mysqli $con, string $login) : ResultAndEntity {
+
+    
     $resultAndEntity; $stmt;
     $sql_findUtilisateurByLogin = "select id, login, password, pseudo FROM  utilisateur WHERE login = ?";
 
@@ -89,7 +95,7 @@ function findUtilisateurByLogin (string $login) : ResultAndEntity {
         $resultAndEntity = buildResultAndEntityError($e->getMessage());
     }
     finally {
-        _closeAll($stmt, $con);
+        _closeAll($stmt, null);
     }
 
     return $resultAndEntity;

@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL } from '../common/common.service';
 import { Trajet } from '../trajets/trajet.type';
 import { catchError, map } from 'rxjs/operators';
-import { TrajetsHandler } from '../trajets/trajet.service';
 import { Message, BoolResponse } from '../common/message.type';
 import { User } from './user.type';
+import { AccountInfo } from './accountinfo.type';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,38 @@ export class AccountService extends CommonService {
   constructor(private logger: LoggerService, private http: HttpClient) {
     super();
   }
+
+  // ============================================
+  _callCreateAccount(user: User, email: string): Observable<any> {
+
+    let url = PHP_API_SERVER + "/account/create.php";
+
+    let userToCreate = {
+
+      login: user.login,
+      password: user.password,
+      pseudo: user.pseudo,
+      email: email
+    };
+
+    return this.http.post<AccountInfo>(url, userToCreate, this.httpOptionsHeaderJson)
+      .pipe(catchError(super.handleError));
+
+  }
+  creerCompte(user: User, email: string, handler: AccountInfoHandler): void {
+
+    this._callCreateAccount(user, email).subscribe(
+      // next
+      (data: AccountInfo) => handler.onGetAccountInfo(data)
+      ,
+      // error
+      (error: string) => this._propageErrorToHandler(error, handler)
+
+    );
+
+  }
+  // ============================================
+
 
   // ============================================
   _callVerifyLogin(login: string): Observable<any> {
@@ -104,9 +136,7 @@ export class AccountService extends CommonService {
   login(login: string, password: string, handler: UserHandler): void {
     this.logger.log("login " + login);
 
-    let user = new User();
-    user.login = login;
-    user.password = password;
+    let user = this.buildUser(login, password, null);
 
     this._callLogin(user).subscribe(
       // next
@@ -117,9 +147,25 @@ export class AccountService extends CommonService {
     )
   }
   // ============================================
+
+  buildUser(login: string, password: string, pseudo: string): User {
+
+    return {
+      id: -1,
+      login: login,
+      password: password,
+      pseudo: pseudo
+    };
+
+  }
 }
 
 export interface UserHandler extends Handler {
 
   onGetUser(user?: User): void;
+}
+
+export interface AccountInfoHandler extends Handler {
+
+  onGetAccountInfo(accountinfo?: AccountInfo): void;
 }

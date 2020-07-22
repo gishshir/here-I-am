@@ -51,7 +51,7 @@ function unsetSession () {
     session_destroy(); 
 }
 
-
+// TODO voir si on peut stocker User à la place
 function storeCurrentUser (Utilisateur $user) : void {
 
     $_SESSION["userid"] = $user->get_id();

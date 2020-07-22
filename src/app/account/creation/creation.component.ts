@@ -5,6 +5,7 @@ import { Message } from 'src/app/common/message.type';
 import { User } from '../user.type';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { AccountInfo } from '../accountinfo.type';
 
 
 
@@ -55,13 +56,17 @@ export class CreateAccountComponent implements OnInit {
   onSubmit() {
     console.log("onSubmit() : " + this.createAccountFormGroup.value);
 
-    // pour tester
-    this.accountService.verifyLogin(this.loginControl.value, {
+    let user: User = this.accountService.buildUser(this.loginControl.value, this.password1Control.value, this.pseudoControl.value);
+    let email: string = this.emailControl.value;
+    this.accountService.creerCompte(user, email, {
 
-      onResponse: (value: boolean) => console.log("login existe ?: " + value),
-      onError: (e: Message) => console.log(e.msg)
+      onGetAccountInfo: (a: AccountInfo) => this.response = {
+        msg: "Le compte a été créé avec succès!",
+        error: false
+      },
+      onError: (e: Message) => this.response = e
+    });
 
-    })
   }
 
 }

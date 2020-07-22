@@ -50,7 +50,6 @@ function authenticate ($login, $password):ResultAndEntity {
         if (password_verify($password, $user->get_password())) {
             
             $success = true;
-            // TODO voir si on peut stocker User à la place
             storeCurrentUser($user);
 
             //test

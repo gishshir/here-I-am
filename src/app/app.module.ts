@@ -63,8 +63,8 @@ import { CreateAccountComponent } from './account/creation/creation.component';
     FlexLayoutModule
   ],
   providers: [
-    // Http Interceptor(s) -  adds with Client Credentials
     [
+      // Http Interceptor(s) -  adds with Client Credentials
       { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }
     ],
   ],

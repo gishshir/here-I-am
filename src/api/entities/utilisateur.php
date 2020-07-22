@@ -9,6 +9,7 @@ class Utilisateur implements IEntity {
     private $password;
     private $pseudo;
 
+
     function get_id (): int {
         return $this->id;
     }
@@ -35,12 +36,13 @@ class Utilisateur implements IEntity {
         return $this->pseudo;
     }
 
+
     function toArray() : array {
         $info = array(
             "id"=>$this->id,
             "login"=>$this->login,
             "password"=>$this->password,
-            "pseudo"=>$this->pseudo
+            "pseudo"=>$this->pseudo,
         );
         return $info;
     }

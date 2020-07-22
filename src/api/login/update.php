@@ -51,12 +51,10 @@ function authenticate ($login, $password):ResultAndEntity {
             
             $success = true;
             storeCurrentUser($user);
-
-            //test
-            //echo "current user id: " .getCurrentUserId();
             
             // on masque le password pour le retour client
             $user->set_password ("****");
+
             $resultAndEntity = buildResultAndEntity("authentification réussie!", $user);
             
         }

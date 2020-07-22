@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder, private accountService: AccountService) { }
 
   onSubmit() {
-    console.log("onSubmit() : " + this.authenticationFormGroup.value);
+    console.log("onSubmit()");
 
 
     this.accountService.login(this.loginControl.value, this.passwordControl.value, {

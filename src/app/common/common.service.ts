@@ -12,8 +12,9 @@ export const HTTP_HEADER_URL = new HttpHeaders({
 });
 
 
-//export const PHP_API_SERVER = "http://hereiam.localhost/api";
-export const PHP_API_SERVER = "http://hereIam-api.localhost";
+export const PHP_API_SERVER = "http://hereIam-dist.localhost/api";
+//export const PHP_API_SERVER = "http://hereIam-api.localhost";
+//export const PHP_API_SERVER = "http://localhost:4200/api";
 
 
 @Injectable({

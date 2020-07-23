@@ -1,0 +1,37 @@
+import { Injectable } from '@angular/core';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { TrajetService } from '../trajets/trajet.service';
+import { Trajet } from '../trajets/trajet.type';
+import { Message } from '../common/message.type';
+import { TrajetState } from '../trajets/trajet-etat.enum';
+import { map } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StartingGuard implements CanActivate {
+
+  constructor(private trajetService: TrajetService, private router: Router) { }
+
+
+  // acces à la page starting uniquement si pas de dernier trajet
+  // ou bien dernier trajet ended.
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+
+    return this.trajetService.compareEtatDernierTrajet(TrajetState.ended).pipe(
+      map((trajetEnded: boolean) => {
+
+        if (trajetEnded) {
+          return true;
+        } else {
+          return this.router.parseUrl("/go-accueil");
+        }
+
+      }));
+
+  }
+
+}

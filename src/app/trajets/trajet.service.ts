@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, Observer } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { TrajetState } from './trajet-etat.enum';
 import { Trajet } from './trajet.type';
@@ -64,6 +64,12 @@ export class TrajetService extends CommonService {
       (error: string) => this._propageErrorToHandler(error, handler)
 
     );
+  }
+  // determine si le dernier trajet est dans un etat particulier
+  compareEtatDernierTrajet(etat: TrajetState): Observable<boolean> {
+
+    return this._callDernierTrajet().pipe(
+      map((t: Trajet) => (t != null && t.etat == etat)));
   }
 
   // ===========================================================

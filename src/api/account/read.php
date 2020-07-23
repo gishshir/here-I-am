@@ -1,5 +1,5 @@
 <?php
-require_once '../dao/logindao.php';
+require_once '../shared/config.php';
 
 
 /**
@@ -8,9 +8,11 @@ require_once '../dao/logindao.php';
  */
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
-    $resultAndEntity;
+    
 
-
+    $user = getCurrentUserFromSession();
+    echo "utilisateur courant: " .var_dump($user);
+    $resultAndEntity = buildResultAndEntity("Retourne utilisateur si existe", $user);
      
     sendHttpEntityAndExit($resultAndEntity);
 

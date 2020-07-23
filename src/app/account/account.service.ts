@@ -140,11 +140,20 @@ export class AccountService extends CommonService {
 
   }
 
-  isUserLoggedIn(): Observable<boolean> {
+  // appel au serveur pour savoir si l'utilisateur a ou pas une session ouverte.
+  initUserLoggedIn(): void {
 
-    return this._callUserLogged().pipe(
-
-      map((user: User) => (user ? true : false))
+    this._callUserLogged().subscribe(
+      {
+        next: (user: User) => {
+          this.isLoggedIn = true;
+          console.log("Session ouverte...");
+        },
+        error: (e: Message) => {
+          this.isLoggedIn = false;
+          console.log("Pas de session.");
+        }
+      }
     );
   }
 

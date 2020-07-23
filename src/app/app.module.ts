@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AccountModule } from './account/account.module';
 
 import { AppComponent } from './app.component';
 import { AmisComponent } from './amis/amis.component';
@@ -24,10 +25,8 @@ import { CommonComponent } from './common/common.component';
 import { NotificationComponent } from './common/notification/notification.component';
 import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
 import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete.component';
-import { LoginComponent } from './account/login/login.component';
 import { HttpRequestInterceptor } from './common/http-request-interceptor';
-import { LogoutComponent } from './account/logout/logout.component';
-import { CreateAccountComponent } from './account/creation/creation.component';
+
 
 
 @NgModule({
@@ -47,20 +46,18 @@ import { CreateAccountComponent } from './account/creation/creation.component';
     CommonComponent,
     NotificationComponent,
     AmisNotifierComponent,
-    DialogDeleteTrajetComponent,
-    LoginComponent,
-    LogoutComponent,
-    CreateAccountComponent
+    DialogDeleteTrajetComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    AccountModule,
+    AppRoutingModule
   ],
   providers: [
     [

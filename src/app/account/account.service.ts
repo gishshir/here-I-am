@@ -8,13 +8,18 @@ import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
 import { User } from './user.type';
 import { AccountInfo } from './accountinfo.type';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService extends CommonService {
 
-  constructor(private logger: LoggerService, private http: HttpClient) {
+  isLoggedIn: boolean = false;
+  // store the URL so we can redirect after logging in
+  redirectUrl: string;
+
+  constructor(private logger: LoggerService, private http: HttpClient, private router: Router) {
     super();
   }
 
@@ -50,6 +55,7 @@ export class AccountService extends CommonService {
   // ============================================
 
 
+  // vérifie si il existe en Bdd un user avec ce login
   // ============================================
   _callVerifyLogin(login: string): Observable<any> {
 
@@ -78,6 +84,7 @@ export class AccountService extends CommonService {
   }
   // ============================================
 
+  // vérifie si il existe en Bdd un user avec ce pseudo
   // ============================================
   private _callVerifyPseudo(pseudo: string): Observable<any> {
 
@@ -120,9 +127,28 @@ export class AccountService extends CommonService {
     this.logger.log("logout");
 
     this._callLogout().subscribe(super._createMessageObserver(handler));
+    this.isLoggedIn = false;
   }
   // ============================================
 
+  private _callUserLogged(): Observable<any> {
+
+    let url = PHP_API_SERVER + "/login/read.php";
+
+    return this.http.get<User>(url, this.httpOptionsHeaderJson)
+      .pipe(catchError(super.handleError));
+
+  }
+
+  isUserLoggedIn(): Observable<boolean> {
+
+    return this._callUserLogged().pipe(
+
+      map((user: User) => (user ? true : false))
+    );
+  }
+
+  // ============================================
 
   // ============================================
   private _callLogin(userToLogin: User): Observable<any> {
@@ -140,13 +166,25 @@ export class AccountService extends CommonService {
 
     this._callLogin(user).subscribe(
       // next
-      (data: User) => handler.onGetUser(data)
+      (data: User) => {
+        handler.onGetUser(data);
+        this.isLoggedIn = true;
+      }
       ,
       // error
       (error: string) => this._propageErrorToHandler(error, handler)
     )
   }
   // ============================================
+  redirectAfterLogin() {
+    if (this.redirectUrl) {
+      console.log("redirectAfterLogin() --> " + this.redirectUrl);
+      this.router.navigate([this.redirectUrl]);
+      this.redirectUrl = null;
+    } else {
+      this.router.navigate(["/go-accueil"]);
+    }
+  }
 
   buildUser(login: string, password: string, pseudo: string): User {
 

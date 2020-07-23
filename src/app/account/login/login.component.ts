@@ -33,11 +33,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     console.log("onSubmit()");
 
-
     this.accountService.login(this.loginControl.value, this.passwordControl.value, {
-      onGetUser: (user: User) => this.response = {
-        msg: "bonjour " + user.pseudo + " !",
-        error: false
+      onGetUser: (user: User) => {
+        this.response = { msg: "bonjour " + user.pseudo + " !", error: false };
+        this.accountService.redirectAfterLogin();
       },
       onError: (e: Message) => this.response = e
     });

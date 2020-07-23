@@ -1,5 +1,4 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Trajet } from '../trajet.type';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToolsService } from 'src/app/common/tools.service';
 

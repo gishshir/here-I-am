@@ -4,8 +4,11 @@ import { AccountService } from '../account.service';
 import { Message } from 'src/app/common/message.type';
 import { User } from '../user.type';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, delay } from 'rxjs/operators';
 import { AccountInfo } from '../accountinfo.type';
+import { Router } from '@angular/router';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { DialogCreateAccountSuccessComponent } from './dialog-success.component';
 
 
 
@@ -49,7 +52,8 @@ export class CreateAccountComponent implements OnInit {
   get emailControl(): FormControl {
     return this.createAccountFormGroup.get("emailControl") as FormControl;
   }
-  constructor(private fb: FormBuilder, private accountService: AccountService) { }
+  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router,
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -60,13 +64,37 @@ export class CreateAccountComponent implements OnInit {
     let email: string = this.emailControl.value;
     this.accountService.creerCompte(user, email, {
 
-      onGetAccountInfo: (a: AccountInfo) => this.response = {
-        msg: "Le compte a été créé avec succès!",
-        error: false
+      onGetAccountInfo: (a: AccountInfo) => {
+        this.response = { msg: "Le compte a été créé avec succès!", error: false };
+        delay(1000);
+        this.dialogContinuer(user);
       },
       onError: (e: Message) => this.response = e
     });
 
+  }
+
+  dialogContinuer(user: User): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      login: user.login,
+      pseudo: user.pseudo
+    };
+
+    const dialogRef = this.dialog.open(DialogCreateAccountSuccessComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data) {
+          this.router.navigate(["/go-login"]);
+        }
+      }
+    );
   }
 
 }

@@ -9,6 +9,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { LogoutComponent } from './logout/logout.component';
 import { LoginComponent } from './login/login.component';
 import { CreateAccountComponent } from './creation/creation.component';
+import { DialogCreateAccountSuccessComponent } from './creation/dialog-success.component';
 
 
 @NgModule({
@@ -24,7 +25,7 @@ import { CreateAccountComponent } from './creation/creation.component';
         LogoutComponent
     ],
     declarations: [
-        LoginComponent, LogoutComponent, CreateAccountComponent
+        LoginComponent, LogoutComponent, CreateAccountComponent, DialogCreateAccountSuccessComponent
     ]
 })
 export class AccountModule { }

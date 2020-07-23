@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     console.log("App onInit()...");
-    this.accountService.initUserLoggedIn();
   }
 
   onLogout() {

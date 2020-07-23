@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL } from '../common/common.service';
 import { Trajet } from '../trajets/trajet.type';
 import { catchError, map } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class AccountService extends CommonService {
 
-  isLoggedIn: boolean = false;
+  private isLoggedIn: boolean;
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
@@ -141,20 +141,29 @@ export class AccountService extends CommonService {
   }
 
   // appel au serveur pour savoir si l'utilisateur a ou pas une session ouverte.
-  initUserLoggedIn(): void {
+  // ou bien retour de la variable isLoggedIn si définie
+  isUserLoggedIn(): Observable<boolean> {
 
-    this._callUserLogged().subscribe(
-      {
-        next: (user: User) => {
-          this.isLoggedIn = true;
-          console.log("Session ouverte...");
-        },
-        error: (e: Message) => {
-          this.isLoggedIn = false;
-          console.log("Pas de session.");
-        }
-      }
+    // soit on connait la reponse
+    if (this.isLoggedIn != undefined) {
+      console.log("isLoggedIn: " + this.isLoggedIn);
+      return of(this.isLoggedIn);
+    }
+
+    // soit on appel le serveur
+    return this._callUserLogged().pipe(
+      map((user: User) => {
+        this.isLoggedIn = true;
+        console.log("Session ouverte...");
+        return true;
+      }),
+      catchError(e => {
+        this.isLoggedIn = false;
+        console.log("Pas de session.");
+        return of(false);
+      })
     );
+
   }
 
   // ============================================

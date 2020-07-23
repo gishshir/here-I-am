@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AccountService } from './account/account.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,16 +21,27 @@ export class AppGuardGuard implements CanActivate {
     return this.checkLogin(url);
   }
 
-  checkLogin(url: string): true | UrlTree {
+  checkLogin(url: string): Observable<boolean | UrlTree> {
 
-    if (this.accountService.isLoggedIn) { return true; }
 
-    // stockage de l'url pour la redirection avec login
-    this.accountService.redirectUrl = url;
+    return this.accountService.isUserLoggedIn().pipe(
 
-    // redirect to the login page
-    console.log("redirect to the login page");
-    return this.router.parseUrl("/go-login");
+      map((loggedIn: boolean) => {
+
+        if (loggedIn) {
+          //(Obsevable<boolean>)
+          return true;
+        } else {
+          // stockage de l'url pour la redirection avec login
+          this.accountService.redirectUrl = url;
+          // redirect to the login page (Obsevable<UrlTree>)
+          console.log("redirect to the login page");
+          return this.router.parseUrl("/go-login");
+        }
+      }
+      )
+
+    );
 
   }
 

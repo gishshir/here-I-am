@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 23 juil. 2020 à 17:16
+-- Généré le : ven. 24 juil. 2020 à 16:55
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -60,62 +60,27 @@ CREATE TABLE `person_rel` (
   `relationid` int(11) NOT NULL,
   `position` varchar(1) NOT NULL DEFAULT 'A' COMMENT 'Personne A ou B',
   `suivre` int(1) NOT NULL DEFAULT 0 COMMENT 'Indique que la personne souhaite suivre trajet de sa relation',
-  `notifier` int(1) NOT NULL DEFAULT 0 COMMENT 'La personne accèpte d''envoyer les notifications à sa relation'
+  `notifier` int(1) NOT NULL DEFAULT 0 COMMENT 'La personne accèpte d''envoyer les notifications à sa relation',
+  `action` varchar(20) NOT NULL DEFAULT 'none' COMMENT 'none | invitation| refusee | acceptee'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `person_rel`
 --
 
-INSERT INTO `person_rel` (`personid`, `relationid`, `position`, `suivre`, `notifier`) VALUES
-(1, 5, 'B', 0, 1),
-(1, 7, 'A', 1, 0),
-(1, 8, 'A', 1, 1),
-(2, 5, 'A', 0, 1),
-(2, 6, 'A', 1, 0),
-(3, 6, 'B', 0, 1),
-(3, 10, 'A', 0, 0),
-(3, 11, 'A', 0, 0),
-(4, 7, 'B', 0, 1),
-(4, 11, 'B', 0, 1),
-(5, 8, 'B', 1, 1),
-(5, 10, 'B', 0, 1);
-
---
--- Déclencheurs `person_rel`
---
-DELIMITER $$
-CREATE TRIGGER `after_update_personrel` AFTER UPDATE ON `person_rel` FOR EACH ROW BEGIN
-
-IF (NEW.suivre != OLD.suivre) THEN
-update relation
-
-set 
-a_suivi_b = case NEW.position
-    WHEN 'A' THEN NEW.suivre ELSE a_suivi_b END,
-b_suivi_A = case NEW.position
-    WHEN 'B' THEN NEW.suivre ELSE b_suivi_a END
-
-where id = OLD.relationid;
-
-END IF;
-
-IF (NEW.notifier != OLD.notifier) THEN
-update relation
-
-set 
-a_notification_b = case NEW.position
-    WHEN 'A' THEN NEW.notifier ELSE a_notification_b  END,
-b_notification_a = case NEW.position
-    WHEN 'B' THEN NEW.notifier ELSE b_notification_a END
-
-where id = OLD.relationid;
-
-END IF;
-
-END
-$$
-DELIMITER ;
+INSERT INTO `person_rel` (`personid`, `relationid`, `position`, `suivre`, `notifier`, `action`) VALUES
+(1, 5, 'B', 0, 1, 'acceptee'),
+(1, 7, 'A', 0, 0, 'invitation'),
+(1, 8, 'A', 1, 1, 'invitation'),
+(2, 5, 'A', 0, 1, 'invitation'),
+(2, 6, 'A', 1, 0, 'invitation'),
+(3, 6, 'B', 0, 1, 'none'),
+(3, 10, 'A', 0, 0, 'invitation'),
+(3, 11, 'A', 0, 0, 'invitation'),
+(4, 7, 'B', 0, 1, 'none'),
+(4, 11, 'B', 0, 1, 'refusee'),
+(5, 8, 'B', 1, 1, 'none'),
+(5, 10, 'B', 0, 1, 'acceptee');
 
 -- --------------------------------------------------------
 
@@ -127,23 +92,20 @@ CREATE TABLE `relation` (
   `id` int(11) NOT NULL,
   `person_a` int(11) NOT NULL COMMENT 'personne A ayant pour ami personne B',
   `person_b` int(11) NOT NULL COMMENT 'personne B  étant l''ami de personne A ',
-  `a_suivi_b` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'personne A souhaite suivre les déplacements de la personne B ',
-  `a_notification_b` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'personne A accepte envoi notification pour personne B concernant sa situation géographique',
-  `b_suivi_a` int(1) NOT NULL DEFAULT 0 COMMENT 'personne B souhaite suivre les déplacements de la personne A ',
-  `b_notification_a` int(1) NOT NULL DEFAULT 0 COMMENT 'personne B accepte envoi notification pour personne A concernant sa situation géographique'
+  `etat` varchar(30) NOT NULL DEFAULT 'pending' COMMENT 'pending| open | closed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `relation`
 --
 
-INSERT INTO `relation` (`id`, `person_a`, `person_b`, `a_suivi_b`, `a_notification_b`, `b_suivi_a`, `b_notification_a`) VALUES
-(5, 2, 1, 0, 1, 0, 1),
-(6, 2, 3, 1, 0, 0, 1),
-(7, 1, 4, 1, 0, 0, 1),
-(8, 1, 5, 1, 1, 1, 1),
-(10, 3, 5, 0, 0, 0, 1),
-(11, 3, 4, 0, 0, 0, 1);
+INSERT INTO `relation` (`id`, `person_a`, `person_b`, `etat`) VALUES
+(5, 2, 1, 'open'),
+(6, 2, 3, 'pending'),
+(7, 1, 4, 'pending'),
+(8, 1, 5, 'pending'),
+(10, 3, 5, 'open'),
+(11, 3, 4, 'closed');
 
 --
 -- Déclencheurs `relation`
@@ -189,7 +151,6 @@ INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`, `mean`) VA
 (3, 1, 1591048838, 1594655198, 'Ended', 'Pied'),
 (4, 1, 1594656161, 1594711739, 'Ended', 'Voiture'),
 (5, 2, 1594656750, 1594656792, 'Ended', 'Voiture'),
-(6, 2, 1594656812, 1594712198, 'Ended', 'Bus'),
 (7, 1, 1594711643, 1594718301, 'Ended', 'Bus'),
 (8, 1, 1594711664, 1594711988, 'Ended', 'Bus'),
 (9, 1, 1594712000, 1594712091, 'Ended', 'Train'),
@@ -198,19 +159,20 @@ INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`, `mean`) VA
 (12, 2, 1594718673, 1594718717, 'Ended', 'Pied'),
 (13, 2, 1594718728, 1594719565, 'Ended', 'Bateau'),
 (14, 2, 1594719632, 1594719656, 'Ended', 'Bus'),
-(15, 1, 1594737487, 1594737524, 'Ended', 'Voiture'),
 (16, 1, 1594738996, 1594739001, 'Ended', 'Voiture'),
 (17, 1, 1594739387, 1594739437, 'Ended', 'Bus'),
 (18, 1, 1594739890, 1595256019, 'Ended', 'Moto'),
 (19, 4, 1594741034, 1595499546, 'Ended', 'Voiture'),
 (20, 2, 1594741217, 1595256047, 'Ended', 'Moto'),
-(21, 2, 1595256055, -1, 'Started', 'Avion'),
-(22, 1, 1595256070, -1, 'Started', 'Velo'),
+(21, 2, 1595256055, -1, 'Pausing', 'Avion'),
+(22, 1, 1595256070, 1595517619, 'Ended', 'Velo'),
 (23, 3, 1595494481, -1, 'Started', 'Bus'),
 (24, 4, 1595499559, -1, 'Started', 'Velo'),
 (25, 5, 1595510214, -1, 'Started', 'Bateau'),
 (26, 16, 1595512393, 1595514303, 'Ended', 'Voiture'),
-(27, 16, 1595514400, -1, 'Started', 'Moto');
+(27, 16, 1595514400, -1, 'Started', 'Moto'),
+(28, 1, 1595517636, 1595600817, 'Ended', 'Bateau'),
+(29, 1, 1595600824, -1, 'Started', 'Train');
 
 --
 -- Déclencheurs `trajet`
@@ -253,7 +215,7 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `login`, `password`, `pseudo`, `etat`) VALUES
 (1, 'login1', '$2y$10$9u8Rq95M/j8rsYGXc4mMq.Ftyvq8J7LfPuq6rLkjdql6ddEegNaz6', 'Jojo les gros bras', 'EnChemin'),
-(2, 'login2', '$2y$10$MJNtcJUK.iq9Crz0ZSTQE.QVrvAH8BUFVviRfBGJSA7sckrTXYUN.', 'Fanfan la Tulipe', 'EnChemin'),
+(2, 'login2', '$2y$10$MJNtcJUK.iq9Crz0ZSTQE.QVrvAH8BUFVviRfBGJSA7sckrTXYUN.', 'Fanfan la Tulipe', 'Pause'),
 (3, 'login3', '$2y$10$b/QNlKdDeWkVy.LMA3U/NeUk2APKLHfO8omo2CUIq6WSpBBfJN0/e', 'Savate le vagabon', 'EnChemin'),
 (4, 'login4', '$2y$10$pD/1/UKIt/BvBjLrJGRLCewYYqqgK9WPj5SjFl8RF3dPhfoSdA3Ou', 'La Belle au Bois dormant', 'EnChemin'),
 (5, 'login5', '$2y$10$Nm6/WG96MzJ/cVcZMA3TZOQO3YovWMSdMQstWlgt7oXCjkPP2v8du', 'Petit Chaperon Rouge', 'EnChemin'),
@@ -325,7 +287,7 @@ ALTER TABLE `relation`
 -- AUTO_INCREMENT pour la table `trajet`
 --
 ALTER TABLE `trajet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`

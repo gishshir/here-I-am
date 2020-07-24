@@ -6,7 +6,7 @@
 */
 class Personne  {
     
-    public static $STATE = array ("Arret", "EnChemin", "Pause");
+    public static $STATE = array ("Arret", "EnChemin", "Pause", "NonConnu");
 
     private int $id;
     private string $pseudo;

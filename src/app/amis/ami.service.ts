@@ -91,7 +91,8 @@ export class AmiService extends CommonService {
       case "Arret": return AmiState.Arret;
       case "EnChemin": return AmiState.EnChemin;
       case "Pause": return AmiState.Pause;
-      default: return AmiState.Arret;
+
+      default: return AmiState.NonConnu;
     }
 
   }

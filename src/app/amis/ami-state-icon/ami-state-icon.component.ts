@@ -17,7 +17,7 @@ export class AmiStateIconComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getDescription () : string {
+  getDescription(): string {
 
     let description: string = "";
     switch (this.amiState) {
@@ -25,11 +25,12 @@ export class AmiStateIconComponent implements OnInit {
       case AmiState.Arret: description = "Pas de trajet en cours."; break;
       case AmiState.EnChemin: description = "En chemin"; break;
       case AmiState.Pause: description = "Pause pendant le trajet"; break;
-  
+      case AmiState.NonConnu: description = "Etat de l'ami non connu."; break;
+
     }
     return description;
   }
 
-  
+
 
 }

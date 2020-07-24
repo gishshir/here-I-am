@@ -1,11 +1,13 @@
-<div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center" fxLayoutGap="50px"
-    fxLayoutGap.lt-md="10px">
+<div class="container" fxLayout fxLayoutAlign="space-evenly" fxLayoutGap="10px" fxLayout.lt-md="column"
+    fxLayoutGap.lt-md="50px">
 
 
     <!-- liste des amis -->
-    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
+    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="40px">
         <h2 fxFlex>Mes amis</h2>
 
+
+        <!-- filtre-->
         <mat-radio-group fxFlex [(ngModel)]="selectedFilter">
             <mat-radio-button value="valides">uniquement relation validée</mat-radio-button>
             <mat-radio-button value="tous">tous</mat-radio-button>
@@ -33,7 +35,7 @@
     </div>
 
     <!-- détail d'un ami -->
-    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
+    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
         <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
         </app-ami-detail>

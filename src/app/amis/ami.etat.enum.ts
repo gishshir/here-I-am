@@ -2,6 +2,7 @@ export enum AmiState {
 
     Arret = "Arret",
     EnChemin = "EnChemin",
-    Pause = "Pause"
+    Pause = "Pause",
+    NonConnu = "NonConnu"
 
 }

@@ -132,7 +132,10 @@ function displayListAmis() : ResultAndDatas {
                 $personne = new Personne();
                 $personne->set_id ($resAmiId);
                 $personne->set_pseudo($resPseudo);
-                $personne->set_etat ($resPersonEtat);
+
+                // on masque l'etat si la relation n'est pas validée
+                $etat = $resRelationEtat == "open"?$resPersonEtat:"NonConnu";
+                $personne->set_etat ($etat);
 
                 $amirelation = new AmiRelation();
                 $amirelation->set_id($resRelId);

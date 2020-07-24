@@ -5,8 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AmiInfo } from './amiinfo.type';
-import { Ami } from './ami.type';
-import { AmiState } from './ami.etat.enum';
+import { Ami, AmiState } from './ami.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 

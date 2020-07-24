@@ -1,4 +1,4 @@
-import { RelationState } from './relation.etat.enum';
+import { RelationState } from './relation/relationinfo.type';
 
 export interface AmiRelation {
 

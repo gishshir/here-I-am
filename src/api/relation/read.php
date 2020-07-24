@@ -8,7 +8,7 @@ if($_SERVER["REQUEST_METHOD"] == "GET")  {
        
     $idrelation = xssPreventFromGet("id");
     if ($idrelation != null) {
-        $resultAndEntity = getRelationInfo($idrelation);
+        $resultAndEntity = getRelationInfo((int)$idrelation);
         sendHttpEntityAndExit($resultAndEntity);
     }
 }

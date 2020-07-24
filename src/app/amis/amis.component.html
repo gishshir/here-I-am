@@ -1,4 +1,4 @@
-<div class="container" fxLayout fxLayoutAlign="space-evenly" fxLayoutGap="10px" fxLayout.lt-md="column"
+<div class="container" fxLayout fxLayoutAlign="center" fxLayoutGap="50px" fxLayout.lt-md="column"
     fxLayoutGap.lt-md="50px">
 
 
@@ -34,11 +34,16 @@
 
     </div>
 
-    <!-- détail d'un ami -->
+
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
+        <!-- détail d'un ami -->
         <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
         </app-ami-detail>
+
+        <!--détail de la relation-->
+        <app-ami-relation fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
+        </app-ami-relation>
     </div>
 
 </div>

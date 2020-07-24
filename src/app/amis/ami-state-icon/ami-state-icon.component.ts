@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Ami } from '../ami.type';
-import { AmiState } from '../ami.etat.enum';
+import { Ami, AmiState } from '../ami.type';
 import { stringify } from '@angular/compiler/src/util';
 
 @Component({

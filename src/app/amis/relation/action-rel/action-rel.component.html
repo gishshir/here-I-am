@@ -1,0 +1,6 @@
+<span title="{{getDescription()}}" [ngSwitch]="action">
+    <mat-icon *ngSwitchCase="'none'" class="material-icons md-48" color="warn">phone_disabled</mat-icon>
+    <mat-icon *ngSwitchCase="'invitation'" class="material-icons md-48" color="primary">phone_in_talk</mat-icon>
+    <mat-icon *ngSwitchCase="'acceptee'" class="material-icons md-48">how_to_reg</mat-icon>
+    <mat-icon *ngSwitchCase="'refusee'" class="material-icons md-48" color="accent">person_add_disabled</mat-icon>
+</span>

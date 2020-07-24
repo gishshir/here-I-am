@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Ami } from './ami.type';
-import { RelationState } from './relation.etat.enum';
+import { RelationState } from './relation/relationinfo.type';
 
 @Pipe({
   name: 'amiFilter'

@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Ami } from './ami.type';
 import { AmiService } from './ami.service';
-import { AmiState } from './ami.etat.enum';
 import { LoggerService } from '../common/logger.service';
 import { Message } from '../common/message.type';
-import { AmiInfo } from './amiinfo.type';
 
 @Component({
   selector: 'app-amis',

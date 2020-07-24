@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Ami } from '../ami.type';
-import { AmiState } from '../ami.etat.enum';
+import { Ami, AmiState } from '../ami.type';
 import { AmiService } from '../ami.service';
+import { RelationService } from '../relation/relation.service';
 import { Message } from '../../common/message.type';
 
 @Component({
@@ -24,7 +24,7 @@ export class AmiDetailComponent implements OnInit {
     return this._amiDetail;
   }
 
-  constructor(private amiService: AmiService) { }
+  constructor(private amiService: AmiService, private relationService: RelationService) { }
 
   ngOnInit(): void {
   }

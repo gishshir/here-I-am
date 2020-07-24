@@ -1,0 +1,30 @@
+<mat-card fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
+
+    <mat-card-header fxFlex>
+        <mat-card-title>{{amiDetail.pseudo }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content fxFlex fxLayout="column" fxLayoutGap="10px" fxLayoutALign="start center">
+
+        <ng-container *ngIf="relationInfo">
+            <div>
+                <span>Etat:</span>
+                <mat-chip-list class="etatrelation">
+                    <mat-chip [color]="getRelationStateColor()" selected>
+                        {{displayRelationStateDescription()}}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div>
+                <app-action-rel [action]="relationInfo.action"></app-action-rel>
+                {{displayRelationActionDescription(true)}}
+            </div>
+            <div>
+                <app-action-rel [action]="relationInfo.amiaction"></app-action-rel>
+                {{displayRelationActionDescription(false)}}
+            </div>
+        </ng-container>
+
+    </mat-card-content>
+
+</mat-card>

@@ -1,23 +1,26 @@
-<mat-card fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="10px">
+<mat-card fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
 
     <mat-card-header fxFlex>
-        <h3>{{amiDetail.pseudo }}</h3>
+        <mat-card-title>{{amiDetail.pseudo }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content fxFlex fxLayout="column" fxLayoutGap="10px" fxLayoutALign="start center">
-        <div fxFlex>
-            <app-ami-state-icon [amiState]="amiDetail.etat"></app-ami-state-icon>
-            {{amiDetail.etat}}
-        </div>
-        <div fxFlex>
-            <input type="checkbox" name="suivi" [ngModel]="amiDetail.suivre" (click)="updateSuivreAmi()" />Suivre le
-            trajet
-        </div>
-        <div fxFlex>
-            <input type="checkbox" name="notifier" [ngModel]="amiDetail.notifier"
-                (click)="updateNotifierAmi()" />Envoyer
-            les notifications
-        </div>
+
+        <ng-container>
+            <div fxFlex>
+                <app-ami-state-icon [amiState]="amiDetail.etat"></app-ami-state-icon>
+                {{amiDetail.etat}}
+            </div>
+            <div fxFlex>
+                <input type="checkbox" name="suivi" [ngModel]="amiDetail.suivre" (click)="updateSuivreAmi()" />Suivre le
+                trajet
+            </div>
+            <div fxFlex>
+                <input type="checkbox" name="notifier" [ngModel]="amiDetail.notifier"
+                    (click)="updateNotifierAmi()" />Envoyer les notifications
+            </div>
+        </ng-container>
+
     </mat-card-content>
 
 </mat-card>

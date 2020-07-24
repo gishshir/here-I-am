@@ -10,14 +10,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatChipsModule } from '@angular/material/chips';
 
 
 
 @NgModule({
   declarations: [],
   imports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule],
+    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatChipsModule],
   exports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule]
+    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatChipsModule]
 })
 export class MaterialModule { }

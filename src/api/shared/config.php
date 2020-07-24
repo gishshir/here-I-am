@@ -8,6 +8,7 @@ define('DIR_ENTITIES',    DIR_BASE . 'entities/');
 
 require DIR_ENTITIES.'ientity.php';
 require DIR_ENTITIES.'amirelation.php';
+require DIR_ENTITIES.'relationinfo.php';
 require DIR_ENTITIES.'amiinfo.php';
 require DIR_ENTITIES.'personne.php';
 require DIR_ENTITIES.'trajet.php';

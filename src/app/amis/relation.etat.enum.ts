@@ -1,6 +1,7 @@
 export enum RelationState {
 
     waiting = "waiting",
-    open = "open"
+    open = "open",
+    closed = "closed"
 
 }

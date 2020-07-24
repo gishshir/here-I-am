@@ -13,7 +13,7 @@ class AmiRelation {
     // indique si  la notification de ses trajet vers l'ami est activé
     private bool $notifier = false;
 
-    // etat de la relation waiting | open
+    // etat de la relation pending | open | closed
     private string $etat;
 
 

@@ -9,14 +9,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 
 @NgModule({
   declarations: [],
   imports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule],
+    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule],
   exports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
-    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule]
+    MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule]
 })
 export class MaterialModule { }

@@ -1,7 +1,7 @@
 <?php
 
 /*
-* représentation d'une ligne de la table person_rel
+* représentation d'une ligne de la table person_rel / relation
 */
 class AmiRelation {
 
@@ -12,6 +12,9 @@ class AmiRelation {
     private bool $suivre = false;
     // indique si  la notification de ses trajet vers l'ami est activé
     private bool $notifier = false;
+
+    // etat de la relation waiting | open
+    private string $etat;
 
 
     function get_id () : int {
@@ -32,13 +35,20 @@ class AmiRelation {
     function is_notifier () : bool {
         return $this->notifier;
     }
+    function set_etat (string $etat) {
+        $this->etat = $etat;
+    }
+    function get_etat () : string {
+        return $this->etat;
+    }
 
     function toArray(): array {
 
         $infos = array (
             "id"=>$this->id,
             "suivre"=>$this->suivre,
-            "notifier"=>$this->notifier
+            "notifier"=>$this->notifier,
+            "etat"=>$this->etat
         );
         return $infos;
     }

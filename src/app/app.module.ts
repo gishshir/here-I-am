@@ -26,6 +26,7 @@ import { NotificationComponent } from './common/notification/notification.compon
 import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
 import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete.component';
 import { HttpRequestInterceptor } from './common/http-request-interceptor';
+import { AmisPipe } from './amis/amis.pipe';
 
 
 
@@ -47,7 +48,8 @@ import { HttpRequestInterceptor } from './common/http-request-interceptor';
     CommonComponent,
     NotificationComponent,
     AmisNotifierComponent,
-    DialogDeleteTrajetComponent
+    DialogDeleteTrajetComponent,
+    AmisPipe
   ],
   imports: [
     BrowserModule,

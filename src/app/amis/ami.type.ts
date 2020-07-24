@@ -1,4 +1,5 @@
 import { AmiState } from './ami.etat.enum';
+import { RelationState } from './relation.etat.enum';
 
 export interface Ami {
 
@@ -7,4 +8,5 @@ export interface Ami {
     etat: AmiState;
     suivre: boolean;
     notifier: boolean;
+    etatrelation: RelationState;
 }

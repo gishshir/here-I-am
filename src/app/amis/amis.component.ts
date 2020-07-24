@@ -15,6 +15,7 @@ export class AmisComponent implements OnInit {
 
   amis: Ami[];
   selectedAmi: Ami;
+  selectedFilter: string = "valides";
 
   response: Message;
 

@@ -100,7 +100,7 @@ function displayListAmis() : ResultAndDatas {
     $resultAndDatas; $stmt;
       
     $con = connectMaBase();
-    $req_ListAmis = "select amiid, relationid, suivre, notifier, pseudo, etat from
+    $req_ListAmis = "select amiid, relationid, suivre, notifier, U.pseudo, U.etat as user_etat, R.etat as rel_etat from
     (
     select tab1.personid, tab1.relationid as relationid, tab2.personid as amiid, tab1.suivre as suivre, tab1.notifier as notifier  from person_rel as tab1
     
@@ -108,7 +108,8 @@ function displayListAmis() : ResultAndDatas {
     
     where tab1.personid = ?) as tab3
     
-    left join utilisateur on amiid = utilisateur.id";    
+    left join utilisateur as U on amiid = U.id
+    left join relation as R on relationid = R.id";    
     
     try {
 
@@ -120,7 +121,8 @@ function displayListAmis() : ResultAndDatas {
 
             $listeAmis = array();
             $infoAmi = null;
-            $stmt->bind_result ($resAmiId, $resRelId, $resSuivre, $resNotifier, $resPseudo, $resEtat);
+            $stmt->bind_result ($resAmiId, $resRelId, $resSuivre, $resNotifier, $resPseudo,
+             $resPersonEtat, $resRelationEtat);
                    
             // fetch row ..............
             while($stmt->fetch()) {
@@ -130,12 +132,13 @@ function displayListAmis() : ResultAndDatas {
                 $personne = new Personne();
                 $personne->set_id ($resAmiId);
                 $personne->set_pseudo($resPseudo);
-                $personne->set_etat ($resEtat);
+                $personne->set_etat ($resPersonEtat);
 
                 $amirelation = new AmiRelation();
                 $amirelation->set_id($resRelId);
                 $amirelation->set_suivre($resSuivre);
                 $amirelation->set_notifier($resNotifier);
+                $amirelation->set_etat($resRelationEtat);
 
                 $infoAmi->set_personne($personne);
                 $infoAmi->set_relation($amirelation);

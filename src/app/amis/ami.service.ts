@@ -104,7 +104,8 @@ export class AmiService extends CommonService {
       pseudo: amijs.personne.pseudo,
       etat: this.getAmiState(amijs.personne.etat),
       suivre: amijs.relation.suivre,
-      notifier: amijs.relation.notifier
+      notifier: amijs.relation.notifier,
+      etatrelation: amijs.relation.etat
 
     };
     return ami;

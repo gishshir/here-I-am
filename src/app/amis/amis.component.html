@@ -6,11 +6,16 @@
     <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
         <h2 fxFlex>Mes amis</h2>
 
-        <div fxFlex>
+        <mat-radio-group fxFlex [(ngModel)]="selectedFilter">
+            <mat-radio-button value="valides">uniquement relation validée</mat-radio-button>
+            <mat-radio-button value="tous">tous</mat-radio-button>
+        </mat-radio-group>
 
+
+        <div fxFlex>
             <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start none">
-                <mat-card class="card" fxFlex *ngFor="let ami of amis" [class.card-selected]="ami === selectedAmi"
-                    (click)="onSelect(ami)">
+                <mat-card class="card" fxFlex *ngFor="let ami of (amis | amiFilter : selectedFilter)"
+                    [class.card-selected]="ami === selectedAmi" (click)="onSelect(ami)">
 
                     <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">
                         <app-ami-state-icon fxFlex="initial" [amiState]="ami.etat"></app-ami-state-icon>

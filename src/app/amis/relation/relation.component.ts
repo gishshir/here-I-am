@@ -32,6 +32,13 @@ export class RelationComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  accepterInvitation() {
+    console.log("accepterInvitation");
+  }
+  refuserInvitation() {
+    console.log("refuserInvitation");
+  }
+
   getRelationStateColor() {
 
     switch (this.relationInfo.etat) {

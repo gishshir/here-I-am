@@ -27,4 +27,11 @@
 
     </mat-card-content>
 
+    <mat-card-actions *ngIf="relationInfo.action == 'none'">
+        <button fxFlex mat-raised-button color="primary" name="accepter" (click)="accepterInvitation()">Accepter
+            l'invitation</button>
+        <button fxFlex mat-raised-button name="refuser" (click)="refuserInvitation()">Refuser
+            l'invitation</button>
+    </mat-card-actions>
+
 </mat-card>

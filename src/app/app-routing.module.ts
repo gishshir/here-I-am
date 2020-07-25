@@ -10,7 +10,7 @@ import { StartingGuard } from "./starting/starting.guard";
 
 const routes: Routes = [
 
-  { path: 'go-accueil', component: AccueilComponent },
+  { path: 'go-accueil', component: AccueilComponent, canActivate: [AppGuardGuard] },
   { path: 'go-amis', component: AmisComponent, canActivate: [AppGuardGuard] },
   { path: 'go-trajets', component: TrajetsComponent, canActivate: [AppGuardGuard] },
   { path: 'go-starting', component: StartingComponent, canActivate: [AppGuardGuard, StartingGuard] },

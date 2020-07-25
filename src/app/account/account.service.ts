@@ -9,17 +9,19 @@ import { Message, BoolResponse } from '../common/message.type';
 import { User } from './user.type';
 import { AccountInfo } from './accountinfo.type';
 import { Router } from '@angular/router';
+import { NotificationService } from '../common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService extends CommonService {
 
-  private isLoggedIn: boolean;
+  private userLoggedIn: User;
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
-  constructor(private logger: LoggerService, private http: HttpClient, private router: Router) {
+  constructor(private logger: LoggerService, private http: HttpClient, private router: Router,
+    private notificationService: NotificationService) {
     super();
   }
 
@@ -126,8 +128,18 @@ export class AccountService extends CommonService {
   logout(handler: MessageHandler): void {
     this.logger.log("logout");
 
-    this._callLogout().subscribe(super._createMessageObserver(handler));
-    this.isLoggedIn = false;
+    this._callLogout().subscribe({
+
+      next: (m: Message) => {
+        // lance un message pour l'ensemble de l'application
+        this.notificationService.changeUser(null);
+        this.userLoggedIn = null;
+        handler.onMessage(m);
+      },
+      error: (e: Message) => handler.onError(e)
+    });
+
+
   }
   // ============================================
 
@@ -145,21 +157,26 @@ export class AccountService extends CommonService {
   isUserLoggedIn(): Observable<boolean> {
 
     // soit on connait la reponse
-    if (this.isLoggedIn != undefined) {
-      console.log("isLoggedIn: " + this.isLoggedIn);
-      return of(this.isLoggedIn);
+    if (this.userLoggedIn) {
+      console.log("isLoggedIn: " + this.userLoggedIn.login);
+      this.notificationService.changeUser(this.userLoggedIn.pseudo);
+      return of(true);
     }
 
     // soit on appel le serveur
     return this._callUserLogged().pipe(
       map((user: User) => {
-        this.isLoggedIn = true;
-        console.log("Session ouverte...");
+        console.log("Session ouverte pour user " + user.login);
+        this.userLoggedIn = user;
+
+        this.notificationService.changeUser(user.pseudo);
         return true;
       }),
       catchError(e => {
-        this.isLoggedIn = false;
-        console.log("Pas de session.");
+
+        console.log("Pas de session ouverte.");
+        this.notificationService.changeUser(null);
+        this.userLoggedIn = null;
         return of(false);
       })
     );
@@ -184,9 +201,11 @@ export class AccountService extends CommonService {
 
     this._callLogin(user).subscribe(
       // next
-      (data: User) => {
-        handler.onGetUser(data);
-        this.isLoggedIn = true;
+      (user: User) => {
+        this.userLoggedIn = user;
+        // lance un message pour l'ensemble de l'application
+        this.notificationService.changeUser(user.pseudo);
+        handler.onGetUser(user);
       }
       ,
       // error

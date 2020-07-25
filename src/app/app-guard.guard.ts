@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable } from 'rxjs';
 import { AccountService } from './account/account.service';
 import { map } from 'rxjs/operators';
+import { NotificationService } from './common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'

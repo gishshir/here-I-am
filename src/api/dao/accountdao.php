@@ -35,6 +35,8 @@ function createUtilisateurAndAccount(Utilisateur $utilisateur, string $email) : 
                 $resultAndEntity = buildResultAndEntity("AccountInfo constitué!", $accountInfo);
 
                 $con->commit();
+            } else {
+                throw new Exception ($resultAndEntity->get_msg());
             }
         }     
 

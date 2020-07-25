@@ -3,6 +3,8 @@ import { RelationInfo, RelationState, RelationAction } from './relationinfo.type
 import { RelationService } from './relation.service';
 import { Message } from 'src/app/common/message.type';
 import { Ami } from '../ami.type';
+import { Observer } from 'rxjs';
+import { MessageHandler } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-ami-relation',
@@ -13,6 +15,7 @@ export class RelationComponent implements OnInit {
 
   _amiDetail: Ami;
   relationInfo: RelationInfo;
+
 
   constructor(private relationService: RelationService) { }
 
@@ -34,9 +37,23 @@ export class RelationComponent implements OnInit {
 
   accepterInvitation() {
     console.log("accepterInvitation");
+    this.relationService.updateActionRelation(this.relationInfo.id, RelationAction.acceptee, this.buildMessageHandler());
   }
   refuserInvitation() {
     console.log("refuserInvitation");
+    this.relationService.updateActionRelation(this.relationInfo.id, RelationAction.refusee, this.buildMessageHandler());
+  }
+
+  private buildMessageHandler(): MessageHandler {
+
+    return {
+      onMessage: (m: Message) => {
+        m.msg = "mise à jour de la relation effectuée!";
+        this.eventMessage.emit(m);
+        this.getRelationInfo(this.amiDetail.idrelation);
+      },
+      onError: (e: Message) => this.eventMessage.emit(e)
+    }
   }
 
   getRelationStateColor() {

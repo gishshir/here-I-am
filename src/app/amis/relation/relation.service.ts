@@ -3,7 +3,7 @@ import { LoggerService } from '../../common/logger.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CommonService, PHP_API_SERVER, Handler, HTTP_HEADER_URL } from 'src/app/common/common.service';
+import { CommonService, PHP_API_SERVER, Handler, HTTP_HEADER_URL, MessageHandler } from 'src/app/common/common.service';
 import { RelationInfo } from './relationinfo.type';
 import { Message } from 'src/app/common/message.type';
 
@@ -15,6 +15,22 @@ export class RelationService extends CommonService {
   constructor(private logger: LoggerService, private http: HttpClient) {
     super();
   }
+
+  //==============================================================
+  private _callActionUpdate(relationToUpdate: object): Observable<any> {
+
+    let url = PHP_API_SERVER + "/relation/update.php";
+
+    return this.http.put<Message>(url, relationToUpdate, this.httpOptionsHeaderJson)
+      .pipe(catchError(super.handleError));
+  }
+  updateActionRelation(idrelation: number, action: string, handler: MessageHandler): any {
+    this.logger.log("updateRelation() : " + action);
+    this._callActionUpdate({ idrelation: idrelation, action: action }).subscribe(
+      this._createMessageObserver(handler)
+    );
+  }
+  //==============================================================
 
   //==============================================================
   private _callRelationInfo(idrelation: number): Observable<any> {

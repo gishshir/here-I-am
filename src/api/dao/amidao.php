@@ -2,8 +2,7 @@
 
 include_once DIR_DAO.'dao.php';
 
-// attention mise à jour de la table person_rel
-// la table relation mise à jour par trigger
+//  mise à jour de la table person_rel
 function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
 
     $result; $stmt;
@@ -43,8 +42,7 @@ function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
 }
 
 
-// attention mise à jour de la table person_rel
-// tableau des relations à notifier [{idrelation, notifier}, {idrelation, notifier}...]
+//  mise à jour de la table person_rel
 function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
 
     $result; $stmt;

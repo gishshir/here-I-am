@@ -90,7 +90,71 @@ function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
 }
 
 /*
+* construit la liste des non - amis de l'utilisateur courant
+* retourne une liste de personne (avec etat masqué)
+*/
+function displayListPersonneNonAmis(): ResultAndDatas {
+
+    $idCurrentUser = getCurrentUserId();
+    $resultAndDatas; $stmt;
+      
+    $con = connectMaBase();
+    $req_ListNonAmis = "select id, pseudo from utilisateur where utilisateur.id not in
+    (
+    SELECT ami_rel.personid as amiid FROM person_rel user_rel
+    left join person_rel ami_rel on user_rel.relationid = ami_rel.relationid and user_rel.personid != ami_rel.personid
+    
+    where user_rel.personid = ?
+    ) 
+    order by pseudo";    
+    
+    try {
+
+        $stmt = _prepare ($con, $req_ListNonAmis);
+        
+        if ($stmt->bind_param("i", $idCurrentUser)) {
+
+            $stmt = _execute($stmt);
+
+            $listePersonnes = array();
+            $infoAmi = null;
+            $stmt->bind_result ($resAmiId, $resPseudo);
+                   
+            // fetch row ..............
+            while($stmt->fetch()) {
+
+                $personne = new Personne();
+                $personne->set_id ($resAmiId);
+                $personne->set_pseudo($resPseudo);
+
+                // on masque l'etat 
+                $personne->set_etat ("NonConnu");
+
+                array_push ($listePersonnes, $personne);
+            }  // --- fin du fetch
+
+
+            $resultAndDatas = buildResultAndDatas("Récupération liste non amis réussie!", $listePersonnes);
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndDatas = buildResultAndDatasError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $resultAndDatas;
+
+}
+
+/*
 * construit la liste des amis de l'utilisateur courant
+* retourne une liste de AmiInfo
 */
 function displayListAmis() : ResultAndDatas {
     

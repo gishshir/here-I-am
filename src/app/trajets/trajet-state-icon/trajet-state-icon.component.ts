@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TrajetState } from '../trajet-etat.enum';
+import { TrajetState } from '../trajet.type';
 
 @Component({
   selector: 'app-trajet-state-icon',
@@ -15,7 +15,7 @@ export class TrajetStateIconComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getDescription () : string {
+  getDescription(): string {
 
     let description: string = "";
     switch (this.trajetState) {
@@ -23,7 +23,7 @@ export class TrajetStateIconComponent implements OnInit {
       case TrajetState.started: description = "Trajet en cours..."; break;
       case TrajetState.ended: description = "Trajet terminé."; break;
       case TrajetState.pausing: description = "Pause pendant le trajet"; break;
-  
+
     }
     return description;
   }

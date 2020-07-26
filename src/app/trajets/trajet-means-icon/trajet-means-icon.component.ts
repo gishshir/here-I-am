@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TrajetMeans } from '../trajet-means.enum';
+import { TrajetMeans } from '../trajet.type';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({

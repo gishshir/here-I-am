@@ -4,9 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Observable, throwError, Observer } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { TrajetState } from './trajet-etat.enum';
-import { Trajet } from './trajet.type';
-import { TrajetMeans } from './trajet-means.enum';
+import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 

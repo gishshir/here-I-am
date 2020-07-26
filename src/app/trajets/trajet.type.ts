@@ -1,5 +1,3 @@
-import { TrajetState } from "./trajet-etat.enum";
-import { TrajetMeans } from "./trajet-means.enum";
 
 export interface Trajet {
 
@@ -11,3 +9,23 @@ export interface Trajet {
     etat: TrajetState;
     mean: TrajetMeans;
 }
+
+export enum TrajetMeans {
+
+    pied = "Pied",
+    velo = "Velo",
+    moto = "Moto",
+    voiture = "Voiture",
+    bus = "Bus",
+    train = "Train",
+    avion = "Avion",
+    bateau = "Bateau"
+}
+
+export enum TrajetState {
+
+    started = "Started",
+    ended = "Ended",
+    pausing = "Pausing"
+}
+

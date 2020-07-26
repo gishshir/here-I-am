@@ -1,12 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TrajetMeans } from '../trajets/trajet-means.enum';
 import { TrajetMeansIconComponent } from '../trajets/trajet-means-icon/trajet-means-icon.component';
-import { Trajet } from '../trajets/trajet.type';
+import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { TrajetService } from '../trajets/trajet.service';
-import { TrajetState } from '../trajets/trajet-etat.enum';
-import { TrajetDureeComponent } from '../trajets/trajet-duree/trajet-duree.component';
 import { Message } from '../common/message.type';
-import { Ami } from '../amis/ami.type';
 import { AmiService } from '../amis/ami.service';
 
 

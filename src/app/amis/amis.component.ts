@@ -6,6 +6,8 @@ import { Message } from '../common/message.type';
 import { MatRadioChange } from '@angular/material/radio';
 import { RelationState, RelationInfo } from './relation/relationinfo.type';
 import { AmisFilter } from './amis.pipe';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { DialogInvitationComponent } from './dialog-invitation/dialog-invitation.component';
 
 
 @Component({
@@ -23,7 +25,7 @@ export class AmisComponent implements OnInit {
 
   response: Message;
 
-  constructor(private amiService: AmiService, private logger: LoggerService) {
+  constructor(private amiService: AmiService, private logger: LoggerService, private dialog: MatDialog) {
 
     this.refreshList();
   }
@@ -85,7 +87,7 @@ export class AmisComponent implements OnInit {
         onGetList: list => {
           this.amis = list;
           let ami = this.findSelectedAmi(selectedRelationId);
-          if (ami.etatrelation == RelationState.open) {
+          if (ami && ami.etatrelation == RelationState.open) {
             this.selectedAmi = ami;
           }
         },
@@ -108,5 +110,29 @@ export class AmisComponent implements OnInit {
     this.selectedAmi = ami;
     this.response = null;
   }
+
+  openDialogLancerInvitation() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      id: -1
+    };
+
+    const dialogRef = this.dialog.open(DialogInvitationComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data) {
+          // this.supprimerTrajet(trajet);
+        }
+      }
+    );
+
+
+  }
+
 
 }

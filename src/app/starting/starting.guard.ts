@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { TrajetService } from '../trajets/trajet.service';
-import { Trajet } from '../trajets/trajet.type';
-import { Message } from '../common/message.type';
-import { TrajetState } from '../trajets/trajet-etat.enum';
+import { TrajetState } from '../trajets/trajet.type';
 import { map } from 'rxjs/operators';
 
 @Injectable({

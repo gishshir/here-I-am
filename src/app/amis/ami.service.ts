@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { AmiInfo } from './amiinfo.type';
+import { AmiInfo, AmiPersonne } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
@@ -20,6 +20,36 @@ export class AmiService extends CommonService {
     super();
   }
 
+  // =============================================
+  private _callListePersonneNonAmis(): Observable<any> {
+
+    this.logger.log("callListePersonneNonAmis()");
+
+    let url = PHP_API_SERVER + "/personne/read.php";
+
+    return this.http.get<AmiPersonne[]>(url)
+      .pipe(catchError(super.handleError));
+
+  }
+
+
+  getListePersonneNonAmis(handler: AmiPersonnesHandler): void {
+
+    this._callListePersonneNonAmis().subscribe(
+
+      // next
+      (datas: AmiPersonne[]) => {
+        handler.onGetList(datas);
+      },
+      // error
+      (error: string) => {
+        this._propageErrorToHandler(error, handler);
+      }
+
+    );
+
+  }
+  // =============================================
   // =============================================
   private _callListeAmis(): Observable<any> {
 
@@ -117,7 +147,11 @@ export interface AmisHandler extends Handler {
   onGetList(liste: Ami[]): void;
 
 }
+export interface AmiPersonnesHandler extends Handler {
 
+  onGetList(liste: AmiPersonne[]): void;
+
+}
 export interface AmiHandler extends Handler {
 
   onMessage(message: Message): void;

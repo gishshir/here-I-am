@@ -29,6 +29,8 @@ import { HttpRequestInterceptor } from './common/http-request-interceptor';
 import { AmisPipe } from './amis/amis.pipe';
 import { RelationComponent } from './amis/relation/relation.component';
 import { ActionRelComponent } from './amis/relation/action-rel/action-rel.component';
+import { DialogInvitationComponent } from './amis/dialog-invitation/dialog-invitation.component';
+import { DialogConfirmInvitationComponent } from './amis/dialog-invitation/confirm/dialog-confirm-invitation.component';
 
 
 
@@ -53,7 +55,9 @@ import { ActionRelComponent } from './amis/relation/action-rel/action-rel.compon
     DialogDeleteTrajetComponent,
     AmisPipe,
     RelationComponent,
-    ActionRelComponent
+    ActionRelComponent,
+    DialogInvitationComponent,
+    DialogConfirmInvitationComponent
   ],
   imports: [
     BrowserModule,

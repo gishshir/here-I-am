@@ -6,6 +6,10 @@
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="40px">
         <h2 fxFlex>Mes amis</h2>
 
+        <!-- Ajouter un ami -->
+        <button fxFlex mat-raised-button color="primary" name="ajouter" (click)="openDialogLancerInvitation()">Ajouter
+            un ami</button>
+
 
         <!-- filtre-->
         <mat-radio-group fxFlex [(ngModel)]="selectedFilter" name="radioGpFilter" (change)="onRadioChange($event)">

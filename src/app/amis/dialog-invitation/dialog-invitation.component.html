@@ -1,0 +1,26 @@
+<div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
+
+    <h2 fxFlex="initial" mat-dialog-title>Lancer une invitation</h2>
+
+    <mat-dialog-content fxFlex="initial" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
+
+        <div fxFlex fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start none">
+            <mat-card class="card" fxFlex *ngFor="let personne of listPersonnes"
+                [class.card-selected]="personne === selectedPersonne" (click)="onSelect(personne)">
+
+                <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">
+                    <span fxFlex="grow">{{personne.pseudo}}</span>
+                </mat-card-header>
+
+            </mat-card>
+        </div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions fxFlex="initial" fxLayout fxLayoutGap="10px">
+        <button fxFlex="initial" class="mat-raised-button" (click)="close()">Annuler</button>
+        <button fxFlex="initial" class="mat-raised-button mat-primary"
+            (click)="openDialogConfirmerInvitation()">Inviter</button>
+    </mat-dialog-actions>
+
+</div>

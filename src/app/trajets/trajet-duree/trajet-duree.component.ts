@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ToolsService } from 'src/app/common/tools.service';
-import { TrajetState } from '../trajet-etat.enum';
-import { Trajet } from '../trajet.type';
+import { Trajet, TrajetState } from '../trajet.type';
 
 @Component({
   selector: 'app-trajet-duree',

@@ -1,5 +1,5 @@
-import { AmiPersonne } from "./amipersonne.type";
-import { AmiRelation } from "./amirelation.type";
+
+import { RelationState } from './relation/relationinfo.type';
 
 export interface AmiInfo {
 
@@ -7,3 +7,24 @@ export interface AmiInfo {
     relation: AmiRelation;
 
 }
+
+export interface AmiPersonne {
+
+    id: number;
+    pseudo: string;
+    etat: string;
+
+}
+
+
+
+export interface AmiRelation {
+
+    id: number;
+    suivre: boolean;
+    notifier: boolean;
+    etat: RelationState;
+
+}
+
+

@@ -21,11 +21,14 @@ export class RelationComponent implements OnInit {
 
   @Output() eventMessage = new EventEmitter<Message>();
 
+  // informe le parent de la modification de l'etat d'une relation
+  @Output() eventUpdateRelation = new EventEmitter<RelationInfo>();
+
   @Input()
   set amiDetail(ami: Ami) {
     if (ami) {
       this._amiDetail = ami;
-      this.getRelationInfo(ami.idrelation);
+      this.getRelationInfo(ami.idrelation, false);
     }
   }
   get amiDetail(): Ami {
@@ -50,7 +53,7 @@ export class RelationComponent implements OnInit {
       onMessage: (m: Message) => {
         m.msg = "mise à jour de la relation effectuée!";
         this.eventMessage.emit(m);
-        this.getRelationInfo(this.amiDetail.idrelation);
+        this.getRelationInfo(this.amiDetail.idrelation, true);
       },
       onError: (e: Message) => this.eventMessage.emit(e)
     }
@@ -94,11 +97,16 @@ export class RelationComponent implements OnInit {
 
   }
 
-  getRelationInfo(idrelation: number) {
+  getRelationInfo(idrelation: number, emitEvent: boolean) {
 
     this.relationService.getRelationInfoById(idrelation, {
 
-      onGetRelationInfo: (relationInfo: RelationInfo) => this.relationInfo = relationInfo,
+      onGetRelationInfo: (relationInfo: RelationInfo) => {
+        this.relationInfo = relationInfo;
+        if (emitEvent) {
+          this.eventUpdateRelation.emit(this.relationInfo);
+        }
+      },
       onError: (error: Message) => this.eventMessage.emit(error)
     });
 

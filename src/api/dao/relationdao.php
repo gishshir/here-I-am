@@ -32,6 +32,7 @@ function updateActionRelation (int $relationId, string $action): Resultat {
                 // mise à jour de l'état de la relation en fonction du modification action
                 // acceptee --> open
                 // refusee --> ended
+                // [none --> pending] pour tests
                 $etat;
 
                 switch ($action){

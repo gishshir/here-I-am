@@ -5,7 +5,8 @@ import { LoggerService } from '../common/logger.service';
 import { Message } from '../common/message.type';
 import { MatRadioChange } from '@angular/material/radio';
 import { RelationState, RelationInfo } from './relation/relationinfo.type';
-import { FindValueSubscriber } from 'rxjs/internal/operators/find';
+import { AmisFilter } from './amis.pipe';
+
 
 @Component({
   selector: 'app-amis',
@@ -16,7 +17,7 @@ export class AmisComponent implements OnInit {
 
   amis: Ami[];
   selectedAmi: Ami;
-  selectedFilter: string = "valides";
+  selectedFilter: string = AmisFilter.valides;
 
   private _listToUpdate: boolean = false;
 
@@ -37,7 +38,7 @@ export class AmisComponent implements OnInit {
       return;
     }
 
-    if ($event.value = "valides") {
+    if ($event.value = AmisFilter.valides) {
 
       // il y a eu au moins une mise à jour de relation
       if (this._listToUpdate) {

@@ -1,11 +1,11 @@
-<div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center" fxLayoutGap="50px"
+<div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center start" fxLayoutGap="50px"
     fxLayoutGap.lt-md="10px">
 
     <!-- liste de mes trajets -->
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
         <h2 fxFlex>Mes trajets</h2>
 
-        <div fxFlex fxLayout fxLayout="column" fxLayoutGap="20px" fxLayoutGap.xs="10px" fxLayoutAlign="start none">
+        <div fxFlex fxLayout="column" fxLayoutGap="20px" fxLayoutGap.xs="10px" fxLayoutAlign="start none">
             <mat-card class="card" fxFlex *ngFor="let trajet of trajets"
                 [class.card-selected]="trajet === selectedTrajet" (click)="onSelect(trajet)">
 

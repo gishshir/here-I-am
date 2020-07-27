@@ -36,6 +36,7 @@ export class DialogInvitationComponent implements OnInit {
   }
   onSelect(personne: AmiPersonne) {
     this.selectedPersonne = personne;
+    this.openDialogConfirmerInvitation();
   }
 
 

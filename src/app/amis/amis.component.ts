@@ -125,7 +125,7 @@ export class AmisComponent implements OnInit {
   openDialogLancerInvitation() {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
+    //dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
 
     dialogConfig.data = {

@@ -2,6 +2,45 @@
 
 include_once DIR_DAO.'dao.php';
 
+/**
+ * Suppression d'une relation par son id
+ */
+
+function deleteRelation (int $id) : Resultat {
+
+    $result; $stmt;
+
+    $con = connectMaBase();
+    $req_deleteRelation = "delete FROM relation WHERE id = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_deleteRelation);
+        if ($stmt->bind_param("i", $idrelation) ) {
+
+            $idrelation = $id;
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $message = $nbligneImpactees > 0?"suppression de la relation reussie!":"Pas de modification!";
+            
+            $result = buildResultat($message);
+            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultatError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $result;
+}
+
 //========================================================================================
 /*
 * Creation d'une nouvelle relation

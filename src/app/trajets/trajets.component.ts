@@ -1,11 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Trajet, TrajetState } from './trajet.type';
 import { TrajetService } from './trajet.service';
 import { ToolsService } from '../common/tools.service';
 import { LoggerService } from '../common/logger.service';
 import { Message } from '../common/message.type';
 import { AmiService } from '../amis/ami.service';
-import { DialogDeleteTrajetComponent } from './dialog-delete/dialog-delete.component';
+import { DialogDeleteTrajetComponent } from './dialog-delete/dialog-delete-trajet.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 

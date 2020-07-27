@@ -16,6 +16,30 @@ export class RelationService extends CommonService {
     super();
   }
 
+  // ===========================================================
+  private _callDeleteRelation(id: number): Observable<any> {
+
+    let url = PHP_API_SERVER + "/relation/delete.php";
+
+    let options = {
+      // params: new HttpParams().set("id", "" + id)
+      body: { "id": "" + id }
+    };
+
+    return this.http.request<Message>('delete', url, options)
+      .pipe(
+        catchError(super.handleError)
+      );
+  }
+
+  deleteRelation(relationIdToDelete: number, handler: MessageHandler): void {
+
+    this._callDeleteRelation(relationIdToDelete).subscribe(
+      this._createMessageObserver(handler)
+    );
+  }
+  // ===========================================================
+
   //==============================================================
   private _callCreateInvitation(relationToCreate: object): Observable<any> {
 

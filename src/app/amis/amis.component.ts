@@ -57,6 +57,12 @@ export class AmisComponent implements OnInit {
     }
   }
 
+  // reception d'un evenement de suppression d'une relation
+  onDelete(ami: Ami) {
+    this.selectedAmi = null;
+    this.refreshList();
+  }
+
   // reception d'un evenement de modification de l'etat de la relation
   // la liste sera à mettre à jour si on passe du filtre 'tous' au filtre 'valides'
   onUpdateRelation(relationInfo: RelationInfo) {

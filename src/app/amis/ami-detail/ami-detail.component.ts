@@ -3,6 +3,9 @@ import { Ami, AmiState } from '../ami.type';
 import { AmiService } from '../ami.service';
 import { RelationService } from '../relation/relation.service';
 import { Message } from '../../common/message.type';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DialogDeleteTrajetComponent } from 'src/app/trajets/dialog-delete/dialog-delete-trajet.component';
+import { DialogDeleteRelationComponent } from '../relation/dialog-delete/dialog-delete-relation.component';
 
 @Component({
   selector: 'app-ami-detail',
@@ -13,6 +16,7 @@ export class AmiDetailComponent implements OnInit {
 
   _amiDetail: Ami;
 
+  @Output() eventDelete = new EventEmitter<Ami>();
   @Output() eventMessage = new EventEmitter<Message>();
 
   @Input()
@@ -24,10 +28,47 @@ export class AmiDetailComponent implements OnInit {
     return this._amiDetail;
   }
 
-  constructor(private amiService: AmiService, private relationService: RelationService) { }
+  constructor(private amiService: AmiService, private relationService: RelationService,
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
+
+  supprimerRelation() {
+
+    this.relationService.deleteRelation(this._amiDetail.idrelation, {
+
+      onMessage: (m: Message) => {
+        this.eventMessage.emit(m);
+        this.eventDelete.emit(this._amiDetail);
+      },
+      onError: (e: Message) => this.eventMessage.emit(e)
+    });
+  }
+
+  confirmSupprimerRelation(): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      ami: this._amiDetail
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteRelationComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data) {
+          this.supprimerRelation();
+        }
+      }
+    );
+  }
+
+
 
   updateSuivreAmi() {
 

@@ -24,13 +24,14 @@ import { TrajetMeansIconComponent } from './trajets/trajet-means-icon/trajet-mea
 import { CommonComponent } from './common/common.component';
 import { NotificationComponent } from './common/notification/notification.component';
 import { AmisNotifierComponent } from './amis/amis-notifier/amis-notifier.component';
-import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete.component';
+import { DialogDeleteTrajetComponent } from './trajets/dialog-delete/dialog-delete-trajet.component';
 import { HttpRequestInterceptor } from './common/http-request-interceptor';
 import { AmisPipe } from './amis/amis.pipe';
 import { RelationComponent } from './amis/relation/relation.component';
 import { ActionRelComponent } from './amis/relation/action-rel/action-rel.component';
 import { DialogInvitationComponent } from './amis/dialog-invitation/dialog-invitation.component';
 import { DialogConfirmInvitationComponent } from './amis/dialog-invitation/confirm/dialog-confirm-invitation.component';
+import { DialogDeleteRelationComponent } from './amis/relation/dialog-delete/dialog-delete-relation.component';
 
 
 
@@ -57,7 +58,8 @@ import { DialogConfirmInvitationComponent } from './amis/dialog-invitation/confi
     RelationComponent,
     ActionRelComponent,
     DialogInvitationComponent,
-    DialogConfirmInvitationComponent
+    DialogConfirmInvitationComponent,
+    DialogDeleteRelationComponent
   ],
   imports: [
     BrowserModule,

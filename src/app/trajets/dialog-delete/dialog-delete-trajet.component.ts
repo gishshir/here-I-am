@@ -3,9 +3,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToolsService } from 'src/app/common/tools.service';
 
 @Component({
-  selector: 'app-dialog-delete',
-  templateUrl: './dialog-delete.component.html',
-  styleUrls: ['./dialog-delete.component.scss']
+  selector: 'app-dialog-delete-trajet',
+  templateUrl: './dialog-delete-trajet.component.html',
+  styleUrls: ['./dialog-delete-trajet.component.scss']
 })
 export class DialogDeleteTrajetComponent implements OnInit {
 

@@ -43,7 +43,8 @@
 
         <!-- détail d'un ami si relation valide -->
         <ng-container *ngIf="selectedAmi.etatrelation == 'open'; else showrelation">
-            <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
+            <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
+                (eventDelete)="onDelete($event)">
             </app-ami-detail>
         </ng-container>
 

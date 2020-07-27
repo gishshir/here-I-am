@@ -79,6 +79,7 @@ export class AmisComponent implements OnInit {
 
     // on mémorise l'ami selectionne avant le rafraichissement si existe
     let selectedRelationId: number = (this.selectedAmi) ? this.selectedAmi.idrelation : undefined;
+    this.logger.log("selectedRelationId: " + selectedRelationId);
 
     this.selectedAmi = null;
     this.amis = [];
@@ -87,9 +88,19 @@ export class AmisComponent implements OnInit {
         onGetList: list => {
           this.amis = list;
           let ami = this.findSelectedAmi(selectedRelationId);
-          if (ami && ami.etatrelation == RelationState.open) {
-            this.selectedAmi = ami;
+          if (ami && this.selectedFilter) {
+            switch (this.selectedFilter) {
+              case AmisFilter.tous: this.selectedAmi = ami; break;
+              case AmisFilter.valides: {
+                if (RelationState.open) {
+                  this.selectedAmi = ami;
+                }
+                break;
+              }
+            }
           }
+
+
         },
         onError: e => this.response = e
       }
@@ -101,7 +112,7 @@ export class AmisComponent implements OnInit {
 
     if (selectedRelationId) {
 
-      return this.amis.find(ami => ami.idrelation = selectedRelationId);
+      return this.amis.find(ami => ami.idrelation === selectedRelationId);
     }
     return null;
   }
@@ -126,13 +137,31 @@ export class AmisComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       data => {
         if (data) {
-          // this.supprimerTrajet(trajet);
+          this.response = data.message;
+          if (!this.response.error) {
+            this.getNouvelAmiAndRefreshList(data.idperson);
+          }
         }
       }
     );
 
+  }
+
+  getNouvelAmiAndRefreshList(idperson: number): void {
+
+    this.amiService.getAmiByIdPerson(idperson, {
+
+      onError: (e: Message) => this.response = e,
+      onGetAmi: (ami: Ami) => {
+
+        this.selectedAmi = ami;
+        this.selectedFilter = AmisFilter.tous;
+        this.refreshList();
+      }
+    });
 
   }
+
 
 
 }

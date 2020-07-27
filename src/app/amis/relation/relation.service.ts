@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CommonService, PHP_API_SERVER, Handler, HTTP_HEADER_URL, MessageHandler } from 'src/app/common/common.service';
-import { RelationInfo } from './relationinfo.type';
+import { RelationInfo, RelationAction } from './relationinfo.type';
 import { Message } from 'src/app/common/message.type';
 
 @Injectable({
@@ -15,6 +15,21 @@ export class RelationService extends CommonService {
   constructor(private logger: LoggerService, private http: HttpClient) {
     super();
   }
+
+  //==============================================================
+  private _callCreateInvitation(relationToCreate: object): Observable<any> {
+
+    let url = PHP_API_SERVER + "/relation/create.php";
+    return this.http.post<Message>(url, relationToCreate, this.httpOptionsHeaderJson)
+      .pipe(catchError(super.handleError));
+  }
+  createInvitation(idperson: number, handler: MessageHandler): void {
+
+    this._callCreateInvitation({ idperson: idperson, action: RelationAction.invitation })
+      .subscribe(this._createMessageObserver(handler));
+  }
+  //==============================================================
+
 
   //==============================================================
   private _callActionUpdate(relationToUpdate: object): Observable<any> {

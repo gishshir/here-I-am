@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { AmiPersonne } from '../amiinfo.type';
 import { AmiService } from '../ami.service';
 import { Message } from 'src/app/common/message.type';
 import { DialogConfirmInvitationComponent } from './confirm/dialog-confirm-invitation.component';
+import { RelationService } from '../relation/relation.service';
 
 @Component({
   selector: 'app-dialog-invitation',
@@ -16,7 +17,8 @@ export class DialogInvitationComponent implements OnInit {
   listPersonnes: AmiPersonne[];
   selectedPersonne: AmiPersonne;
 
-  constructor(private amiService: AmiService, private dialog: MatDialog,
+
+  constructor(private amiService: AmiService, private relationService: RelationService, private dialog: MatDialog,
     private dialogRef: MatDialogRef<DialogInvitationComponent>,
     @Inject(MAT_DIALOG_DATA) data) {
 
@@ -50,7 +52,7 @@ export class DialogInvitationComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogConfirmInvitationComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      data => {
+      (data: string) => {
         if (data) {
           this.inviter();
         }
@@ -64,6 +66,25 @@ export class DialogInvitationComponent implements OnInit {
 
   inviter() {
     console.log("inviter " + this.selectedPersonne.pseudo);
+    this.relationService.createInvitation(this.selectedPersonne.id, {
+      onError: (e: Message) =>
+        this.dialogRef.close({ message: e, idperson: -1 })
+      ,
+      onMessage: (m: Message) => {
+
+        if (!m.error) {
+          console.log("invitation envoyée pour " + this.selectedPersonne.pseudo);
+          let data = {
+            message: { msg: "invitation envoyée!", error: false },
+            idperson: this.selectedPersonne.id
+          };
+          this.dialogRef.close(data);
+
+        } else {
+          this.dialogRef.close({ message: m, idperson: -1 })
+        }
+      }
+    })
   }
 
 

@@ -102,7 +102,7 @@ function displayListPersonneNonAmis(): ResultAndDatas {
     $req_ListNonAmis = "select id, pseudo from utilisateur where utilisateur.id not in
     (
     SELECT ami_rel.personid as amiid FROM person_rel user_rel
-    left join person_rel ami_rel on user_rel.relationid = ami_rel.relationid and user_rel.personid != ami_rel.personid
+    left join person_rel ami_rel on user_rel.relationid = ami_rel.relationid 
     
     where user_rel.personid = ?
     ) 
@@ -153,6 +153,87 @@ function displayListPersonneNonAmis(): ResultAndDatas {
 }
 
 /*
+* retourne un ami de l'utilisateur courant
+* retourne un objet AmiInfo
+*/
+function displayAmiInfo (int $idami) : ResultAndEntity {
+
+    $idCurrentUser = getCurrentUserId();
+    $resultAndEntity; $stmt;
+      
+    $con = connectMaBase();
+    $req_ListAmis = "select amiid, relationid, suivre, notifier, U.pseudo, U.etat as ami_etat, R.etat as rel_etat from
+    (
+    select tab_user.personid, tab_user.relationid as relationid, tab_ami.personid as amiid, tab_user.suivre as suivre, tab_user.notifier as notifier  from person_rel as tab_user
+    
+    join person_rel as tab_ami on tab_user.relationid = tab_ami.relationid and tab_user.personid != tab_ami.personid
+    
+    where tab_user.personid = ? and tab_ami.personid = ?) as tab
+    
+    left join utilisateur as U on amiid = U.id
+    left join relation as R on relationid = R.id";    
+    
+    try {
+
+        $stmt = _prepare ($con, $req_ListAmis);
+        
+        if ($stmt->bind_param("ii", $idCurrentUser, $idami)) {
+
+            $stmt = _execute($stmt);
+
+            $stmt->bind_result ($resAmiId, $resRelId, $resSuivre, $resNotifier, $resPseudo,
+             $resPersonEtat, $resRelationEtat);
+                   
+            // fetch row ..............
+            $infoAmi = null;
+            if($stmt->fetch()) {
+
+                $infoAmi = buildAmiInfoFromRow($resAmiId, $resPseudo, $resRelationEtat, 
+                $resPersonEtat, $resRelId, $resSuivre, $resNotifier);
+                $resultAndEntity = buildResultAndEntity("Récupération info ami réussie!", $infoAmi);
+            }  else {
+                $resultAndEntity = buildResultAndEntityError("Echec de récupération info ami!");
+            }// --- fin du fetch          
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $resultAndEntity;
+}
+function buildAmiInfoFromRow (int $resAmiId, string $resPseudo, string $resRelationEtat, 
+            string $resPersonEtat, int $resRelId, int $resSuivre, int $resNotifier) {
+
+    $infoAmi = new AmiInfo();
+    $personne = new Personne();
+    $personne->set_id ($resAmiId);
+    $personne->set_pseudo($resPseudo);
+
+     // on masque l'etat si la relation n'est pas validée
+    $etat = $resRelationEtat == "open"?$resPersonEtat:"NonConnu";
+    $personne->set_etat ($etat);
+
+    $amirelation = new AmiRelation();
+    $amirelation->set_id($resRelId);
+    $amirelation->set_suivre($resSuivre);
+    $amirelation->set_notifier($resNotifier);
+    $amirelation->set_etat($resRelationEtat);
+
+    $infoAmi->set_personne($personne);
+    $infoAmi->set_relation($amirelation);
+
+  return $infoAmi;
+}
+
+/*
 * construit la liste des amis de l'utilisateur courant
 * retourne une liste de AmiInfo
 */
@@ -162,16 +243,17 @@ function displayListAmis() : ResultAndDatas {
     $resultAndDatas; $stmt;
       
     $con = connectMaBase();
-    $req_ListAmis = "select amiid, relationid, suivre, notifier, U.pseudo, U.etat as user_etat, R.etat as rel_etat from
+    $req_ListAmis = "select amiid, relationid, suivre, notifier, U.pseudo, U.etat as ami_etat, R.etat as rel_etat from
     (
-    select tab1.personid, tab1.relationid as relationid, tab2.personid as amiid, tab1.suivre as suivre, tab1.notifier as notifier  from person_rel as tab1
+    select tab_user.personid, tab_user.relationid as relationid, tab_ami.personid as amiid, tab_user.suivre as suivre, tab_user.notifier as notifier  from person_rel as tab_user
     
-    join person_rel as tab2 on tab1.relationid = tab2.relationid and tab1.personid != tab2.personid
+    join person_rel as tab_ami on tab_user.relationid = tab_ami.relationid and tab_user.personid != tab_ami.personid
     
-    where tab1.personid = ?) as tab3
+    where tab_user.personid = ?) as tab
     
     left join utilisateur as U on amiid = U.id
-    left join relation as R on relationid = R.id";    
+    left join relation as R on relationid = R.id
+    order by U.pseudo";    
     
     try {
 
@@ -189,25 +271,8 @@ function displayListAmis() : ResultAndDatas {
             // fetch row ..............
             while($stmt->fetch()) {
 
-                $infoAmi = new AmiInfo();
-
-                $personne = new Personne();
-                $personne->set_id ($resAmiId);
-                $personne->set_pseudo($resPseudo);
-
-                // on masque l'etat si la relation n'est pas validée
-                $etat = $resRelationEtat == "open"?$resPersonEtat:"NonConnu";
-                $personne->set_etat ($etat);
-
-                $amirelation = new AmiRelation();
-                $amirelation->set_id($resRelId);
-                $amirelation->set_suivre($resSuivre);
-                $amirelation->set_notifier($resNotifier);
-                $amirelation->set_etat($resRelationEtat);
-
-                $infoAmi->set_personne($personne);
-                $infoAmi->set_relation($amirelation);
-
+                $infoAmi = buildAmiInfoFromRow($resAmiId, $resPseudo, $resRelationEtat, 
+                $resPersonEtat, $resRelId, $resSuivre, $resNotifier);
                 array_push ($listeAmis, $infoAmi);
             }  // --- fin du fetch
 

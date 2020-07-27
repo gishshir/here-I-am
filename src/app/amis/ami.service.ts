@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AmiInfo, AmiPersonne } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
-import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
-import { Message } from '../common/message.type';
+import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
+import { Message, BoolResponse } from '../common/message.type';
 
 
 
@@ -50,6 +50,31 @@ export class AmiService extends CommonService {
 
   }
   // =============================================
+  // =============================================
+  private _callAmiByIdPerson(idperson: number): Observable<any> {
+
+    this.logger.log("getAmiInfo()");
+    let url = PHP_API_SERVER + "/ami/read_one.php";
+
+    let options = {
+      headers: HTTP_HEADER_URL,
+      params: new HttpParams().set("idperson", idperson + "")
+
+    };
+    return this.http.get<AmiInfo[]>(url, options);
+
+  }
+
+  getAmiByIdPerson(idperson: number, handler: AmiHandler): void {
+
+    this._callAmiByIdPerson(idperson).subscribe({
+
+      next: (data: AmiInfo) => handler.onGetAmi(this.buildAmiFromJs(data)),
+      error: (error: string) => this._propageErrorToHandler(error, handler)
+    });
+  }
+  // =============================================
+
   // =============================================
   private _callListeAmis(): Observable<any> {
 
@@ -154,6 +179,6 @@ export interface AmiPersonnesHandler extends Handler {
 }
 export interface AmiHandler extends Handler {
 
-  onMessage(message: Message): void;
+  onGetAmi(ami: Ami): void;
 }
 

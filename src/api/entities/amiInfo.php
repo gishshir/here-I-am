@@ -4,13 +4,18 @@
 /*
 * Bean incluant les informations complète sur un ami
 */
-class AmiInfo  {
+class AmiInfo implements IEntity {
+
 
     // information sur la personne amie
     private Personne $personne;
 
     // information sur la relation avec cette personne
     private AmiRelation $relation;
+
+    function get_id() : int {
+        return ($this->personne)?$this->personne->get_id():-1;
+    }
 
 
     function get_personne () : Personne {

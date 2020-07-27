@@ -8,9 +8,9 @@ describe('DialogConfirmInvitationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialogConfirmInvitationComponent ]
+      declarations: [DialogConfirmInvitationComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

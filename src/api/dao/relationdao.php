@@ -2,31 +2,162 @@
 
 include_once DIR_DAO.'dao.php';
 
-//  mise à jour de la table person_rel
-function updateActionRelation (int $relationId, string $action): Resultat {
+//========================================================================================
+/*
+* Creation d'une nouvelle relation
+* et creation de l'invitation
+*/function createRelationAndInvitation ( int $idperson) :Resultat {
 
-    $result; $stmt;
+    $result;
+
+    $con = connectMaBase();
+    $con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+
+    try {
+
+        // creation relation (et trigger person_rel)
+       $resultAndEntity = _createRelation ($con, $idperson);
+       if (!$resultAndEntity->is_error()) {
+
+        $idrelation = $resultAndEntity->get_entity()->get_id();
+        $result = _updateActionRelation ($con, $idrelation, "invitation");
+        
+        if ($result->is_error()) {
+            throw new Exception("echec de l'invitation!!");    
+        }
+       } else {
+        throw new Exception("echec de création!: "+ $resultAndEntity->get_msg());    
+       }
+       $con->commit();
+
+
+    } catch (Exception $e) {
+        $result = buildResultatError($e->getMessage());
+        $con->rollback();
+    }
+    finally {
+        _closeAll(null, $con);
+    }
+
+    return $result;
+
+}
+
+/*
+* Creation d'une nouvelle relation
+* retour AmiRelation
+*/
+function _createRelation ($con, int $idperson) :ResultAndEntity {
+
+    $resultAndEntity; $stmt;
+
+    $idCurrentUser = getCurrentUserId();
+
+    $req_createRelation = "insert INTO relation(person_a, person_b, etat) 
+    VALUES (?, ?, ?)";
+
+    try {
+
+        $stmt = _prepare ($con, $req_createRelation);
+        if ($stmt->bind_param("iis", $iduser, $pidperson, $petat) ) {
+ 
+            $iduser = getCurrentUserId();
+            $pidperson = $idperson;
+            $petat = "pending";
+
+            $stmt = _execute ($stmt);
+
+            $nbligneImpactees = $stmt->affected_rows ;
+            if ($nbligneImpactees == 1) {
+
+                $resultAndEntity =  _findRelation($con, $idCurrentUser, $idperson);
+                
+            } else {
+                throw new Exception("echec de création!!");    
+            }
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $resultAndEntity;
+}
+function _findRelation (mysqli $con, $idperson_a, $idperson_b) : ResultAndEntity {
+
+    $resultAndEntity; $stmt;
+    $req_getRelation = "select id,  etat FROM relation WHERE person_a = ? and person_b = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_getRelation);
+        
+        if ($stmt->bind_param("ii", $pidperson_a, $pidperson_b)) {
+
+            $pidperson_a = $idperson_a;
+            $pidperson_b = $idperson_b;
+
+            $stmt = _execute($stmt);
+
+            $trajet = null;
+            $stmt->bind_result ($resId, $resEtat);
+                   
+            // fetch row ..............
+            if ($stmt->fetch()) {
+              $relation = _buildAmiRelation ($resId, $resEtat);
+              $resultAndEntity = buildResultAndEntity("relation trouvée!", $relation);
+
+            }  else {
+                $resultAndEntity = buildResultAndEntity("Pas de relation trouvé!", null);
+            }            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $resultAndEntity;
+    
+}
+
+function _buildAmiRelation ($id, $etat) : AmiRelation {
+
+    $amiRelation = new AmiRelation();
+    $amiRelation->set_id($id);
+    $amiRelation->set_suivre(false);
+    $amiRelation->set_notifier (false);
+    $amiRelation->set_etat ($etat);
+    return $amiRelation;
+}
+//=======================================================================================
+
+//  mise à jour de la table person_rel (action)
+// et relation (etat)
+function updateActionRelationAndState (int $relationId, string $action): Resultat {
+
+    $result; 
 
     $idCurrentUser = getCurrentUserId();
    
     $con = connectMaBase();
     $con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 
-    $req_updateActionRelation = "update person_rel SET action = ?  WHERE personid = ? and relationid = ?";
-
     try {
 
-        $stmt = _prepare ($con, $req_updateActionRelation);
-        if ($stmt->bind_param("sii", $paction, $ppersonid, $prelationid) ) {
-
-            $paction = $action;
-            $ppersonid = $idCurrentUser;
-            $prelationid = $relationId;
-
-            $stmt = _execute ($stmt);
-            
-            $nbligneImpactees = $stmt->affected_rows ;
-            $result = buildResultat ($nbligneImpactees > 0?"update action de la relation reussi!":"Pas de modification!"); 
+            $result = _updateActionRelation($con, $relationId, $action);
             if (!$result->is_error()) {
 
                 // mise à jour de l'état de la relation en fonction du modification action
@@ -45,17 +176,50 @@ function updateActionRelation (int $relationId, string $action): Resultat {
             } else {
                 throw new Exception ($resultAndEntity->get_msg());
             }
-
-        } else {
-            throw new Exception( _sqlErrorMessageBind($stmt));
-        }
     }
     catch (Exception $e) {
         $con->rollback();
         $result = buildResultAndDatasError($e->getMessage());
     }
     finally {
-        _closeAll($stmt, $con);
+        _closeAll(null, $con);
+    }
+
+    return $result;
+    
+}
+
+//  mise à jour de la table person_rel uniquement
+function _updateActionRelation ($con, int $relationId, string $action): Resultat {
+
+    $result; $stmt;
+
+    $idCurrentUser = getCurrentUserId();
+    $req_updateActionRelation = "update person_rel SET action = ?  WHERE personid = ? and relationid = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_updateActionRelation);
+        if ($stmt->bind_param("sii", $paction, $ppersonid, $prelationid) ) {
+
+            $paction = $action;
+            $ppersonid = $idCurrentUser;
+            $prelationid = $relationId;
+
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $result = buildResultat ($nbligneImpactees > 0?"update action de la relation reussi!":"Pas de modification!"); 
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultAndDatasError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
     }
 
     return $result;

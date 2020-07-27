@@ -22,7 +22,7 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
                 sendHttpErrorAndExit ("idrelation ".$idrelation." non valide!");
             }
 
-            $resultat = updateActionRelation($idrelation, $action);
+            $resultat = updateActionRelationAndState($idrelation, $action);
             sendHttpResponseAndExit($resultat);
         } 
 

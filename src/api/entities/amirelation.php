@@ -3,7 +3,7 @@
 /*
 * représentation d'une ligne de la table person_rel / relation
 */
-class AmiRelation {
+class AmiRelation implements IEntity{
 
     // id de la relation
     private int $id;

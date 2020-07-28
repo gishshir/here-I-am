@@ -8,7 +8,10 @@ include_once DIR_DAO.'dao.php';
 $passwordHashed = password_hash($password, PASSWORD_BCRYPT);
 echo $passwordHashed;*/
 
-phpinfo();
+//phpinfo();
+
+unsetSession();
+echo "unset session";
 
 //echo "current user id: " .getCurrentUserId();
 ?>

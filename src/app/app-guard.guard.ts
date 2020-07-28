@@ -10,7 +10,19 @@ import { NotificationService } from './common/notification/notification.service'
 })
 export class AppGuardGuard implements CanActivate {
 
-  constructor(private accountService: AccountService, private router: Router) { }
+  constructor(private accountService: AccountService, private notificationService: NotificationService,
+    private router: Router) {
+
+    this.notificationService.closedSession$.subscribe({
+      next: (value) => {
+        this.checkLogin("go-accueil", true).subscribe(
+          {
+            next: (urlTree: UrlTree) => this.router.navigateByUrl(urlTree)
+          }
+        );
+      }
+    });
+  }
 
 
   canActivate(
@@ -19,13 +31,13 @@ export class AppGuardGuard implements CanActivate {
 
     console.log("App-Guard#canActivate called")
     let url: string = state.url;
-    return this.checkLogin(url);
+    return this.checkLogin(url, false);
   }
 
-  checkLogin(url: string): Observable<boolean | UrlTree> {
+  checkLogin(url: string, forceControl: boolean): Observable<boolean | UrlTree> {
 
 
-    return this.accountService.isUserLoggedIn().pipe(
+    return this.accountService.isUserLoggedIn(forceControl).pipe(
 
       map((loggedIn: boolean) => {
 

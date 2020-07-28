@@ -2,8 +2,11 @@
 require_once '../shared/config.php';
 include_once DIR_DAO.'logindao.php';
 
+
 // logout de l'utilisateur courant
 if($_SERVER["REQUEST_METHOD"] == "DELETE")  {
+
+    verifyUserAuthentifie();
     
     $result;
     $user = getCurrentUserFromSession();

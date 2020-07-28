@@ -8,6 +8,7 @@ require_once DIR_DAO.'amidao.php';
  */
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
+    verifyUserAuthentifie();
 
     // retourne une liste de Personne
     $resultAndDatas = displayListPersonneNonAmis();

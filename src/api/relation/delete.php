@@ -2,9 +2,11 @@
 require_once '../shared/config.php';
 require_once DIR_DAO.'relationdao.php';
 
+
 // suppression définitive d'une relation
 if($_SERVER["REQUEST_METHOD"] == "DELETE")  {
-    
+
+    verifyUserAuthentifie();
 
     $postdata = file_get_contents ("php://input");
 

@@ -14,16 +14,14 @@ import { NotificationService } from '../common/notification/notification.service
 @Injectable({
   providedIn: 'root'
 })
-export class AccountService extends CommonService {
+export class AccountService {
 
   private userLoggedIn: User;
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
   constructor(private logger: LoggerService, private http: HttpClient, private router: Router,
-    private notificationService: NotificationService) {
-    super();
-  }
+    private commonService: CommonService, private notificationService: NotificationService) { }
 
   // ============================================
   _callCreateAccount(user: User, email: string): Observable<any> {
@@ -38,8 +36,8 @@ export class AccountService extends CommonService {
       email: email
     };
 
-    return this.http.post<AccountInfo>(url, userToCreate, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.post<AccountInfo>(url, userToCreate, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
 
   }
   creerCompte(user: User, email: string, handler: AccountInfoHandler): void {
@@ -49,7 +47,7 @@ export class AccountService extends CommonService {
       (data: AccountInfo) => handler.onGetAccountInfo(data)
       ,
       // error
-      (error: string) => this._propageErrorToHandler(error, handler)
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
     );
 
@@ -77,7 +75,7 @@ export class AccountService extends CommonService {
       pipe(map(bresp => bresp.retour));
   }
   verifyLogin(login: string, handler: BoolResponseHandler): void {
-    this._callVerifyLogin(login).pipe(catchError(super.handleError)).subscribe({
+    this._callVerifyLogin(login).pipe(catchError(this.commonService.handleError)).subscribe({
 
       //next
       next: (data: BoolResponse) => handler.onResponse(data.retour),
@@ -106,7 +104,7 @@ export class AccountService extends CommonService {
       pipe(map(bresp => bresp.retour));
   }
   verifyPseudo(pseudo: string, handler: BoolResponseHandler): void {
-    this._callVerifyLogin(pseudo).pipe(catchError(super.handleError)).subscribe({
+    this._callVerifyLogin(pseudo).pipe(catchError(this.commonService.handleError)).subscribe({
 
       //next
       next: (data: BoolResponse) => handler.onResponse(data.retour),
@@ -121,8 +119,8 @@ export class AccountService extends CommonService {
 
     let url = PHP_API_SERVER + "/login/delete.php";
 
-    return this.http.delete<Message>(url, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.delete<Message>(url, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
   }
 
   logout(handler: MessageHandler): void {
@@ -147,17 +145,17 @@ export class AccountService extends CommonService {
 
     let url = PHP_API_SERVER + "/login/read.php";
 
-    return this.http.get<User>(url, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.get<User>(url, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
 
   }
 
   // appel au serveur pour savoir si l'utilisateur a ou pas une session ouverte.
   // ou bien retour de la variable isLoggedIn si définie
-  isUserLoggedIn(): Observable<boolean> {
+  isUserLoggedIn(forceControl: boolean): Observable<boolean> {
 
     // soit on connait la reponse
-    if (this.userLoggedIn) {
+    if (!forceControl && this.userLoggedIn) {
       console.log("isLoggedIn: " + this.userLoggedIn.login);
       this.notificationService.changeUser(this.userLoggedIn.pseudo);
       return of(true);
@@ -190,8 +188,8 @@ export class AccountService extends CommonService {
 
     let url = PHP_API_SERVER + "/login/update.php";
 
-    return this.http.put<User>(url, userToLogin, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.put<User>(url, userToLogin, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
   }
 
   login(login: string, password: string, handler: UserHandler): void {
@@ -209,7 +207,7 @@ export class AccountService extends CommonService {
       }
       ,
       // error
-      (error: string) => this._propageErrorToHandler(error, handler)
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
     )
   }
   // ============================================

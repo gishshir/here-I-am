@@ -6,15 +6,16 @@ import { catchError } from 'rxjs/operators';
 import { CommonService, PHP_API_SERVER, Handler, HTTP_HEADER_URL, MessageHandler } from 'src/app/common/common.service';
 import { RelationInfo, RelationAction } from './relationinfo.type';
 import { Message } from 'src/app/common/message.type';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RelationService extends CommonService {
+export class RelationService {
 
-  constructor(private logger: LoggerService, private http: HttpClient) {
-    super();
-  }
+  constructor(private logger: LoggerService, private http: HttpClient,
+    protected commonService: CommonService) { }
+
 
   // ===========================================================
   private _callDeleteRelation(id: number): Observable<any> {
@@ -28,14 +29,14 @@ export class RelationService extends CommonService {
 
     return this.http.request<Message>('delete', url, options)
       .pipe(
-        catchError(super.handleError)
+        catchError(this.commonService.handleError)
       );
   }
 
   deleteRelation(relationIdToDelete: number, handler: MessageHandler): void {
 
     this._callDeleteRelation(relationIdToDelete).subscribe(
-      this._createMessageObserver(handler)
+      this.commonService._createMessageObserver(handler)
     );
   }
   // ===========================================================
@@ -44,13 +45,13 @@ export class RelationService extends CommonService {
   private _callCreateInvitation(relationToCreate: object): Observable<any> {
 
     let url = PHP_API_SERVER + "/relation/create.php";
-    return this.http.post<Message>(url, relationToCreate, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.post<Message>(url, relationToCreate, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
   }
   createInvitation(idperson: number, handler: MessageHandler): void {
 
     this._callCreateInvitation({ idperson: idperson, action: RelationAction.invitation })
-      .subscribe(this._createMessageObserver(handler));
+      .subscribe(this.commonService._createMessageObserver(handler));
   }
   //==============================================================
 
@@ -60,13 +61,13 @@ export class RelationService extends CommonService {
 
     let url = PHP_API_SERVER + "/relation/update.php";
 
-    return this.http.put<Message>(url, relationToUpdate, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.put<Message>(url, relationToUpdate, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
   }
   updateActionRelation(idrelation: number, action: string, handler: MessageHandler): any {
     this.logger.log("updateRelation() : " + action);
     this._callActionUpdate({ idrelation: idrelation, action: action }).subscribe(
-      this._createMessageObserver(handler)
+      this.commonService._createMessageObserver(handler)
     );
   }
   //==============================================================
@@ -81,7 +82,7 @@ export class RelationService extends CommonService {
 
     };
     return this.http.get<RelationInfo>(url, options)
-      .pipe(catchError(super.handleError));
+      .pipe(catchError(this.commonService.handleError));
 
   }
   getRelationInfoById(idrelation: number, handler: RelationInfoHandler): void {

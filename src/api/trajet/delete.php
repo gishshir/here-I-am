@@ -2,9 +2,12 @@
 require_once '../shared/config.php';
 require_once DIR_DAO.'trajetdao.php';
 
+
 if($_SERVER["REQUEST_METHOD"] == "DELETE")  {
     
 
+    verifyUserAuthentifie();
+    
     $postdata = file_get_contents ("php://input");
 
      if (isset($postdata) && !empty ($postdata)) {

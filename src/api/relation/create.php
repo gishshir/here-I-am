@@ -7,6 +7,8 @@ require_once DIR_DAO.'relationdao.php';
 // liste des trajets de l'utilisateur couran
 if($_SERVER["REQUEST_METHOD"] == "POST")  {
 
+    verifyUserAuthentifie();
+
      // read-only stream that allows us to read raw data from the request body
      $postdata = file_get_contents ("php://input");
 

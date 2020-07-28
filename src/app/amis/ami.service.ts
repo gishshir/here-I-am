@@ -14,10 +14,10 @@ import { Message, BoolResponse } from '../common/message.type';
 @Injectable({
   providedIn: 'root'
 })
-export class AmiService extends CommonService {
+export class AmiService {
 
-  constructor(private logger: LoggerService, private http: HttpClient) {
-    super();
+  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) {
+    console.log("amiService constructor");
   }
 
   // =============================================
@@ -28,7 +28,7 @@ export class AmiService extends CommonService {
     let url = PHP_API_SERVER + "/personne/read.php";
 
     return this.http.get<AmiPersonne[]>(url)
-      .pipe(catchError(super.handleError));
+      .pipe(catchError(this.commonService.handleError));
 
   }
 
@@ -43,7 +43,7 @@ export class AmiService extends CommonService {
       },
       // error
       (error: string) => {
-        this._propageErrorToHandler(error, handler);
+        this.commonService._propageErrorToHandler(error, handler);
       }
 
     );
@@ -70,7 +70,7 @@ export class AmiService extends CommonService {
     this._callAmiByIdPerson(idperson).subscribe({
 
       next: (data: AmiInfo) => handler.onGetAmi(this.buildAmiFromJs(data)),
-      error: (error: string) => this._propageErrorToHandler(error, handler)
+      error: (error: string) => this.commonService._propageErrorToHandler(error, handler)
     });
   }
   // =============================================
@@ -83,7 +83,7 @@ export class AmiService extends CommonService {
     let url = PHP_API_SERVER + "/ami/read.php";
 
     return this.http.get<AmiInfo[]>(url)
-      .pipe(catchError(super.handleError));
+      .pipe(catchError(this.commonService.handleError));
 
   }
 
@@ -102,7 +102,7 @@ export class AmiService extends CommonService {
       },
       // error
       (error: string) => {
-        this._propageErrorToHandler(error, handler);
+        this.commonService._propageErrorToHandler(error, handler);
       }
 
     );
@@ -115,23 +115,23 @@ export class AmiService extends CommonService {
 
     let url = PHP_API_SERVER + "/ami/update.php";
 
-    return this.http.put<Message>(url, amiToUpdate, this.httpOptionsHeaderJson)
+    return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
         // call observer.error(...) si http code != 200
-        catchError(super.handleError)
+        catchError(this.commonService.handleError)
         // sinon call observer.next(body), puis observer.complete()
       );
   }
   updateSuivreAmi(amiToUpdate: Ami, handler: MessageHandler): any {
     this.logger.log("updateAmi()");
     this._callUpdate({ idrelation: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
-      this._createMessageObserver(handler)
+      this.commonService._createMessageObserver(handler)
     );
   }
   updateNotifierAmi(amiToUpdate: Ami, notifier: boolean, handler: MessageHandler): any {
     this.logger.log("updateAmi() " + amiToUpdate.pseudo + " notifier: " + notifier);
     this._callUpdate({ idrelation: amiToUpdate.idrelation, notifier: notifier }).subscribe(
-      this._createMessageObserver(handler)
+      this.commonService._createMessageObserver(handler)
     );
   }
   // =====================================================

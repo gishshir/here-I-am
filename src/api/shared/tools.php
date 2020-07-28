@@ -66,17 +66,21 @@ function sendHttpEntityAndExit (ResultAndEntity $resultAndEntity) {
  }
 }
 
+function _sendHttpMessageAndCodeAndExit (string $message, bool $error, string $code) {
+  http_response_code($code);
+
+  $response = array();
+  $response["msg"] = $message;
+  $response["error"] = $error;
+
+  echo json_encode($response);
+  exit;
+}
  function _sendHttpMessage (string $message, bool $error) {
 
     $code = $error?400:200;
-    http_response_code($code);
-
-    $response = array();
-    $response["msg"] = $message;
-    $response["error"] = $error;
-
-    echo json_encode($response);
-    exit;
+    _sendHttpMessageAndCodeAndExit ($message, $error, $code);
+    
  }
 
 

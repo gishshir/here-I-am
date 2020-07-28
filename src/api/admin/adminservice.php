@@ -2,7 +2,7 @@
 
 require '../dao/dao.php';
 
-
+verifyUserAuthentifie();
 if(!empty($_GET))  {
 
     

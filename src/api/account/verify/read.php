@@ -10,6 +10,8 @@ include_once DIR_DAO.'logindao.php';
  */
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
+    verifyUserAuthentifie();
+
     $resultAndBoolean;
 
     if (isset($_GET["login"])) {

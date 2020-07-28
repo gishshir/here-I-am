@@ -2,8 +2,10 @@
 require_once '../shared/config.php';
 require_once DIR_DAO.'amidao.php';
 
+
 if($_SERVER["REQUEST_METHOD"] == "PUT")  {
-    
+
+    verifyUserAuthentifie();
     
     // read-only stream that allows us to read raw data from the request body
     $postdata = file_get_contents ("php://input");

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, Observer } from 'rxjs';
 import { Message } from './message.type';
+import { NotificationService } from './notification/notification.service';
 
 
 export const HTTP_HEADER_JSON = new HttpHeaders({
@@ -17,6 +18,7 @@ export const HTTP_HEADER_URL = new HttpHeaders({
 // en DEV depuis localhost:4200
 export const PHP_API_SERVER = "https://hereIam-api.localhost";
 
+const SESSION_CLOSED: string = "SESSION_CLOSED";
 
 
 @Injectable({
@@ -24,11 +26,11 @@ export const PHP_API_SERVER = "https://hereIam-api.localhost";
 })
 export class CommonService {
 
-  constructor() { }
-
-  protected httpOptionsHeaderJson = {
+  httpOptionsHeaderJson = {
     headers: HTTP_HEADER_JSON
   };
+
+  constructor(private notificationService: NotificationService) { }
 
 
   /*
@@ -39,7 +41,7 @@ export class CommonService {
  * .status: 400
  * .url: "http://..../update.php" par ex
  */
-  protected handleError(httpError: HttpErrorResponse): Observable<never> {
+  handleError(httpError: HttpErrorResponse): Observable<never> {
 
     let message = 'Erreur technique! consulter la sortie console';
 
@@ -51,10 +53,15 @@ export class CommonService {
 
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
+      let body: string = JSON.stringify(httpError.error);
       console.error(
         `Backend returned code ${httpError.status}, ` +
-        `body was: ${httpError.error}`);
+        `body was: ${body}`);
 
+      // session fermée - utilisateur non authentifié
+      if (httpError.status == 401 && httpError.error.msg) {
+        message = SESSION_CLOSED;
+      }
       // message metier depuis api
       if (httpError.status == 400 && httpError.error.msg) {
         message = httpError.error.msg;
@@ -64,8 +71,11 @@ export class CommonService {
     // call observer.error(...)
     return throwError(message);
   }
-  protected _propageErrorToHandler(error: string, handler?: Handler): void {
+  _propageErrorToHandler(error: string, handler?: Handler): void {
 
+    if (error === SESSION_CLOSED) {
+      this.notificationService.informClosedSession(true);
+    }
     if (handler) {
       let errorMsg = {
         msg: error,
@@ -78,7 +88,7 @@ export class CommonService {
 
   // observer générique envoyant des obj Message
   // et gérant proprement les erreurs
-  protected _createMessageObserver(handler: MessageHandler): Observer<Message> {
+  _createMessageObserver(handler: MessageHandler): Observer<Message> {
 
     return {
 

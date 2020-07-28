@@ -7,15 +7,14 @@ import { catchError, map } from 'rxjs/operators';
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
+import { NotificationService } from '../common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TrajetService extends CommonService {
+export class TrajetService {
 
-  constructor(private logger: LoggerService, private http: HttpClient) {
-    super();
-  }
+  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) { }
 
 
   // ============================================
@@ -24,7 +23,7 @@ export class TrajetService extends CommonService {
     let url = PHP_API_SERVER + "/trajet/read.php";
 
     return this.http.get<Trajet[]>(url)
-      .pipe(catchError(super.handleError));
+      .pipe(catchError(this.commonService.handleError));
   }
 
   getListeTrajets(handler?: TrajetsHandler): void {
@@ -37,7 +36,7 @@ export class TrajetService extends CommonService {
       },
       // error
       (error: string) => {
-        this._propageErrorToHandler(error, handler);
+        this.commonService._propageErrorToHandler(error, handler);
       }
 
     )
@@ -50,7 +49,7 @@ export class TrajetService extends CommonService {
     let url = PHP_API_SERVER + "/trajet/read_one.php";
 
     return this.http.get<Trajet[]>(url)
-      .pipe(catchError(super.handleError));
+      .pipe(catchError(this.commonService.handleError));
   }
   chercherDernierTrajet(handler: TrajetHandler): void {
 
@@ -59,7 +58,7 @@ export class TrajetService extends CommonService {
       (data: Trajet) => handler.onGetTrajet(data)
       ,
       // error
-      (error: string) => this._propageErrorToHandler(error, handler)
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
     );
   }
@@ -75,8 +74,8 @@ export class TrajetService extends CommonService {
 
     let url = PHP_API_SERVER + "/trajet/create.php";
 
-    return this.http.post<Trajet>(url, newTrajet, this.httpOptionsHeaderJson)
-      .pipe(catchError(super.handleError));
+    return this.http.post<Trajet>(url, newTrajet, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
 
   }
   demarrerNouveauTrajet(mean: TrajetMeans, handler: TrajetHandler): void {
@@ -95,7 +94,7 @@ export class TrajetService extends CommonService {
       (data: Trajet) => handler.onGetTrajet(data)
       ,
       // error
-      (error: string) => this._propageErrorToHandler(error, handler)
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
     );
 
@@ -113,14 +112,14 @@ export class TrajetService extends CommonService {
 
     return this.http.request<Message>('delete', url, options)
       .pipe(
-        catchError(super.handleError)
+        catchError(this.commonService.handleError)
       );
   }
 
   deleteTrajet(trajetToDelete: Trajet, handler: MessageHandler): void {
 
     this._callDeleteTrajet(trajetToDelete.id).subscribe(
-      this._createMessageObserver(handler)
+      this.commonService._createMessageObserver(handler)
     );
   }
   // ===========================================================
@@ -131,9 +130,9 @@ export class TrajetService extends CommonService {
 
     let url = PHP_API_SERVER + "/trajet/update.php";
 
-    return this.http.put<Message>(url, trajetToUpdate, this.httpOptionsHeaderJson)
+    return this.http.put<Message>(url, trajetToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
-        catchError(super.handleError)
+        catchError(this.commonService.handleError)
       );
   }
 
@@ -144,7 +143,7 @@ export class TrajetService extends CommonService {
       (data: Trajet) => handler.onGetTrajet(data)
       ,
       // error
-      (error: string) => this._propageErrorToHandler(error, handler)
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
     );
 

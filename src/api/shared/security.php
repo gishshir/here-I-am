@@ -1,4 +1,17 @@
 <?php
+
+// vérifie qu'il existe un utilisateur authentifié avec une session ouverte.
+// si ce n'est pas le cas retourne directement un message d'erreur.
+function verifyUserAuthentifie () {
+
+    $user = getCurrentUserFromSession();
+    if ($user == null) {
+
+        $message = "Accès la fonction non authorisée par un utilisateur non authentifié.";
+        _sendHttpMessageAndCodeAndExit ($message, true, 401);
+
+    }
+}
     
 
 // pour les textes contenant des balises html qu'on doit garder

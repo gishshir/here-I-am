@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 24 juil. 2020 à 16:55
+-- Généré le : mar. 28 juil. 2020 à 13:05
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -47,7 +47,8 @@ INSERT INTO `account` (`id`, `userid`, `email`, `etat`) VALUES
 (13, 15, 'fifi@fifi.fr', 'waiting'),
 (14, 16, 'hophop@hophpop.fr', 'waiting'),
 (15, 17, 'fripouille@gmail.com', 'waiting'),
-(16, 18, 'titi@titi.fr', 'waiting');
+(16, 18, 'titi@titi.fr', 'waiting'),
+(17, 19, 'coco@coco.fr', 'waiting');
 
 -- --------------------------------------------------------
 
@@ -69,18 +70,42 @@ CREATE TABLE `person_rel` (
 --
 
 INSERT INTO `person_rel` (`personid`, `relationid`, `position`, `suivre`, `notifier`, `action`) VALUES
-(1, 5, 'B', 0, 1, 'acceptee'),
-(1, 7, 'A', 0, 0, 'invitation'),
+(1, 5, 'B', 1, 1, 'acceptee'),
 (1, 8, 'A', 1, 1, 'invitation'),
-(2, 5, 'A', 0, 1, 'invitation'),
+(1, 36, 'B', 0, 0, 'none'),
+(1, 39, 'B', 0, 0, 'none'),
+(2, 5, 'A', 1, 1, 'invitation'),
 (2, 6, 'A', 1, 0, 'invitation'),
-(3, 6, 'B', 0, 1, 'none'),
-(3, 10, 'A', 0, 0, 'invitation'),
-(3, 11, 'A', 0, 0, 'invitation'),
-(4, 7, 'B', 0, 1, 'none'),
+(2, 29, 'B', 0, 0, 'acceptee'),
+(2, 32, 'B', 0, 0, 'refusee'),
+(3, 6, 'B', 0, 0, 'none'),
+(3, 11, 'A', 0, 1, 'invitation'),
+(3, 33, 'B', 0, 0, 'none'),
+(3, 37, 'B', 0, 0, 'none'),
 (4, 11, 'B', 0, 1, 'refusee'),
-(5, 8, 'B', 1, 1, 'none'),
-(5, 10, 'B', 0, 1, 'acceptee');
+(4, 25, 'A', 0, 1, 'invitation'),
+(4, 26, 'A', 0, 0, 'invitation'),
+(5, 8, 'B', 1, 1, 'acceptee'),
+(5, 27, 'A', 0, 0, 'invitation'),
+(5, 30, 'A', 0, 0, 'invitation'),
+(5, 31, 'A', 0, 0, 'invitation'),
+(5, 32, 'A', 0, 0, 'invitation'),
+(15, 25, 'B', 0, 0, 'acceptee'),
+(15, 29, 'A', 0, 0, 'invitation'),
+(15, 33, 'A', 0, 0, 'invitation'),
+(15, 35, 'A', 0, 0, 'invitation'),
+(15, 36, 'A', 0, 0, 'invitation'),
+(15, 42, 'A', 0, 0, 'invitation'),
+(16, 37, 'A', 0, 0, 'invitation'),
+(16, 38, 'A', 0, 0, 'invitation'),
+(16, 39, 'A', 0, 0, 'invitation'),
+(17, 30, 'B', 0, 0, 'none'),
+(17, 35, 'B', 0, 0, 'none'),
+(17, 38, 'B', 0, 0, 'none'),
+(18, 26, 'B', 0, 0, 'none'),
+(18, 31, 'B', 0, 0, 'none'),
+(18, 42, 'B', 0, 0, 'none'),
+(19, 27, 'B', 0, 0, 'refusee');
 
 -- --------------------------------------------------------
 
@@ -102,10 +127,22 @@ CREATE TABLE `relation` (
 INSERT INTO `relation` (`id`, `person_a`, `person_b`, `etat`) VALUES
 (5, 2, 1, 'open'),
 (6, 2, 3, 'pending'),
-(7, 1, 4, 'pending'),
-(8, 1, 5, 'pending'),
-(10, 3, 5, 'open'),
-(11, 3, 4, 'closed');
+(8, 1, 5, 'open'),
+(11, 3, 4, 'closed'),
+(25, 4, 15, 'open'),
+(26, 4, 18, 'pending'),
+(27, 5, 19, 'closed'),
+(29, 15, 2, 'open'),
+(30, 5, 17, 'pending'),
+(31, 5, 18, 'pending'),
+(32, 5, 2, 'closed'),
+(33, 15, 3, 'pending'),
+(35, 15, 17, 'pending'),
+(36, 15, 1, 'pending'),
+(37, 16, 3, 'pending'),
+(38, 16, 17, 'pending'),
+(39, 16, 1, 'pending'),
+(42, 15, 18, 'pending');
 
 --
 -- Déclencheurs `relation`
@@ -113,9 +150,9 @@ INSERT INTO `relation` (`id`, `person_a`, `person_b`, `etat`) VALUES
 DELIMITER $$
 CREATE TRIGGER `after_insert_relation` AFTER INSERT ON `relation` FOR EACH ROW BEGIN
 
-INSERT INTO person_rel (personid, relationid) VALUES (NEW.person_a, NEW.id);
+INSERT INTO person_rel (personid, relationid, position) VALUES (NEW.person_a, NEW.id, 'A');
 
-INSERT INTO person_rel (personid, relationid) VALUES (NEW.person_b, NEW.id);
+INSERT INTO person_rel (personid, relationid, position) VALUES (NEW.person_b, NEW.id, 'B');
 
 END
 $$
@@ -160,19 +197,25 @@ INSERT INTO `trajet` (`id`, `userid`, `starttime`, `endtime`, `etat`, `mean`) VA
 (13, 2, 1594718728, 1594719565, 'Ended', 'Bateau'),
 (14, 2, 1594719632, 1594719656, 'Ended', 'Bus'),
 (16, 1, 1594738996, 1594739001, 'Ended', 'Voiture'),
-(17, 1, 1594739387, 1594739437, 'Ended', 'Bus'),
 (18, 1, 1594739890, 1595256019, 'Ended', 'Moto'),
 (19, 4, 1594741034, 1595499546, 'Ended', 'Voiture'),
 (20, 2, 1594741217, 1595256047, 'Ended', 'Moto'),
 (21, 2, 1595256055, -1, 'Pausing', 'Avion'),
 (22, 1, 1595256070, 1595517619, 'Ended', 'Velo'),
-(23, 3, 1595494481, -1, 'Started', 'Bus'),
-(24, 4, 1595499559, -1, 'Started', 'Velo'),
+(23, 3, 1595494481, 1595670596, 'Ended', 'Bus'),
+(24, 4, 1595499559, 1595689889, 'Ended', 'Velo'),
 (25, 5, 1595510214, -1, 'Started', 'Bateau'),
 (26, 16, 1595512393, 1595514303, 'Ended', 'Voiture'),
-(27, 16, 1595514400, -1, 'Started', 'Moto'),
+(27, 16, 1595514400, 1595860260, 'Ended', 'Moto'),
 (28, 1, 1595517636, 1595600817, 'Ended', 'Bateau'),
-(29, 1, 1595600824, -1, 'Started', 'Train');
+(29, 1, 1595600824, 1595669472, 'Ended', 'Train'),
+(30, -1, 1595669516, 1595669557, 'Ended', 'Velo'),
+(31, 1, 1595669813, -1, 'Started', 'Moto'),
+(32, 3, 1595670611, -1, 'Started', 'Pied'),
+(33, 4, 1595773581, 1595925338, 'Ended', 'Pied'),
+(34, 16, 1595860439, -1, 'Started', 'Bus'),
+(35, -1, 1595917544, -1, 'Started', 'Bus'),
+(36, 4, 1595925349, -1, 'Started', 'Avion');
 
 --
 -- Déclencheurs `trajet`
@@ -222,7 +265,8 @@ INSERT INTO `utilisateur` (`id`, `login`, `password`, `pseudo`, `etat`) VALUES
 (15, 'login6', '$2y$10$9Fk8r.NTp3vNkir0AkJ8YO6Byf5l7IJXMLoM6O3XwUpp76XJGWbQ2', 'Fifi la ficelle', 'Arret'),
 (16, 'login7', '$2y$10$VhC/HL2qPBhEbfIxz69CLejlJTwpNNilyhQ2Mrr9h5b8aDukeJsh2', 'Hophop le rougegorge', 'EnChemin'),
 (17, 'login8', '$2y$10$9nmKvLS1AV05ROkMlwfKEuajqBCN1g2rorDQ.KeI3YOsLWzopmmbC', 'Fripouille la veine', 'Arret'),
-(18, 'login9', '$2y$10$NkqRBKmTaHjAV2TYmYkz1.W3M1/qds6Z4PbYtPcqchW0pIvIHSUxS', 'Titi la combine', 'Arret');
+(18, 'login9', '$2y$10$NkqRBKmTaHjAV2TYmYkz1.W3M1/qds6Z4PbYtPcqchW0pIvIHSUxS', 'Titi la combine', 'Arret'),
+(19, 'toto', '$2y$10$5t6aFfJyteyJ7Ss0FgBuROlSZHB0fTpuSn4zI/h/ouY9Q9IKUH6Em', 'coco la poulette', 'Arret');
 
 --
 -- Index pour les tables déchargées
@@ -275,25 +319,25 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT pour la table `relation`
 --
 ALTER TABLE `relation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT pour la table `trajet`
 --
 ALTER TABLE `trajet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Contraintes pour les tables déchargées

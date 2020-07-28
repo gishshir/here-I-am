@@ -13,10 +13,10 @@ export const HTTP_HEADER_URL = new HttpHeaders({
 });
 
 
-//export const PHP_API_SERVER = "http://hereIam-dist.localhost/api";
+export const PHP_API_SERVER = "./api";
 
 // en DEV depuis localhost:4200
-export const PHP_API_SERVER = "https://hereIam-api.localhost";
+//export const PHP_API_SERVER = "https://hereIam-api.localhost";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 

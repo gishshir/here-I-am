@@ -48,14 +48,17 @@ export class TrajetService {
 
     let url = PHP_API_SERVER + "/trajet/read_one.php";
 
-    return this.http.get<Trajet[]>(url)
+    // attention si pas de trajet alors {"retour": false}
+    return this.http.get<Trajet>(url)
       .pipe(catchError(this.commonService.handleError));
   }
   chercherDernierTrajet(handler: TrajetHandler): void {
 
     this._callDernierTrajet().subscribe(
-      // next
-      (data: Trajet) => handler.onGetTrajet(data)
+      // next (boolean ou trajet)
+      (data: Trajet) => {
+        handler.onGetTrajet(data);
+      }
       ,
       // error
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
@@ -66,7 +69,7 @@ export class TrajetService {
   compareEtatDernierTrajet(etat: TrajetState): Observable<boolean> {
 
     return this._callDernierTrajet().pipe(
-      map((t: Trajet) => (t != null && t.etat == etat)));
+      map((t?: any) => ((t && t.retour == false) || (t && t.id && t.etat == etat))));
   }
 
   // ===========================================================

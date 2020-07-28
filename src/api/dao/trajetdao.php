@@ -139,6 +139,7 @@ function _findLastTrajet (mysqli $con) : ResultAndEntity {
 }
 //========================================================================================
 
+// cherche un Trajet et return null si aucun
 function _findTrajet (mysqli $con, string $req_sql, $idToBind, string $message) : ResultAndEntity {
 
 
@@ -161,7 +162,9 @@ function _findTrajet (mysqli $con, string $req_sql, $idToBind, string $message) 
               $resultAndEntity = buildResultAndEntity($message, $trajet);
 
             }  else {
+                //echo "pas de trajet trouvé!";
                 $resultAndEntity = buildResultAndEntity("Pas de trajet trouvé!", null);
+                //echo var_dump($resultAndEntity);
             }            
 
         } else {

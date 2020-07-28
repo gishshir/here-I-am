@@ -3,7 +3,9 @@ require_once '../shared/config.php';
 require_once DIR_DAO.'trajetdao.php';
 
 
-// liste des trajets de l'utilisateur couran
+// retourne un trajet de l'utilisateur courant
+// si pas id retourne le dernier trajet si existe
+// sinon retourne une chaine vide
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
 
     verifyUserAuthentifie();
@@ -14,6 +16,18 @@ if($_SERVER["REQUEST_METHOD"] == "GET")  {
         $resultAndEntity = findLastTrajet();
     }
     
+    if (!$resultAndEntity->is_error()) {
+        if ($resultAndEntity->get_entity()) {
+            sendHttpEntityAndExit($resultAndEntity);
+        } else {
+            // pas de trajet trouvé
+            $resultAndBoolean = buildResultAndBoolean("Pas de trajet trouvé!", false);
+            sendHttpBooleanAndExit ($resultAndBoolean);
+        }
+    }
+    
+
+    //avec erreur
     sendHttpEntityAndExit($resultAndEntity);
 
 

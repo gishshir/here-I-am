@@ -34,7 +34,9 @@ export class AccueilComponent implements OnInit {
     this.trajetService.chercherDernierTrajet({
 
       onGetTrajet: t => {
-        this.dernierTrajet = t;
+        if (t && t.id) {
+          this.dernierTrajet = t;
+        }
       },
       onError: m => console.log(m)
 

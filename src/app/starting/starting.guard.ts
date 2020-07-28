@@ -20,9 +20,9 @@ export class StartingGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     return this.trajetService.compareEtatDernierTrajet(TrajetState.ended).pipe(
-      map((trajetEnded: boolean) => {
+      map((noTrajetOrTrajetEnded: boolean) => {
 
-        if (trajetEnded) {
+        if (noTrajetOrTrajetEnded) {
           return true;
         } else {
           return this.router.parseUrl("/go-accueil");

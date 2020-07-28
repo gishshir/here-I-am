@@ -6,17 +6,18 @@
  function connectMaBase() {
 		
     // Connexion MySQL 
-    /*if ($_SERVER['SERVER_NAME'] == "whereIAm.localhost") {*/
+    $servername = $_SERVER['SERVER_NAME'];
+    if (strchr($servername, "localhost")) {
         
       global $local_user;
       global $local_pwd;
       $con = new mysqli('localhost', $local_user,$local_pwd, 'hereiam');    
-   /* } else {
+    } else {
         
       global $remote_user;
       global $remote_pwd;
-      $con = new mysqli('50.31.138.79', $remote_user,$remote_pwd, 'gishshir_tournerie_net');    
-    }*/
+      $con = new mysqli('50.31.138.79', $remote_user,$remote_pwd, 'gishshir_hereiam');    
+    }
     
     $con->set_charset("utf8");
  

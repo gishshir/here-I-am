@@ -6,7 +6,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AccountRoutingModule } from './account-routing.module';
 
-import { LogoutComponent } from './logout/logout.component';
 import { LoginComponent } from './login/login.component';
 import { CreateAccountComponent } from './creation/creation.component';
 import { DialogCreateAccountSuccessComponent } from './creation/dialog-success.component';
@@ -22,10 +21,10 @@ import { DialogCreateAccountSuccessComponent } from './creation/dialog-success.c
         AccountRoutingModule
     ],
     exports: [
-        LogoutComponent
+
     ],
     declarations: [
-        LoginComponent, LogoutComponent, CreateAccountComponent, DialogCreateAccountSuccessComponent
+        LoginComponent, CreateAccountComponent, DialogCreateAccountSuccessComponent
     ]
 })
 export class AccountModule { }

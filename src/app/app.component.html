@@ -7,14 +7,15 @@
 
 
   <!--logout-->
-  <a fxFlex="initial" aria-label="déconnection" title="Logout" (click)="onLogout()" routerLink="/go-login">
+  <a *ngIf="loggedIn" fxFlex="initial" aria-label="déconnection" title="Logout" (click)="logout()"
+    style="cursor: pointer;">
     <mat-icon class="material-icons md-48" color="primary">toggle_off</mat-icon>
   </a>
 
 
   <!--go login-->
-  <a fxFlex="initial" aria-label="Accès à la page d'authentification" title="Login" routerLink="/go-login"
-    routerLinkActive="active">
+  <a *ngIf="!loggedIn" fxFlex="initial" aria-label="Accès à la page d'authentification" title="Login"
+    routerLink="/go-login" routerLinkActive="active">
     <mat-icon class="material-icons md-48" color="primary">login</mat-icon>
   </a>
 

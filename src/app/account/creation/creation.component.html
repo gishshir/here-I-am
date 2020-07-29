@@ -64,7 +64,7 @@
 
     </form>
 
-    <div *ngIf="response" [style.background-color]="response.error?'lightcoral':'lightgreen'">
+    <div *ngIf="response" class="bloc-reponse" [style.background-color]="response.error?'lightcoral':'lightgreen'">
         <p>{{response.msg}}</p>
     </div>
 

@@ -10,12 +10,13 @@ import { NotificationService } from './common/notification/notification.service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+
   title = 'Où sont mes amis ?';
-  logout: boolean = false;
+  loggedIn: boolean = false;
   response: Message;
 
   constructor(private route: Router, private accountService: AccountService,
-    private notificationService: NotificationService) {
+    private notificationService: NotificationService, private router: Router) {
 
     // abonnement
     this.notificationService.changeUser$.subscribe(
@@ -26,10 +27,18 @@ export class AppComponent implements OnInit {
     console.log("App onInit()...");
   }
 
-  onLogout() {
-    this.logout = true;
+  logout() {
 
+    this.accountService.logout({
+      onMessage: (m: Message) => {
+        this.response = m;
+        this.loggedIn = false;
+        this.router.navigate(["/go-login"]);
+      },
+      onError: (e: Message) => this.response = e
+    });
   }
+
 
   // reception d'un evenement de message
   onMessage(response: Message) {
@@ -41,5 +50,6 @@ export class AppComponent implements OnInit {
     console.log("AppComponent#mettreAJourBanniere() " + pseudo);
     this.title = pseudo != null ?
       "Bienvenue " + pseudo + " !!!" : "Où sont mes amis ?";
+    this.loggedIn = pseudo != null;
   }
 }

@@ -22,7 +22,7 @@ function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
             $stmt = _execute ($stmt);
             
             $nbligneImpactees = $stmt->affected_rows ;
-            $result = buildResultat ($nbligneImpactees > 0?"update suivi de la relation reussi!":"Pas de modification!");            
+            $result = buildResultat ($nbligneImpactees > 0?"suivi de la relation reussi!":"Pas de modification!");            
 
         } else {
             throw new Exception( _sqlErrorMessageBind($stmt));
@@ -67,7 +67,7 @@ function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
                 $stmt = _execute ($stmt);
                 $nbligneImpactees += $stmt->affected_rows ;
             }   
-            $message = $nbligneImpactees > 0?"update notifier amis reussi! (".$nbligneImpactees.")":"Pas de modification!";
+            $message = $nbligneImpactees > 0?"notifier amis reussi!":"Pas de modification!";
             $result = buildResultat ($message);            
             _commitTransaction($con);
 

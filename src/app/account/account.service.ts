@@ -130,6 +130,7 @@ export class AccountService {
 
       next: (m: Message) => {
         // lance un message pour l'ensemble de l'application
+        console.log("loggout next..");
         this.notificationService.changeUser(null);
         this.userLoggedIn = null;
         handler.onMessage(m);

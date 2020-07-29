@@ -4,7 +4,7 @@
   <mat-button-toggle-group #group="matButtonToggleGroup" fxFlex="initial">
 
     <mat-button-toggle fxFlex="initial" *ngFor="let mean of trajetMeansEnum">
-      <app-trajet-means-icon [trajetMean]="mean" [taille]="48" (click)="onSelect(mean)"></app-trajet-means-icon>
+      <app-trajet-means-icon [trajetMean]="mean" [taille]="48" (click)="onChangeMean(mean)"></app-trajet-means-icon>
     </mat-button-toggle>
 
 
@@ -35,4 +35,4 @@
 
 
 </div>
-<app-notification *ngIf="message" [message]="message"></app-notification>
+<app-notification *ngIf="response" [message]="response"></app-notification>

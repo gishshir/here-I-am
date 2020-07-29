@@ -181,10 +181,45 @@ function _findTrajet (mysqli $con, string $req_sql, $idToBind, string $message) 
     
 }
 
+function updateMeanTrajet (int $trajetid, string $trajetMean) : ResultAndEntity {
+
+    $resultAndEntity; $stmt;
+   
+    $con = connectMaBase();
+    $req_updateMeanTrajet = "update trajet SET mean = ?  WHERE id = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_updateMeanTrajet);
+        if ($stmt->bind_param("si", $pmean, $pid) ) {
+
+            $pid = $trajetid;
+            $pmean = $trajetMean;
+
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $resultAndEntity = _findTrajetById ($con, $trajetid);
+            $message = $nbligneImpactees > 0?"moyen transport enregistré!":"Pas de modification!";
+            $resultAndEntity->set_msg ($message);
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $resultAndEntity;
+}
 /*
 * met à jour d'un trajet (TrajetState)
 */
-function updateTrajet (Trajet $trajet) : ResultAndEntity {
+function updateStateTrajet (Trajet $trajet) : ResultAndEntity {
 
     $resultAndEntity; $stmt;
    

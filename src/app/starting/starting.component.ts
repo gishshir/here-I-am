@@ -18,7 +18,7 @@ export class StartingComponent implements OnInit {
   trajetMeansEnum: TrajetMeans[] = [];
   selectedMean: TrajetMeans;
   nouveauTrajet: Trajet;
-  message: Message;
+  response: Message;
 
   constructor(private trajetService: TrajetService, private amiService: AmiService) {
     let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
@@ -34,12 +34,23 @@ export class StartingComponent implements OnInit {
 
   // a l'ecoute des event message
   onMessage(m: Message) {
-    this.message = m;
+    this.response = m;
   }
 
-  onSelect(mean: TrajetMeans) {
+  onChangeMean(mean: TrajetMeans) {
     this.selectedMean = mean;
     // todo mettre à jour le moyen de trajet si trajet démarré...
+    if (this.nouveauTrajet) {
+      this.trajetService.changerMeanTrajet(this.nouveauTrajet.id, mean, {
+
+        onGetTrajet: (t: Trajet) => {
+          this.nouveauTrajet.mean = t.mean;
+          this.response = { msg: "moyen de transport '" + t.mean + "' pris en compte!", error: false }
+        },
+        onError: (error: Message) => this.response = error
+
+      });
+    }
   }
 
 
@@ -59,7 +70,7 @@ export class StartingComponent implements OnInit {
     this.trajetService.changerStatusTrajet(this.nouveauTrajet.id, TrajetState.ended, {
 
       onGetTrajet: (t: Trajet) => this.nouveauTrajet = t,
-      onError: (error: Message) => console.log(error.msg)
+      onError: (error: Message) => this.response = error
     });
 
   }
@@ -68,7 +79,7 @@ export class StartingComponent implements OnInit {
     this.trajetService.demarrerNouveauTrajet(this.selectedMean, {
 
       onGetTrajet: t => this.nouveauTrajet = t,
-      onError: e => console.log(e)
+      onError: e => this.response = e
     });
   }
 

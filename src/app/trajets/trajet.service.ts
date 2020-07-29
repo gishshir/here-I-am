@@ -165,6 +165,19 @@ export class TrajetService {
 
     this.updateTrajet(trajetToUpdate, handler);
   }
+  changerMeanTrajet(trajetId: number, newMean: TrajetMeans, handler: TrajetHandler): void {
+
+    let trajetToUpdate: Trajet = {
+
+      id: trajetId,
+      etat: null,
+      starttime: -1,
+      endtime: -1,
+      mean: newMean
+    }
+
+    this.updateTrajet(trajetToUpdate, handler);
+  }
   // ===========================================================
 
 }

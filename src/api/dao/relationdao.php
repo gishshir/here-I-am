@@ -48,7 +48,7 @@ function deleteRelation (int $id) : Resultat {
     $result;
 
     $con = connectMaBase();
-    $con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    _beginTransaction($con);
 
     try {
 
@@ -65,12 +65,12 @@ function deleteRelation (int $id) : Resultat {
        } else {
         throw new Exception("echec de création!: "+ $resultAndEntity->get_msg());    
        }
-       $con->commit();
+       _commitTransaction($con);
 
 
     } catch (Exception $e) {
         $result = buildResultatError($e->getMessage());
-        $con->rollback();
+        _rollbackTransaction($con);
     }
     finally {
         _closeAll(null, $con);
@@ -190,7 +190,7 @@ function updateActionRelationAndState (int $relationId, string $action): Resulta
     $idCurrentUser = getCurrentUserId();
    
     $con = connectMaBase();
-    $con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    _beginTransaction($con);
 
     try {
 
@@ -209,13 +209,13 @@ function updateActionRelationAndState (int $relationId, string $action): Resulta
                     default : $etat = "pending"; break;
                 }
                 $result = _updateStateRelation($con, $relationId, $etat);
-                $con->commit();
+                _commitTransaction($con);
             } else {
                 throw new Exception ($resultAndEntity->get_msg());
             }
     }
     catch (Exception $e) {
-        $con->rollback();
+        _rollbackTransaction($con);
         $result = buildResultAndDatasError($e->getMessage());
     }
     finally {

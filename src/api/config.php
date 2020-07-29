@@ -1,6 +1,6 @@
 <?php
 
-define('DIR_BASE',  $_SERVER['DOCUMENT_ROOT'].'/');
+define('DIR_BASE',  $_SERVER['DOCUMENT_ROOT'].'/api/');
 define('DIR_DAO',    DIR_BASE . 'dao/');
 define('DIR_SHARED',    DIR_BASE . 'shared/');
 define('DIR_ENTITIES',    DIR_BASE . 'entities/');

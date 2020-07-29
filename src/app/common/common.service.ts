@@ -12,11 +12,11 @@ export const HTTP_HEADER_URL = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
 });
 
-
-//export const PHP_API_SERVER = "./api";
+// sur dist ou bien en remote
+export const PHP_API_SERVER = "./api";
 
 // en DEV depuis localhost:4200
-export const PHP_API_SERVER = "https://hereiam-api.secure";
+//export const PHP_API_SERVER = "https://hereiam-api.secure";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 

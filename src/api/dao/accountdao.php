@@ -8,7 +8,7 @@
 function createUtilisateurAndAccount(Utilisateur $utilisateur, string $email) : ResultAndEntity {
 
     $con = connectMaBase();
-    $con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    _beginTransaction($con);
 
     $resultAndEntity; $utilisateur; $account;
 
@@ -31,7 +31,7 @@ function createUtilisateurAndAccount(Utilisateur $utilisateur, string $email) : 
 
                 $resultAndEntity = buildResultAndEntity("AccountInfo constitué!", $accountInfo);
 
-                $con->commit();
+                _commitTransaction($con);
             } else {
                 throw new Exception ($resultAndEntity->get_msg());
             }
@@ -40,7 +40,7 @@ function createUtilisateurAndAccount(Utilisateur $utilisateur, string $email) : 
     }
     catch (Exception $e) {
         $resultAndEntity = buildResultAndEntityError($e->getMessage());
-        $con->rollback();
+        _rollbackTransaction($con);
     }
     finally {
         _closeAll(null, $con);

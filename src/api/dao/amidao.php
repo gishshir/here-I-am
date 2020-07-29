@@ -48,7 +48,7 @@ function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
     $idCurrentUser = getCurrentUserId();
    
     $con = connectMaBase();
-    $con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    _beginTransaction($con);
     $req_updateSuiviAmi = "update person_rel SET notifier = ?  WHERE personid = ? and relationid = ?";
 
     try {
@@ -69,7 +69,7 @@ function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
             }   
             $message = $nbligneImpactees > 0?"update notifier amis reussi! (".$nbligneImpactees.")":"Pas de modification!";
             $result = buildResultat ($message);            
-            $con->commit();
+            _commitTransaction($con);
 
         } else {
             throw new Exception( _sqlErrorMessageBind($stmt));
@@ -77,7 +77,7 @@ function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
     }
     catch (Exception $e) {
         $result = buildResultAndDatasError($e->getMessage());
-        $con->rollback();
+        _rollbackTransaction($con);
     }
     finally {
         _closeAll($stmt, $con);

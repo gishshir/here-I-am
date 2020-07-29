@@ -1,5 +1,24 @@
 <?php
 
+function _beginTransaction ($con): void{
+
+     // version mysql >= 5.6.5
+     // SHOW GLOBAL VARIABLES LIKE '%version%'
+    //$con->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+
+    $con->autocommit(FALSE);
+}
+
+function _commitTransaction ($con): void {
+    $con->commit();
+    $con->autocommit(TRUE);
+}
+
+function _rollbackTransaction ($con): void {
+    $con->rollback();
+    $con->autocommit(TRUE);
+}
+
 function _prepare ($con, $sql) : mysqli_stmt {
 
     if ($stmt = $con->prepare($sql)) {

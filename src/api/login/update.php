@@ -12,10 +12,12 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
     if (isset($postdata) && !empty ($postdata)) {
 
         $bodyobj = json_decode ($postdata);
-
+ 
         if (isset($bodyobj->login) && isset($bodyobj->password)) {
-
-            $resultAndEntity = authenticate($bodyobj->login, $bodyobj->password);
+            
+            $login = xssPrevent($bodyobj->login);
+            $password = xssPrevent($bodyobj->password);
+            $resultAndEntity = authenticate($login, $password);
             
             sendHttpEntityAndExit($resultAndEntity);        
         }

@@ -75,6 +75,10 @@ export class CreateAccountComponent implements OnInit {
 
   }
 
+  annuler(): void {
+    this.router.navigate(["/go-login"]);
+  }
+
   dialogContinuer(user: User): void {
 
     const dialogConfig = new MatDialogConfig();

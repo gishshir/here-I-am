@@ -20,7 +20,7 @@
 
         <mat-form-field fxFlex appearance="legacy">
             <mat-label>Mot de passe</mat-label>
-            <input matInput placeholder="mot de passe" formControlName="passwordControl" required>
+            <input type="password" matInput placeholder="mot de passe" formControlName="passwordControl" required>
             <mat-error *ngIf="passwordControl.invalid && passwordControl.errors.required">Mot de passe obligatoire!
             </mat-error>
         </mat-form-field>

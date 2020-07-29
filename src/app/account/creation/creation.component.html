@@ -56,7 +56,11 @@
             </mat-error>
         </mat-form-field>
 
-        <button fxFlex="initial" type="submit" [disabled]="!createAccountFormGroup.valid">Création du compte</button>
+        <div fxFlex="initial" fxLayout fxLayoutGap="20px" class="container">
+            <button fxFlex="initial" class="mat-raised-button" (click)="annuler()">Annuler</button>
+            <button fxFlex="initial" type="submit" class="mat-raised-button mat-primary"
+                [disabled]="!createAccountFormGroup.valid">Création du compte</button>
+        </div>
 
     </form>
 

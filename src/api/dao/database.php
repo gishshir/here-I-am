@@ -7,7 +7,7 @@
 		
     // Connexion MySQL 
     $servername = $_SERVER['SERVER_NAME'];
-    if (strchr($servername, "localhost")) {
+    if (strchr($servername, "secure") || strchr($servername, "localhost")) {
         
       global $local_user;
       global $local_pwd;

@@ -1,0 +1,4 @@
+set RANDFILE=C:\util\xampp7\apache\conf\ssl\hereiam-dist.secure\.rnd
+
+
+openssl req -x509 -nodes -newkey rsa:2048 -days 365 -sha256 -keyout hereiam-dist.secure.key -out hereiam-dist.secure.crt -reqexts SAN -extensions SAN -config "C:\util\xampp7\apache\conf\ssl\hereiam-dist.secure\openssl.cnf"

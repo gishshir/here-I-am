@@ -1,6 +1,6 @@
 <?php
 
-define('DIR_BASE',      dirname( dirname( __FILE__ ) ) . '/');
+define('DIR_BASE',  $_SERVER['DOCUMENT_ROOT'].'/');
 define('DIR_DAO',    DIR_BASE . 'dao/');
 define('DIR_SHARED',    DIR_BASE . 'shared/');
 define('DIR_ENTITIES',    DIR_BASE . 'entities/');
@@ -21,6 +21,14 @@ require DIR_SHARED.'resultAndDatas.php';
 require DIR_SHARED.'security.php';
 require DIR_SHARED.'tools.php';
 
+require DIR_DAO.'bdd.php';
+require DIR_DAO.'database.php';
+require DIR_DAO.'dao.php';
+require DIR_DAO.'accountdao.php';
+require DIR_DAO.'amidao.php';
+require DIR_DAO.'logindao.php';
+require DIR_DAO.'relationdao.php';
+require DIR_DAO.'trajetdao.php';
 
 
 header("Access-Control-Allow-Origin: http://localhost:4200");

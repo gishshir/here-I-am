@@ -1,6 +1,4 @@
 <?php
-include_once DIR_DAO.'dao.php';
-
 
 /**
  * Suppression d'un trajet par son id

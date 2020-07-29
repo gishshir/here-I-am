@@ -1,8 +1,5 @@
 <?php
-require_once '../shared/config.php';
-include_once DIR_DAO.'accountdao.php';
-
-
+require_once '../config.php';
 
 // creation d'un compte
 if($_SERVER["REQUEST_METHOD"] == "POST")  {

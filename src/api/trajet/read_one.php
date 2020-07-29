@@ -1,7 +1,5 @@
 <?php
-require_once '../shared/config.php';
-require_once DIR_DAO.'trajetdao.php';
-
+require_once '../config.php';
 
 // retourne un trajet de l'utilisateur courant
 // si pas id retourne le dernier trajet si existe

@@ -1,7 +1,7 @@
 <?php
 
-require_once './shared/config.php';
-include_once DIR_DAO.'dao.php';
+require_once './config.php';
+
 
 //The original plaintext password.
 /*$password = 'pwd5';

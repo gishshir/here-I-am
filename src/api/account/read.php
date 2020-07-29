@@ -1,5 +1,5 @@
 <?php
-require_once '../shared/config.php';
+require_once '../config.php';
 
 
 /**

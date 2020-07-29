@@ -1,7 +1,4 @@
 <?php
-include_once DIR_DAO.'dao.php';
-include_once DIR_DAO.'logindao.php';
-
 
 //========================================================================================
 /*

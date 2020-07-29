@@ -1,7 +1,5 @@
 <?php
 
-include_once DIR_DAO.'dao.php';
-
 /**
  * Suppression d'une relation par son id
  */

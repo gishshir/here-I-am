@@ -1,8 +1,5 @@
 <?php
-require_once '../../shared/config.php';
-include_once DIR_DAO.'logindao.php';
-
-
+require_once '../../config.php';
 /**
  * Vérifie si un compte existe déjà
  * - avec le login

@@ -1,7 +1,5 @@
 <?php
 
-include_once DIR_DAO.'dao.php';
-
 //  mise à jour de la table person_rel
 function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
 

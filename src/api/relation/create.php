@@ -1,7 +1,5 @@
 <?php
-require_once '../shared/config.php';
-require_once DIR_DAO.'relationdao.php';
-
+require_once '../config.php';
 
 
 // liste des trajets de l'utilisateur couran

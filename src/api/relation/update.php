@@ -1,7 +1,5 @@
 <?php
-require_once '../shared/config.php';
-require_once DIR_DAO.'relationdao.php';
-
+require_once '../config.php';
 
 if($_SERVER["REQUEST_METHOD"] == "PUT")  {
     

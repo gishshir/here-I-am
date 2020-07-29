@@ -1,7 +1,6 @@
 <?php
 
-require_once '../shared/config.php';
-include_once DIR_DAO.'logindao.php';
+require '../config.php';
 
 // authentification d'un utilisateur
 if($_SERVER["REQUEST_METHOD"] == "PUT")  {

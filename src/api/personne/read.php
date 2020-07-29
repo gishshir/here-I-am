@@ -1,7 +1,5 @@
 <?php
-require_once '../shared/config.php';
-require_once DIR_DAO.'amidao.php';
-
+require_once '../config.php';
 
 /**
  * Récupère la listes des personnes non amies avec l'utilisateur courant

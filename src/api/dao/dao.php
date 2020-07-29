@@ -1,6 +1,4 @@
 <?php
-require DIR_DAO.'database.php';
-include_once DIR_SHARED.'tools.php';
 
 function _prepare ($con, $sql) : mysqli_stmt {
 

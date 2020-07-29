@@ -1,6 +1,4 @@
 <?php
- 
- require 'bdd.php';
 
 
  function connectMaBase() {

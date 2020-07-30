@@ -3,28 +3,7 @@
     <ng-container *ngIf="amiTrajet">
 
         <h3>{{getDescriptionTrajet()}}</h3>
-        <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
-
-            <mat-card-header fxFlex>
-                <app-trajet-means-icon [trajetMean]="amiTrajet.mean" [isArret]="amiTrajet.etat != 'Started'">
-                </app-trajet-means-icon>
-                <span class="badge">
-                    <app-trajet-state-icon [trajetState]="amiTrajet.etat"></app-trajet-state-icon>
-                </span>
-            </mat-card-header>
-
-            <mat-card-content fxFlex fxLayout="column" fxLayoutGap="20px">
-                <div fxFlex><b>départ:</b> {{getStartDate()}}</div>
-                <div fxFlex *ngIf="amiTrajet.etat == 'Ended'"><b>arrivée:</b> {{getEndDate()}}</div>
-
-                <!-- duree du trajet -->
-                <div fxFlex>
-                    <div>durée du trajet:</div>
-                    <app-trajet-duree [trajetEnCours]="amiTrajet"></app-trajet-duree>
-                </div>
-            </mat-card-content>
-
-        </mat-card>
+        <app-trajet-common *ngIf="amiTrajet" [trajet]="amiTrajet"></app-trajet-common>
 
 
     </ng-container>

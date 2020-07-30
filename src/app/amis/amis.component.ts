@@ -8,6 +8,7 @@ import { RelationState, RelationInfo } from './relation/relationinfo.type';
 import { AmisFilter } from './amis.pipe';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogInvitationComponent } from './dialog-invitation/dialog-invitation.component';
+import { AmiRelation } from './amiinfo.type';
 
 
 @Component({
@@ -20,6 +21,8 @@ export class AmisComponent implements OnInit {
   amis: Ami[];
   selectedAmi: Ami;
   selectedFilter: string = AmisFilter.valides;
+
+  suivreTrajetAmiAutorise: boolean = true;
 
   private _listToUpdate: boolean = false;
 
@@ -61,6 +64,29 @@ export class AmisComponent implements OnInit {
   onDelete(ami: Ami) {
     this.selectedAmi = null;
     this.refreshList();
+  }
+
+  // reception d'un evenement de changement de suivi de l'ami
+  // on s'assure si l'ami de son coté autorise son suivi par l'envoi de notification
+  // attention AmiRelation contient l'information du point de vue de l'ami
+  onSuivre() {
+
+    console.log("onSuivre() " + this.selectedAmi.suivre);
+    this.refreshSuivreTrajetAmiAutorise();
+
+  }
+
+  refreshSuivreTrajetAmiAutorise() {
+    if (this.selectedAmi.suivre) {
+
+      this.suivreTrajetAmiAutorise = true;
+      this.amiService.getRelationPointVueAmi(this.selectedAmi.idrelation, {
+
+        onGetAmiRelation: (amiRelation: AmiRelation) => this.suivreTrajetAmiAutorise = amiRelation.notifier,
+        onError: (e: Message) => this.response = e
+
+      });
+    }
   }
 
   // reception d'un evenement de modification de l'etat de la relation
@@ -126,6 +152,7 @@ export class AmisComponent implements OnInit {
   onSelect(ami: Ami) {
     this.selectedAmi = ami;
     this.response = null;
+    this.refreshSuivreTrajetAmiAutorise();
   }
 
   openDialogLancerInvitation() {

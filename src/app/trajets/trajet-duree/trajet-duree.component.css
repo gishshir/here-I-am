@@ -1,4 +1,4 @@
-.app-duree{
+.app-component-duree{
 
     margin: 5px; 
     padding: 10px;
@@ -10,5 +10,12 @@
     display: block;
     padding-top: 5px;
     font-size: 0.83em;
+    
+}
+
+.app-duree {
+    display: block;
+    padding-top: 5px;
+    font-size: 1.00em;
     
 }

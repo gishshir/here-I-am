@@ -46,12 +46,14 @@
 
             <!-- détail d'un ami  -->
             <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
-                (eventDelete)="onDelete($event)">
+                (eventDelete)="onDelete($event)" (eventSuivre)="onSuivre($event)">
             </app-ami-detail>
 
             <!--Detail trajet de l'ami si conditions sont remplies: ami autorise notification pour moi -->
-            <app-ami-trajet fxFlex="auto" *ngIf="selectedAmi.suivre" [amiDetail]="selectedAmi"
-                (eventMessage)="onMessage($event)"></app-ami-trajet>
+            <app-ami-trajet fxFlex="auto" *ngIf="selectedAmi.suivre && suivreTrajetAmiAutorise; else suiviNonAutorise"
+                [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"></app-ami-trajet>
+
+
         </ng-container>
 
         <!--détail de la relation si pending ou fermée-->
@@ -59,6 +61,16 @@
             <app-ami-relation fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
                 (eventUpdateRelation)="onUpdateRelation($event)">
             </app-ami-relation>
+        </ng-template>
+
+
+        <ng-template #suiviNonAutorise>
+            <div fxFlex="auto" *ngIf="selectedAmi && selectedAmi.suivre && !suivreTrajetAmiAutorise">
+                <div class="bloc-reponse" [style.background-color]="'lightcoral'">
+                    <p>Mon ami {{selectedAmi.pseudo}} <br> ne m'a pas autorisé à suivre son trajet !</p>
+                </div>
+
+            </div>
         </ng-template>
     </div>
 

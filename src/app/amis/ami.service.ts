@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { AmiInfo, AmiPersonne } from './amiinfo.type';
+import { AmiInfo, AmiPersonne, AmiRelation } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
 import { Message, BoolResponse } from '../common/message.type';
@@ -50,6 +50,33 @@ export class AmiService {
 
   }
   // =============================================
+
+  // =============================================
+  private _callGetRelationPointVueAmi(idrelation: number): Observable<any> {
+
+    let url = PHP_API_SERVER + "/relation/notification_par_ami//read.php";
+
+    let options = {
+      headers: HTTP_HEADER_URL,
+      params: new HttpParams().set("idrelation", idrelation + "")
+
+    };
+    return this.http.get<AmiRelation>(url, options)
+      .pipe(catchError(this.commonService.handleError));
+  }
+
+  // =============================================
+  getRelationPointVueAmi(idrelation: number, handler: AmiRelationHandler): void {
+
+    this._callGetRelationPointVueAmi(idrelation).subscribe({
+
+      next: (amiRelation: AmiRelation) => handler.onGetAmiRelation(amiRelation),
+      error: (error: string) => this.commonService._propageErrorToHandler(error, handler)
+    }
+    );
+  }
+
+
   // =============================================
   private _callAmiByIdPerson(idperson: number): Observable<any> {
 
@@ -61,7 +88,7 @@ export class AmiService {
       params: new HttpParams().set("idperson", idperson + "")
 
     };
-    return this.http.get<AmiInfo[]>(url, options);
+    return this.http.get<AmiInfo>(url, options);
 
   }
 
@@ -182,3 +209,7 @@ export interface AmiHandler extends Handler {
   onGetAmi(ami: Ami): void;
 }
 
+export interface AmiRelationHandler extends Handler {
+
+  onGetAmiRelation(amiRelation: AmiRelation): void;
+}

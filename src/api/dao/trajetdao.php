@@ -67,7 +67,7 @@ function createTrajet (Trajet $trajet) :ResultAndEntity {
             $nbligneImpactees = $stmt->affected_rows ;
             if ($nbligneImpactees == 1) {
 
-                $resultAndEntity = _findLastTrajet($con);
+                $resultAndEntity = _findLastTrajet($con, getCurrentUserId());
             } else {
                 throw new Exception("Pas de modification!!");    
             }

@@ -150,7 +150,7 @@ function _findRelation (mysqli $con, $idperson_a, $idperson_b) : ResultAndEntity
                    
             // fetch row ..............
             if ($stmt->fetch()) {
-              $relation = _buildAmiRelation ($resId, $resEtat);
+              $relation = _buildAmiRelation ($resId, false, false, $resEtat);
               $resultAndEntity = buildResultAndEntity("relation trouvée!", $relation);
 
             }  else {
@@ -173,14 +173,66 @@ function _findRelation (mysqli $con, $idperson_a, $idperson_b) : ResultAndEntity
     
 }
 
-function _buildAmiRelation ($id, $etat) : AmiRelation {
+function _buildAmiRelation (int $id, bool $suivre, bool $notifier, string $etat) : AmiRelation {
 
     $amiRelation = new AmiRelation();
     $amiRelation->set_id($id);
-    $amiRelation->set_suivre(false);
-    $amiRelation->set_notifier (false);
+    $amiRelation->set_suivre($suivre);
+    $amiRelation->set_notifier ($notifier);
     $amiRelation->set_etat ($etat);
     return $amiRelation;
+}
+//=======================================================================================
+
+//=======================================================================================
+// recupere un AmiRelation du point de vue de l'ami vers moi
+// pour connaitre les autorisations de notification
+function findAmiRelationDuPointVueAmi (int $idRelation) {
+
+    $resultAndEntity; $stmt;
+
+    $con = connectMaBase();
+    $req_getRelationDeAmi = "select  ami_rel.suivre as suivre, ami_rel.notifier as notifier FROM person_rel as user_rel
+    left join person_rel as ami_rel on user_rel.relationid = ami_rel.relationid and user_rel.personid != ami_rel.personid
+    WHERE ami_rel.relationid = ? and ami_rel.personid != ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_getRelationDeAmi);
+        
+        if ($stmt->bind_param("ii", $pidRelation, $piduser)) {
+
+            $pidRelation = $idRelation;
+            $piduser = getCurrentUserId();
+
+            $stmt = _execute($stmt);
+
+            $trajet = null;
+            $stmt->bind_result ($resSuivre, $resNotifier);
+                   
+            // fetch row ..............
+            if ($stmt->fetch()) {
+              $relation = _buildAmiRelation ($idRelation, $resSuivre, $resNotifier, "NonConnu");
+              $resultAndEntity = buildResultAndEntity("relation trouvée!", $relation);
+
+            }  else {
+                $resultAndEntity = buildResultAndEntity("Pas de relation trouvé!", null);
+            }            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $resultAndEntity;
+
 }
 //=======================================================================================
 

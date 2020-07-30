@@ -17,6 +17,7 @@ export class AmiDetailComponent implements OnInit {
   _amiDetail: Ami;
 
   @Output() eventDelete = new EventEmitter<Ami>();
+  @Output() eventSuivre = new EventEmitter<Ami>();
   @Output() eventMessage = new EventEmitter<Message>();
 
   @Input()
@@ -77,7 +78,10 @@ export class AmiDetailComponent implements OnInit {
 
     this.amiService.updateSuivreAmi(this.amiDetail, {
 
-      onMessage: (m: Message) => this.eventMessage.emit(m),
+      onMessage: (m: Message) => {
+        this.eventMessage.emit(m);
+        this.eventSuivre.emit(this.amiDetail);
+      },
       onError: (e: Message) => {
         this.eventMessage.emit(e);
         this.amiDetail.suivre = !this.amiDetail.suivre;

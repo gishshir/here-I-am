@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Trajet, TrajetState } from 'src/app/trajets/trajet.type';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from 'src/app/trajets/trajet.service';
 import { Ami } from '../ami.type';
 
@@ -14,13 +13,13 @@ export class AmiTrajetComponent implements OnInit {
 
   @Input()
   set amiDetail(ami: Ami) {
-    this.findDernierTrajet(ami);
+    this.findAmiDernierTrajet(ami);
   }
   @Output() eventMessage = new EventEmitter<Message>();
 
   amiTrajet: Trajet;
 
-  constructor(private toolsService: ToolsService, private trajetService: TrajetService) {
+  constructor(private trajetService: TrajetService) {
   }
 
   getDescriptionTrajet(): string {
@@ -40,7 +39,7 @@ export class AmiTrajetComponent implements OnInit {
 
   }
 
-  findDernierTrajet(ami: Ami): void {
+  findAmiDernierTrajet(ami: Ami): void {
 
     this.amiTrajet = null;
     this.trajetService.chercherAmiDernierTrajet(ami.idrelation, {
@@ -56,26 +55,6 @@ export class AmiTrajetComponent implements OnInit {
 
   }
 
-
-  getStartDate(): string {
-
-    return this.toolsService.formatDateAndTime(this.amiTrajet.starttime);
-  }
-
-  getEndDate(): string {
-
-    if (this.amiTrajet.endtime < 0) {
-      return "";
-    }
-    return this.toolsService.formatDateAndTime(this.amiTrajet.endtime);
-  }
-
-  /*getDuree(): string {
-    if (this.amiTrajet.endtime < 0) {
-      return this.toolsService.formatDureeFromNow(this.amiTrajet.starttime);
-    }
-    return this.toolsService.formatDuree(this.amiTrajet.starttime, this.amiTrajet.endtime);
-  }*/
 
   ngOnInit(): void {
   }

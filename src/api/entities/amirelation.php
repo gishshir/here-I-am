@@ -2,6 +2,7 @@
 
 /*
 * représentation d'une ligne de la table person_rel / relation
+* du point de vue de l'utilisateur courant
 */
 class AmiRelation implements IEntity{
 

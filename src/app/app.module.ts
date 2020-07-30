@@ -33,6 +33,7 @@ import { DialogInvitationComponent } from './amis/dialog-invitation/dialog-invit
 import { DialogConfirmInvitationComponent } from './amis/dialog-invitation/confirm/dialog-confirm-invitation.component';
 import { DialogDeleteRelationComponent } from './amis/relation/dialog-delete/dialog-delete-relation.component';
 import { AmiTrajetComponent } from './amis/ami-trajet/ami-trajet.component';
+import { TrajetCommonComponent } from './trajets/trajet-common/trajet-common.component';
 
 
 
@@ -61,7 +62,8 @@ import { AmiTrajetComponent } from './amis/ami-trajet/ami-trajet.component';
     DialogInvitationComponent,
     DialogConfirmInvitationComponent,
     DialogDeleteRelationComponent,
-    AmiTrajetComponent
+    AmiTrajetComponent,
+    TrajetCommonComponent
   ],
   imports: [
     BrowserModule,

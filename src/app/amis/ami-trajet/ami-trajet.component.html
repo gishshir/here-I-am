@@ -14,14 +14,19 @@
             </mat-card-header>
 
             <mat-card-content fxFlex fxLayout="column" fxLayoutGap="20px">
-                <div fxFlex>départ: {{getStartDate()}}</div>
-                <div fxFlex *ngIf="amiTrajet.etat == 'Ended'">arrivée: {{getEndDate()}}</div>
+                <div fxFlex><b>départ:</b> {{getStartDate()}}</div>
+                <div fxFlex *ngIf="amiTrajet.etat == 'Ended'"><b>arrivée:</b> {{getEndDate()}}</div>
+
+                <!-- duree du trajet -->
+                <div fxFlex>
+                    <div>durée du trajet:</div>
+                    <app-trajet-duree [trajetEnCours]="amiTrajet"></app-trajet-duree>
+                </div>
             </mat-card-content>
 
         </mat-card>
 
-        <!-- duree du trajet -->
-        <app-trajet-duree fxFlex="initial" [trajetEnCours]="amiTrajet"></app-trajet-duree>
+
     </ng-container>
 
 </div>

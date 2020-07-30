@@ -70,12 +70,12 @@ export class AmiTrajetComponent implements OnInit {
     return this.toolsService.formatDateAndTime(this.amiTrajet.endtime);
   }
 
-  getDuree(): string {
+  /*getDuree(): string {
     if (this.amiTrajet.endtime < 0) {
       return this.toolsService.formatDureeFromNow(this.amiTrajet.starttime);
     }
     return this.toolsService.formatDuree(this.amiTrajet.starttime, this.amiTrajet.endtime);
-  }
+  }*/
 
   ngOnInit(): void {
   }

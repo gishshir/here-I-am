@@ -34,12 +34,12 @@ export class TrajetDetailComponent implements OnInit {
     return this.toolsService.formatDateAndTime(this.trajetDetail.endtime);
   }
 
-  getDuree(): string {
+  /*getDuree(): string {
     if (this.trajetDetail.endtime < 0) {
       return this.toolsService.formatDureeFromNow(this.trajetDetail.starttime);
     }
     return this.toolsService.formatDuree(this.trajetDetail.starttime, this.trajetDetail.endtime);
-  }
+  }*/
 
   private onChangeState(state: TrajetState): void {
 

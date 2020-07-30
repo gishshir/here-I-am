@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { ToolsService } from 'src/app/common/tools.service';
+import { ToolsService, DureeDecoupee } from 'src/app/common/tools.service';
 import { Trajet, TrajetState } from '../trajet.type';
 
 @Component({
   selector: 'app-trajet-duree',
-  template: '<div *ngIf="duree" style="background-color: {{color}}; margin: 30px; padding: 20px;">durée: {{duree}}</div>'
+  templateUrl: './trajet-duree.component.html',
+  styleUrls: ['./trajet-duree.component.css']
 })
 export class TrajetDureeComponent implements OnInit {
 
 
-  duree: string;
+  dureeExtra: string;
+  dureeHMS: string;
   color: string;
 
   @Input()
@@ -76,7 +78,9 @@ export class TrajetDureeComponent implements OnInit {
   }
 
   private calculDureeEtatEnded() {
-    this.duree = this.toolsService.formatDuree(this._starttime, this._endtime);
+    let dureeDecoupee = this.toolsService.formatDuree(this._starttime, this._endtime);
+    this.dureeExtra = this.formatDureeExtra(dureeDecoupee);
+    this.dureeHMS = this.formatHeureMinuteSeconde(dureeDecoupee);
   }
 
 
@@ -95,7 +99,8 @@ export class TrajetDureeComponent implements OnInit {
   ngOnDestroy() { this.stopTimer(); }
   private stopTimer() {
     console.log("stop timer");
-    this.duree = "";
+    this.dureeExtra = null;
+    this.dureeHMS = "";
     if (this.intervalId >= 0) {
       clearInterval(this.intervalId);
     }
@@ -105,8 +110,39 @@ export class TrajetDureeComponent implements OnInit {
     console.log("start timer");
     this.intervalId = window.setInterval(() => {
 
-      this.duree = this.toolsService.formatDureeFromNow(this._starttime);
+      let dureeDecoupee = this.toolsService.formatDureeFromNow(this._starttime);
+      this.dureeExtra = this.formatDureeExtra(dureeDecoupee);
+      this.dureeHMS = this.formatHeureMinuteSeconde(dureeDecoupee);
     }, 1000);
+  }
+
+  // formatage HH:MM:SS
+  private formatHeureMinuteSeconde(dureeDecoupee: DureeDecoupee): string {
+
+    return dureeDecoupee.heure + ":" + dureeDecoupee.minute + ":" + dureeDecoupee.seconde;
+  }
+  // afficher jour/semaine/mois/annees si necessaire
+  private formatDureeExtra(dureeDecoupee: DureeDecoupee): string {
+
+    if (dureeDecoupee.jour > 0 || dureeDecoupee.semaine > 0 || dureeDecoupee.mois > 0 || dureeDecoupee.annee > 0) {
+
+      var eventDurationArray: string[] = [];
+
+      if (dureeDecoupee.annee > 0) {
+        eventDurationArray.push(dureeDecoupee.annee + ' années');
+      }
+      if (dureeDecoupee.mois > 0) {
+        eventDurationArray.push(dureeDecoupee.mois + ' mois');
+      }
+      if (dureeDecoupee.semaine > 0) {
+        eventDurationArray.push(dureeDecoupee.semaine + ' semaines');
+      }
+      if (dureeDecoupee.jour > 0) {
+        eventDurationArray.push(dureeDecoupee.jour + ' jours');
+      }
+      return eventDurationArray.join('  ');
+
+    } else return null;
   }
 
   ngOnInit(): void {

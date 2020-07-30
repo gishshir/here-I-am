@@ -1,0 +1,14 @@
+.app-duree{
+
+    margin: 5px; 
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.app-duree-extra {
+    display: block;
+    padding-top: 5px;
+    font-size: 0.83em;
+    
+}

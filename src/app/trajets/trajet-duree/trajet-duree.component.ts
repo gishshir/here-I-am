@@ -119,7 +119,12 @@ export class TrajetDureeComponent implements OnInit {
   // formatage HH:MM:SS
   private formatHeureMinuteSeconde(dureeDecoupee: DureeDecoupee): string {
 
-    return dureeDecoupee.heure + ":" + dureeDecoupee.minute + ":" + dureeDecoupee.seconde;
+    return this.f2(dureeDecoupee.heure) + ":" + this.f2(dureeDecoupee.minute)
+      + ":" + this.f2(dureeDecoupee.seconde);
+  }
+
+  private f2(value: number): string {
+    return value > 10 ? value + "" : "0" + value;
   }
   // afficher jour/semaine/mois/annees si necessaire
   private formatDureeExtra(dureeDecoupee: DureeDecoupee): string {

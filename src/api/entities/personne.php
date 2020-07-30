@@ -4,7 +4,7 @@
 * représentation d'une ligne de la table utilisateur
 (sans les credentials)
 */
-class Personne  {
+class Personne implements IEntity  {
     
     public static $STATE = array ("Arret", "EnChemin", "Pause", "NonConnu");
 

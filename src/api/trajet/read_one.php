@@ -9,9 +9,29 @@ if($_SERVER["REQUEST_METHOD"] == "GET")  {
     verifyUserAuthentifie();
 
     if (isset($_GET["id"])) {
+        // find trajet by id
         $resultAndEntity = findTrajetById((int)$_GET["id"]);
     } else {
-        $resultAndEntity = findLastTrajet();
+
+        // dernier trajet de l'ami
+        if (isset($_GET["idrelation"])){
+
+            $resultAndEntity = findPersonByIdRelation($_GET["idrelation"]);
+            if (!$resultAndEntity->is_error()) {
+
+                $personne = $resultAndEntity->get_entity();
+
+                //TODO s'assurer des droits pour voir ce trajet
+
+                $resultAndEntity = findAmiLastTrajet($personne->get_id());
+            } 
+
+        }
+        // dernier trajet de l'utilisateur
+        else {
+            
+            $resultAndEntity = findLastTrajet();
+        }
     }
     
     if (!$resultAndEntity->is_error()) {

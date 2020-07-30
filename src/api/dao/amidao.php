@@ -39,6 +39,59 @@ function updateSuiviRelation (int $relationId, bool $suivre): Resultat {
     
 }
 
+// recherche d'une personne avec idrelation
+// retour Personne ou Exception si aucunne
+function findPersonByIdRelation (int $idrelation) : ResultAndEntity {
+
+    $resultAndEntity;
+    $con = connectMaBase();
+
+    $idCurrentUser = getCurrentUserId();
+
+    $req_getPersonByIdRelation = "select id, pseudo, etat from utilisateur where utilisateur.id  in(
+        SELECT ami_rel.personid FROM person_rel as user_rel
+        left join person_rel as ami_rel on user_rel.relationid = ami_rel.relationid and user_rel.personid != ami_rel.personid
+        WHERE ami_rel.relationid = ? and ami_rel.personid != ?
+            )";
+
+    try {
+
+        $stmt = _prepare ($con, $req_getPersonByIdRelation);
+        
+        if ($stmt->bind_param("ii", $idrelation, $idCurrentUser)) {
+
+            $stmt = _execute($stmt);
+
+            $stmt->bind_result ($resAmiId, $resPseudo, $resEtat);
+                
+            $personne;
+            // fetch row ..............
+            if($stmt->fetch()) {
+
+                $personne = new Personne();
+                $personne->set_id ($resAmiId);
+                $personne->set_pseudo($resPseudo);
+                $personne->set_etat ($resEtat);
+                $resultAndEntity = buildResultAndEntity("Récupération ami réussie!", $personne);
+            } else {
+                $resultAndEntity = buildResultAndEntityError("Aucune personne trouvée avec cet id relation ".$idrelation."!");
+            } // --- fin du fetch 
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $resultAndEntity;
+
+}
 
 //  mise à jour de la table person_rel
 function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
@@ -89,7 +142,7 @@ function updateNotifierAmis (array $listIdRelationEtNotifier): Resultat {
 
 /*
 * construit la liste des non - amis de l'utilisateur courant
-* retourne une liste de personne (avec etat masqué)
+* retourne une liste de Personne (avec etat masqué)
 */
 function displayListPersonneNonAmis(): ResultAndDatas {
 

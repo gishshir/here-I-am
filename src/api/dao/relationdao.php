@@ -126,6 +126,9 @@ function _createRelation ($con, int $idperson) :ResultAndEntity {
 
     return $resultAndEntity;
 }
+
+// recherche d'une relation connaissant les id des deux personnes
+// retour AmiRelation
 function _findRelation (mysqli $con, $idperson_a, $idperson_b) : ResultAndEntity {
 
     $resultAndEntity; $stmt;

@@ -31,7 +31,6 @@
   <!-- The routed views render in the <router-outlet>-->
   <router-outlet></router-outlet>
 
-  <app-logout [logout]="logout" (eventMessage)="onMessage($event)"></app-logout>
   <app-notification *ngIf="response" [message]="response"></app-notification>
 
   <!-- Footer -->

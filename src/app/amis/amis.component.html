@@ -41,11 +41,17 @@
 
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
-        <!-- détail d'un ami si relation valide -->
+        <!--si relation valide-->
         <ng-container *ngIf="selectedAmi.etatrelation == 'open'; else showrelation">
+
+            <!-- détail d'un ami  -->
             <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
                 (eventDelete)="onDelete($event)">
             </app-ami-detail>
+
+            <!--Detail trajet de l'ami si conditions sont remplies: ami autorise notification pour moi -->
+            <app-ami-trajet fxFlex="auto" *ngIf="selectedAmi.suivre" [amiDetail]="selectedAmi"
+                (eventMessage)="onMessage($event)"></app-ami-trajet>
         </ng-container>
 
         <!--détail de la relation si pending ou fermée-->

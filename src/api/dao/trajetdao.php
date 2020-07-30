@@ -116,23 +116,32 @@ function findLastTrajet () : ResultAndEntity {
 
     $con = connectMaBase();
 
-    $resultAndEntity = _findLastTrajet ($con);
+    $resultAndEntity = _findLastTrajet ($con, getCurrentUserId());
+    _closeAll(null, $con);
+    
+    return $resultAndEntity;
+
+}
+function findAmiLastTrajet (int $amiid) : ResultAndEntity {
+
+    $con = connectMaBase();
+
+    $resultAndEntity = _findLastTrajet ($con, $amiid);
     _closeAll(null, $con);
     
     return $resultAndEntity;
 
 }
 
-function _findLastTrajet (mysqli $con) : ResultAndEntity {
-
-    $idCurrentUser = getCurrentUserId();
+function _findLastTrajet (mysqli $con, int $iduser) : ResultAndEntity {
+;
 
     $req_lastTrajet = "select t2.id, t2.starttime, t2.endtime, t2.etat, t2.mean from trajet t2
     where starttime =
     (SELECT MAX(starttime) FROM trajet t1 where t1.userid = t2.userid)
     and t2.userid = ?";
     
-    return _findTrajet ($con, $req_lastTrajet, $idCurrentUser, "Récupération dernier trajet reussie!");
+    return _findTrajet ($con, $req_lastTrajet, $iduser, "Récupération dernier trajet reussie!");
     
 }
 //========================================================================================

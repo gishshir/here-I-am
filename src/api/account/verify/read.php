@@ -1,5 +1,5 @@
 <?php
-require_once '../../config.php';
+require_once '../../config/config.php';
 /**
  * Vérifie si un compte existe déjà
  * - avec le login

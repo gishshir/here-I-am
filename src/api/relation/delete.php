@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 // suppression définitive d'une relation
 if($_SERVER["REQUEST_METHOD"] == "DELETE")  {

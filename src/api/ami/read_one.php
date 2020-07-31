@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 // recupération d'un ami par son id personne
 if($_SERVER["REQUEST_METHOD"] == "GET")  {

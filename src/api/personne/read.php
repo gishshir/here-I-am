@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 /**
  * Récupère la listes des personnes non amies avec l'utilisateur courant

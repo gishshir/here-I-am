@@ -1,6 +1,6 @@
 <?php
 
-require '../config.php';
+require '../config/config.php';
 
 // authentification d'un utilisateur
 if($_SERVER["REQUEST_METHOD"] == "PUT")  {

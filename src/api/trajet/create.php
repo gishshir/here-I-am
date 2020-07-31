@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 // liste des trajets de l'utilisateur couran
 if($_SERVER["REQUEST_METHOD"] == "POST")  {

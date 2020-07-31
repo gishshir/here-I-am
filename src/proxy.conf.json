@@ -1,7 +1,7 @@
 {
     "/api/*": {
-        "target": "http://hereIam-api.localhost",
-        "secure": false,
+        "target": "https://hereiam-api.secure",
+        "secure": true,
         "logLevel": "debug",
         "pathRewrite": {
             "^/api": ""

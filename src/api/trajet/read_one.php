@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 // retourne un trajet de l'utilisateur courant
 // si pas id retourne le dernier trajet si existe

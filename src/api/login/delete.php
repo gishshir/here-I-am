@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 // logout de l'utilisateur courant
 if($_SERVER["REQUEST_METHOD"] == "DELETE")  {

@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../config/config.php';
 
 // creation d'un compte
 if($_SERVER["REQUEST_METHOD"] == "POST")  {

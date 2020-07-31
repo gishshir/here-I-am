@@ -4,8 +4,7 @@
  function connectMaBase() {
 		
     // Connexion MySQL 
-    $servername = $_SERVER['SERVER_NAME'];
-    if (callLocalhost()) {
+    if (callLocalDatabase()) {
         
       global $local_user;
       global $local_pwd;
@@ -29,6 +28,12 @@
 
     return $con;
 }
+
+function callLocalDatabase() : bool {
+  $servername = $_SERVER['SERVER_NAME'];
+  return ($servername === "hereiam-api.secure" || $servername === "hereiam-dist.secure");
+}
+
 
 
 ?>

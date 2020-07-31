@@ -3,6 +3,7 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, Observer } from 'rxjs';
 import { Message } from './message.type';
 import { NotificationService } from './notification/notification.service';
+import { environment } from 'src/environments/environment';
 
 
 export const HTTP_HEADER_JSON = new HttpHeaders({
@@ -12,11 +13,14 @@ export const HTTP_HEADER_URL = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
 });
 
+
+export const PHP_API_SERVER = environment.apiUrl;
+
 // sur dist ou bien en remote
 //export const PHP_API_SERVER = "./api";
 
 // en DEV depuis localhost:4200
-export const PHP_API_SERVER = "https://hereiam-api.secure";
+//export const PHP_API_SERVER = "https://hereiam-api.secure";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 

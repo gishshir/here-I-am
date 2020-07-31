@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../environments/environment';
+
 import { Message } from './common/message.type';
 import { Router } from '@angular/router';
 import { AccountService } from './account/account.service';
@@ -17,6 +19,10 @@ export class AppComponent implements OnInit {
 
   constructor(private route: Router, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router) {
+
+    console.log("production: " + environment.production);
+    console.log("database: " + environment.database);
+    console.log("apiUrl: " + environment.apiUrl);
 
     // abonnement
     this.notificationService.changeUser$.subscribe(

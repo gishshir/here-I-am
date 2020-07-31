@@ -34,9 +34,9 @@ export class AmiTrajetComponent implements OnInit {
     if (this.amiTrajet) {
       switch (this.amiTrajet.etat) {
 
-        case TrajetState.started: description = "Mon ami est en chemin..."; break;
-        case TrajetState.pausing: description = "Mon ami s'est arrêté..."; break;
-        case TrajetState.ended: description = "Mon ami est arrivé."; break;
+        case TrajetState.started: description = "Mon ami(e) est en chemin..."; break;
+        case TrajetState.pausing: description = "Mon ami(e) s'est arrêté..."; break;
+        case TrajetState.ended: description = "Mon ami(e) est arrivé à destination."; break;
 
       }
     }

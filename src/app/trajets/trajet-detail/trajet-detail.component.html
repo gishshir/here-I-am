@@ -1,11 +1,11 @@
 <div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
 
-    <app-trajet-common *ngIf="trajetDetail" [trajet]="trajetDetail"></app-trajet-common>
+    <h3 fxFlex>{{getTrajetDescription()}}</h3>
+    <app-trajet-common fxFlex *ngIf="trajetDetail" [trajet]="trajetDetail"></app-trajet-common>
 
     <!-- changement etat du trajet-->
-    <div style="margin-top:20px">
-        <div fxFlex="initial" fxLayout fxLayoutGap="20px" fxLayoutAlign="space-between"
-            *ngIf="trajetDetail.etat != 'Ended'">
+    <div fxFlex="initial" style="margin-top:20px">
+        <div fxLayout fxLayoutGap="20px" fxLayoutAlign="space-between" *ngIf="trajetDetail.etat != 'Ended'">
             <button fxFlex mat-raised-button color="primary" *ngIf="trajetDetail.etat == 'Started'" name="pause"
                 (click)="mettreEnPause()">pause</button>
             <button fxFlex mat-raised-button color="warn" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre"

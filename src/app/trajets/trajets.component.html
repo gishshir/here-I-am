@@ -12,7 +12,6 @@
                 <span>
                     <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
                     <app-trajet-state-icon class="icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
-                    <span style="padding: 10px;">{{trajet.etat}}</span>
                     <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
                 </span>
 
@@ -27,20 +26,22 @@
 
     </div>
 
-    <!-- détail-->
-    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedTrajet">
+    <ng-container *ngIf="selectedTrajet">
+        <!-- détail-->
+        <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedTrajet">
 
-        <h2 fxFlex="initial">Détail du trajet</h2>
-        <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
-            (eventChangeState)="onChangeState($event)">
-        </app-trajet-detail>
+            <h2 fxFlex="initial">Détail du trajet</h2>
+            <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
+                (eventChangeState)="onChangeState($event)">
+            </app-trajet-detail>
 
-        <!--liste des amis à notifier-->
-        <div fxFlex="initial" *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
-            <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
+            <!--liste des amis à notifier-->
+            <div fxFlex="initial" *ngIf="selectedTrajet.etat != 'Ended'">
+                <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
+            </div>
+
         </div>
-
-    </div>
+    </ng-container>
 
 
 </div>

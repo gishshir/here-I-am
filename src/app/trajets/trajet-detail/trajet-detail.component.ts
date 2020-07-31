@@ -34,12 +34,7 @@ export class TrajetDetailComponent implements OnInit {
     return this.toolsService.formatDateAndTime(this.trajetDetail.endtime);
   }
 
-  /*getDuree(): string {
-    if (this.trajetDetail.endtime < 0) {
-      return this.toolsService.formatDureeFromNow(this.trajetDetail.starttime);
-    }
-    return this.toolsService.formatDuree(this.trajetDetail.starttime, this.trajetDetail.endtime);
-  }*/
+
 
   private onChangeState(state: TrajetState): void {
 
@@ -54,6 +49,21 @@ export class TrajetDetailComponent implements OnInit {
     });
 
 
+  }
+
+
+  getTrajetDescription() {
+
+    let description = null;
+    if (this.trajetDetail) {
+
+      switch (this.trajetDetail.etat) {
+        case TrajetState.started: description = "Je suis en chemin..."; break;
+        case TrajetState.pausing: description = "Je suis arrêté(e)..."; break;
+        case TrajetState.ended: description = "Je suis arrivé(e) à destination."; break;
+      }
+    }
+    return description;
   }
   mettreEnPause(): void {
     this.onChangeState(TrajetState.pausing);

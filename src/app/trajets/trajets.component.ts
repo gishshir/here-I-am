@@ -44,6 +44,7 @@ export class TrajetsComponent implements OnInit {
     this.updateList(trajet);
   }
 
+
   // update de la liste en mémoire
   // pas la peine de faire un appel remote!
   private updateList(trajet: Trajet): void {

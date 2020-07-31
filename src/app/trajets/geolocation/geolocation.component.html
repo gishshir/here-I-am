@@ -1,6 +1,13 @@
-<div class="container" *ngIf="geolocation">
-    <p>Ma position actuelle: </p>
-    <div>latitude: {{latitude}}</div>
-    <div>longitude: {{longitude}}</div>
-    <div>timestamp: {{timestamp}}</div>
-</div>
+<mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
+
+    <mat-card-header fxFlex>
+        <h3>Ma position actuelle:</h3>
+    </mat-card-header>
+
+    <mat-card-content fxFlex fxLayout="column" fxLayoutGap="20px">
+        <div fxFlex><b>latitude:</b> {{latitude}}</div>
+        <div fxFlex><b>longitude:</b> {{longitude}}</div>
+        <div fxFlex><b>timestamp:</b> {{timestamp}}</div>
+    </mat-card-content>
+
+</mat-card>

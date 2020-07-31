@@ -40,6 +40,9 @@
                 <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
             </div>
 
+            <!-- geo location-->
+            <app-geolocation *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'"></app-geolocation>
+
         </div>
     </ng-container>
 

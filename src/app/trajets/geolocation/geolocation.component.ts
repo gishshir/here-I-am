@@ -26,7 +26,7 @@ export class GeolocationComponent implements OnInit {
       var geo_options = {
         enableHighAccuracy: false,
         maximumAge: 30000,
-        timeout: 0
+        timeout: 30000
       };
 
       this.pid = navigator.geolocation.watchPosition(

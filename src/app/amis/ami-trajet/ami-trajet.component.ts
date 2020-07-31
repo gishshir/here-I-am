@@ -22,6 +22,12 @@ export class AmiTrajetComponent implements OnInit {
   constructor(private trajetService: TrajetService) {
   }
 
+  // event de changement d'etat du trajet
+  onTrajetChangeEtatEvent(trajet: Trajet) {
+
+    this.amiTrajet = trajet;
+  }
+
   getDescriptionTrajet(): string {
 
     let description = null;

@@ -32,11 +32,13 @@ export class TrajetDureeComponent implements OnInit {
   private _endtime: number = -1;
   private _etat: TrajetState = null;
 
+  // token sur le timer
+  private timerid: number = -1;
 
   constructor(private toolsService: ToolsService) {
   }
 
-  private intervalId: number = -1;
+
 
   // si changement starttime --> calculDuree
   // si changement etat 
@@ -97,18 +99,19 @@ export class TrajetDureeComponent implements OnInit {
     this.color = color;
   }
   ngOnDestroy() { this.stopTimer(); }
+
   private stopTimer() {
     console.log("stop timer");
     this.dureeExtra = null;
     this.dureeHMS = "";
-    if (this.intervalId >= 0) {
-      clearInterval(this.intervalId);
+    if (this.timerid >= 0) {
+      clearInterval(this.timerid);
     }
   }
   private startTimer(): void {
 
     console.log("start timer");
-    this.intervalId = window.setInterval(() => {
+    this.timerid = window.setInterval(() => {
 
       let dureeDecoupee = this.toolsService.formatDureeFromNow(this._starttime);
       this.dureeExtra = this.formatDureeExtra(dureeDecoupee);

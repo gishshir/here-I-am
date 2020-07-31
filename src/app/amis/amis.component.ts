@@ -21,19 +21,33 @@ export class AmisComponent implements OnInit {
   amis: Ami[];
   selectedAmi: Ami;
   selectedFilter: string = AmisFilter.valides;
+  response: Message;
 
   suivreTrajetAmiAutorise: boolean = true;
 
   private _listToUpdate: boolean = false;
 
-  response: Message;
+  //private worker: Worker;
+
 
   constructor(private amiService: AmiService, private logger: LoggerService, private dialog: MatDialog) {
 
     this.refreshList();
+
+
   }
 
   ngOnInit(): void {
+    // juste pour tester
+    /*if (typeof Worker != 'undefined') {
+
+      this.worker = new Worker('./ami-trajet.worker', { type: 'module' });
+      // reponse à la communication worker --> component
+      this.worker.onmessage = ({ data }) => console.log(`page got message: ${data}`);
+
+      //envoi d'un message depuis la page vers le worker
+      this.worker.postMessage("envoi d'un message depuis la page vers le worker");
+    }*/
   }
 
   onRadioChange($event: MatRadioChange) {

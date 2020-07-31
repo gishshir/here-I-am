@@ -3,7 +3,8 @@
     <ng-container *ngIf="amiTrajet">
 
         <h3>{{getDescriptionTrajet()}}</h3>
-        <app-trajet-common *ngIf="amiTrajet" [trajet]="amiTrajet"></app-trajet-common>
+        <app-trajet-common *ngIf="amiTrajet" [trajet]="amiTrajet" [timerOn]="true"
+            (trajetChangeEtatEvent)="onTrajetChangeEtatEvent($event)"></app-trajet-common>
 
 
     </ng-container>

@@ -17,6 +17,29 @@ export class TrajetService {
   constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) { }
 
 
+  //=============================================
+  private _callFindTrajetById(trajetid: number): Observable<any> {
+
+    let url = PHP_API_SERVER + "/trajet/read_one.php";
+
+    let options = {
+      headers: HTTP_HEADER_URL,
+      params: new HttpParams().set("id", trajetid + "")
+
+    };
+    // attention si pas de trajet alors {"retour": false}
+    return this.http.get<Trajet>(url, options)
+      .pipe(catchError(this.commonService.handleError));
+  }
+  findTrajetById(trajetid: number, handler: TrajetHandler): void {
+
+    this._callFindTrajetById(trajetid).subscribe(
+
+      (t: Trajet) => handler.onGetTrajet(t),
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+    );
+  }
+
   // ============================================
   private _callListeTrajets(): Observable<any> {
 
@@ -35,9 +58,8 @@ export class TrajetService {
         if (handler) { handler.onGetList(datas); }
       },
       // error
-      (error: string) => {
-        this.commonService._propageErrorToHandler(error, handler);
-      }
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+
 
     )
   }

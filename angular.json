@@ -67,10 +67,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dist.ts"
-                },
-                {
-                  "replace": "src/api/config/header.php",
-                  "with": "src/api/config/header.dist.php"
                 }
               ],
               "optimization": true,

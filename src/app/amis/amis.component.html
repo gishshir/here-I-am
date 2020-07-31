@@ -2,7 +2,7 @@
     fxLayoutGap.lt-md="50px" fxLayoutAlign.lt-md="center center">
 
 
-    <!-- liste des amis -->
+
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="40px">
         <h2 fxFlex>Mes amis</h2>
 
@@ -12,12 +12,16 @@
 
 
         <!-- filtre-->
-        <mat-radio-group fxFlex [(ngModel)]="selectedFilter" name="radioGpFilter" (change)="onRadioChange($event)">
-            <mat-radio-button value="valides">uniquement relation validée</mat-radio-button>
-            <mat-radio-button value="tous">tous</mat-radio-button>
-        </mat-radio-group>
+        <div fxFlex="initial">
+            <span style="margin-right: 10px;" class="mat-radio-label-content">Relation:</span>
+            <mat-radio-group [(ngModel)]="selectedFilter" name="radioGpFilter" (change)="onRadioChange($event)">
+                <mat-radio-button value="valide">valide</mat-radio-button>
+                <mat-radio-button value="aValider">à valider</mat-radio-button>
+                <mat-radio-button value="refuse">refusée</mat-radio-button>
+            </mat-radio-group>
+        </div>
 
-
+        <!-- liste des amis -->
         <div fxFlex>
             <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start none">
                 <mat-card class="card" fxFlex *ngFor="let ami of (amis | amiFilter : selectedFilter)"

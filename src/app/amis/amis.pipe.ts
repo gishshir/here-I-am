@@ -13,14 +13,24 @@ export class AmisPipe implements PipeTransform {
       return allAmis;
     }
 
-    return allAmis.filter((ami: Ami) => ami.etatrelation == RelationState.open);
+    switch (filter) {
+
+      case AmisFilter.valide: return allAmis.filter((ami: Ami) => ami.etatrelation == RelationState.open);
+      case AmisFilter.aValider: return allAmis.filter((ami: Ami) => ami.etatrelation == RelationState.pending);
+      case AmisFilter.refuse: return allAmis.filter((ami: Ami) => ami.etatrelation == RelationState.closed);
+    }
+
+    return [];
+
   }
 
 }
 
 export enum AmisFilter {
 
-  valides = "valides",
+  valide = "valide",
+  aValider = "aValider",
+  refuse = "refuse",
   tous = "tous"
 
 }

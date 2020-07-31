@@ -20,7 +20,7 @@ export class AmisComponent implements OnInit {
 
   amis: Ami[];
   selectedAmi: Ami;
-  selectedFilter: string = AmisFilter.valides;
+  selectedFilter: string = AmisFilter.valide;
   response: Message;
 
   suivreTrajetAmiAutorise: boolean = true;
@@ -38,16 +38,6 @@ export class AmisComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // juste pour tester
-    /*if (typeof Worker != 'undefined') {
-
-      this.worker = new Worker('./ami-trajet.worker', { type: 'module' });
-      // reponse à la communication worker --> component
-      this.worker.onmessage = ({ data }) => console.log(`page got message: ${data}`);
-
-      //envoi d'un message depuis la page vers le worker
-      this.worker.postMessage("envoi d'un message depuis la page vers le worker");
-    }*/
   }
 
   onRadioChange($event: MatRadioChange) {
@@ -57,7 +47,7 @@ export class AmisComponent implements OnInit {
       return;
     }
 
-    if ($event.value = AmisFilter.valides) {
+    if ($event.value = AmisFilter.valide) {
 
       // il y a eu au moins une mise à jour de relation
       if (this._listToUpdate) {
@@ -136,9 +126,22 @@ export class AmisComponent implements OnInit {
           let ami = this.findSelectedAmi(selectedRelationId);
           if (ami && this.selectedFilter) {
             switch (this.selectedFilter) {
+
               case AmisFilter.tous: this.selectedAmi = ami; break;
-              case AmisFilter.valides: {
+              case AmisFilter.valide: {
                 if (RelationState.open) {
+                  this.selectedAmi = ami;
+                }
+                break;
+              }
+              case AmisFilter.aValider: {
+                if (RelationState.pending) {
+                  this.selectedAmi = ami;
+                }
+                break;
+              }
+              case AmisFilter.refuse: {
+                if (RelationState.closed) {
                   this.selectedAmi = ami;
                 }
                 break;

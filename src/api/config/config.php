@@ -13,6 +13,7 @@ require DIR_ENTITIES.'trajet.php';
 require DIR_ENTITIES.'utilisateur.php';
 require DIR_ENTITIES.'account.php';
 require DIR_ENTITIES.'accountinfo.php';
+require DIR_ENTITIES.'position.php';
 
 require DIR_SHARED.'sessionmanager.php';
 require DIR_SHARED.'resultAndDatas.php';

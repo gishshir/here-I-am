@@ -23,8 +23,10 @@ export class GeolocationComponent implements OnInit {
       console.log("geolocation existe");
       this.geolocation = true;
 
+      //TODO augmenter les valeurs pour eviter
+      // de trop soliciter le gps..
       var geo_options = {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         maximumAge: 30000,
         timeout: 30000
       };

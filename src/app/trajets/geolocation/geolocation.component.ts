@@ -12,6 +12,9 @@ export class GeolocationComponent implements OnInit {
   geolocation: boolean;
   latitude: number;
   longitude: number;
+  timestamp: number;
+
+  private pid: number = -1;
 
   ngOnInit(): void {
 
@@ -20,18 +23,39 @@ export class GeolocationComponent implements OnInit {
       console.log("geolocation existe");
       this.geolocation = true;
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log("success");
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-        },
-        (error) => console.log("error")
-      )
+      var geo_options = {
+        enableHighAccuracy: false,
+        maximumAge: 30000,
+        timeout: 0
+      };
+
+      this.pid = navigator.geolocation.watchPosition(
+        (position: Position) => this.geo_success(position),
+        () => this.geo_error(),
+        geo_options);
+
     } else {
-      console.log("geolocation n'existe pas!");
+      console.log("fonction geolocation n'existe pas sur ce navigateur!");
       this.geolocation = false;
     }
+  }
+
+  ngOnDestroy() {
+
+    if (this.pid > 0) {
+      navigator.geolocation.clearWatch(this.pid);
+    }
+
+  }
+
+  private geo_success(position: Position) {
+    console.log("success: " + position.timestamp);
+    this.latitude = position.coords.latitude;
+    this.longitude = position.coords.longitude;
+    this.timestamp = position.timestamp;
+  }
+  private geo_error() {
+    console.log("Position inconnue!");
   }
 }
 

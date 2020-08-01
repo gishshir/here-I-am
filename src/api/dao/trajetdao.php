@@ -39,6 +39,69 @@ function deleteTrajet (int $id) : Resultat {
     return $result;
 }
 
+//=======================================================================================
+/**
+ * Trouver la dernière position d'un trajet
+ * return une entity Position ou rien si pas de position pour ce trajet
+ */
+function findLastTrajetPosition (int $trajetid) : ResultAndEntity {
+
+    $resultAndEntity; $stmt;
+    
+    $con = connectMaBase();
+    $req_lastPosition = "select g2.id, g2.longitude, g2.latitude, g2.timestamp from geolocation as g2 where g2.timestamp =
+    (SELECT  MAX(g1.timestamp) FROM geolocation as g1  where g1.trajetid = g2.trajetid)
+    and g2.trajetid = ?";
+    
+    try {
+
+        $stmt = _prepare ($con, $req_lastPosition);
+        
+        if ($stmt->bind_param("i", $trajetid)) {
+
+            $stmt = _execute($stmt);
+
+            $position = null;
+            $stmt->bind_result ($resId, $reslongitude, $resLatitude, $resTimestamp);
+                   
+            // fetch row ..............
+            if ($stmt->fetch()) {
+              $position = _buildPosition ($resId, $trajetid, $reslongitude, $resLatitude, $resTimestamp);
+              $resultAndEntity = buildResultAndEntity("Position trouvée", $position);
+
+            }  else {
+                //echo "pas de trajet trouvé!";
+                $resultAndEntity = buildResultAndEntity("Pas de position trouvée!", null);
+            }            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $resultAndEntity;
+    
+}
+
+function _buildPosition (int $id, int $trajetid, string $longitude, string $latitude, int $timestamp) {
+
+    $position = new Position();
+    $position->set_id($id);
+    $position->set_trajetid($trajetid);
+    $position->set_longitude($longitude);
+    $position->set_latitude($latitude);
+    $position->set_timestamp($timestamp);
+
+    return $position;
+}
+
 //========================================================================================
 /**
  * Suppression de toutes les positions d'un trajet
@@ -230,7 +293,6 @@ function findAmiLastTrajet (int $amiid) : ResultAndEntity {
 }
 
 function _findLastTrajet (mysqli $con, int $iduser) : ResultAndEntity {
-;
 
     $req_lastTrajet = "select t2.id, t2.starttime, t2.endtime, t2.etat, t2.mean from trajet t2
     where starttime =

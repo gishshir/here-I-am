@@ -73,7 +73,7 @@ export class AmisComponent implements OnInit {
   // reception d'un evenement de changement de suivi de l'ami
   // on s'assure si l'ami de son coté autorise son suivi par l'envoi de notification
   // attention AmiRelation contient l'information du point de vue de l'ami
-  onSuivre() {
+  onSuivre(ami: Ami) {
 
     console.log("onSuivre() " + this.selectedAmi.suivre);
     this.refreshSuivreTrajetAmiAutorise();

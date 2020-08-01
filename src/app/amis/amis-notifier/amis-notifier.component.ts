@@ -36,14 +36,15 @@ export class AmisNotifierComponent implements OnInit {
   }
 
   // attention le click est déclenché avant la modification du model
+  // a revoir: pas satisfaisant!!
   notifierAmi(ami: Ami) {
 
-    let notifier: boolean = !ami.notifier;
-    this.amiService.updateNotifierAmi(ami, !ami.notifier, {
+    ami.notifier = !ami.notifier;
+    this.amiService.updateNotifierAmi(ami, {
 
       onMessage: (m: Message) => {
-        ami.notifier = notifier;
-        this.eventMessage.emit(m)
+        this.eventMessage.emit(m);
+        ami.notifier = !ami.notifier;
       },
       onError: (e: Message) => this.eventMessage.emit(e)
 

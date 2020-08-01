@@ -102,7 +102,7 @@ export class CommonService {
       error: (error: string) => {
         this._propageErrorToHandler(error, handler);
       },
-      complete: () => console.log("complete")
+      complete: () => { }
 
     }
   }

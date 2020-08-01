@@ -38,14 +38,15 @@
 
 
             <!-- geo location-->
-            <app-geolocation *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'" [trajetid]=selectedTrajet.id>
+            <app-geolocation *ngIf="selectedTrajet.etat != 'Ended'" [trajetid]="selectedTrajet.id"
+                [activate]="selectedTrajet.etat == 'Started'">
             </app-geolocation>
 
         </div>
 
 
         <!--liste des amis à notifier-->
-        <div fxFlex="initial" *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
+        <div fxFlex="initial" *ngIf="selectedTrajet.etat != 'Ended'">
             <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
         </div>
 

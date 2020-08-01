@@ -136,7 +136,7 @@ export class TrajetService {
       trajetid: trajetid,
       longitude: position.coords.latitude + "",
       latitude: position.coords.longitude + "",
-      timestamp: position.timestamp
+      timestamp: Math.floor(position.timestamp / 1000)
     }
     this._callInsertTrajetPosition(appPosition).subscribe(
       this.commonService._createMessageObserver(handler));

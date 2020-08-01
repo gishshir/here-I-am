@@ -12,6 +12,7 @@ export class GeolocationComponent implements OnInit {
   @Input() trajetid: number;
   @Input()
   set activate(activate: boolean) {
+    this.initCurrentLocation();
     if (activate) {
       this.startWatch();
     } else {
@@ -34,27 +35,39 @@ export class GeolocationComponent implements OnInit {
   geolocation: boolean;
   latitude: number = -1;
   longitude: number = -1;
-  timestamp: number = -1;
+  timestampSec: number = -1;
 
-  private oldtimestamp: number = -1;
+  private oldtimestampSec: number = -1;
 
   private pid: number = -1;
+
+  private geo_options = {
+    enableHighAccuracy: true,
+    maximumAge: 30000,
+    timeout: 30000
+  };
+
+  private initCurrentLocation() {
+
+    if (this.geolocation && this.timestampSec < 0) {
+
+      navigator.geolocation.getCurrentPosition(
+        (position: Position) => this.geo_success(position),
+        () => this.geo_error(),
+        this.geo_options);
+    }
+
+  }
 
   private startWatch() {
 
     console.log("startWatch()");
     if (this.geolocation) {
 
-      var geo_options = {
-        enableHighAccuracy: true,
-        maximumAge: 30000,
-        timeout: 30000
-      };
-
       this.pid = navigator.geolocation.watchPosition(
         (position: Position) => this.geo_success(position),
         () => this.geo_error(),
-        geo_options);
+        this.geo_options);
     }
 
   }
@@ -80,25 +93,22 @@ export class GeolocationComponent implements OnInit {
 
     console.log("geo_success: " + position.timestamp);
 
-    let positionDifferente = this.latitude != position.coords.latitude
-      || this.longitude != position.coords.longitude;
-
     this.latitude = position.coords.latitude;
     this.longitude = position.coords.longitude;
-    this.timestamp = position.timestamp;
+    this.timestampSec = Math.floor(position.timestamp / 1000);
+
 
     // 10 s pour respirer...
-    if (this.oldtimestamp < 0 || ((this.timestamp - this.oldtimestamp) > 10000)) {
+    if (this.oldtimestampSec < 0 || ((this.timestampSec - this.oldtimestampSec) > 10)) {
 
-      if (positionDifferente) {
-        console.log("appel du service insererNouvellePosition()...");
-        this.oldtimestamp = this.timestamp;
+      console.log("appel du service insererNouvellePosition()...");
+      this.oldtimestampSec = this.timestampSec;
 
-        this.trajetService.insererNouvellePosition(this.trajetid, position, {
-          onMessage: (m: Message) => console.log(m.msg),
-          onError: (e: Message) => console.log(e.msg)
-        });
-      }
+      this.trajetService.insererNouvellePosition(this.trajetid, position, {
+        onMessage: (m: Message) => console.log(m.msg),
+        onError: (e: Message) => console.log(e.msg)
+      });
+
     }
   }
   private geo_error() {

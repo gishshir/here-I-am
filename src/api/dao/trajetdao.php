@@ -40,19 +40,63 @@ function deleteTrajet (int $id) : Resultat {
 }
 
 //========================================================================================
+/**
+ * Suppression de toutes les positions d'un trajet
+ */
+
+function _deleteTrajetPositions ($con, int $trajetid) : Resultat {
+
+    $result; $stmt;
+
+    $req_deleteAllPositions = "delete FROM geolocation WHERE trajetid = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_deleteAllPositions);
+        if ($stmt->bind_param("i", $ptrajetid) ) {
+
+            $ptrajetid = $trajetid;
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            $message = $nbligneImpactees > 0?"suppression des positions du trajet reussie!":"Pas de modification!";
+            
+            $result = buildResultat($message);
+            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultatError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, null);
+    }
+
+    return $result;
+}
 /*
-* Ajout d'une position à un trajet
+* Creation d'une position à un trajet
+* (on supprime toutes les autres, on ne garde toujours que la dernière)
 */
 function insertTrajetPosition (Position $position) :Resultat {
 
     $result; $stmt;
    
     $con = connectMaBase();
+    _beginTransaction($con);
+
     $req_insertPosition = "insert INTO geolocation(trajetid, longitude, latitude, timestamp)
      VALUES (?,?,?,?)";
 
     try {
 
+        // on supprime toutes les autres positions
+        _deleteTrajetPositions($con, $position->get_trajetid());
+
+        // on insère la position
         $stmt = _prepare ($con, $req_insertPosition);
         if ($stmt->bind_param("issi", $trajetid, $longitude, $latitude, $timestamp) ) {
 
@@ -67,6 +111,7 @@ function insertTrajetPosition (Position $position) :Resultat {
             if ($nbligneImpactees == 1) {
 
                 $result = buildResultat("Position inserée!");
+                _commitTransaction($con);
             } else {
                 throw new Exception("Pas de modification!!");    
             }
@@ -77,6 +122,7 @@ function insertTrajetPosition (Position $position) :Resultat {
     }
     catch (Exception $e) {
         $result = buildResultatError($e->getMessage());
+        _rollbackTransaction($con);
     }
     finally {
         _closeAll($stmt, $con);

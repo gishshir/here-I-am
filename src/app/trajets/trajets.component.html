@@ -1,5 +1,5 @@
 <div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center" fxLayoutGap="50px"
-    fxLayoutGap.lt-md="10px">
+    fxLayoutGap.lt-md="20px">
 
     <!-- liste de mes trajets -->
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
@@ -27,7 +27,7 @@
     </div>
 
     <ng-container *ngIf="selectedTrajet">
-        <!-- détail-->
+        <!-- détail d'un trajet -->
         <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedTrajet">
 
             <h2 fxFlex="initial">Détail du trajet</h2>
@@ -35,17 +35,20 @@
                 (eventChangeState)="onChangeState($event)">
             </app-trajet-detail>
 
-            <!--liste des amis à notifier-->
-            <div fxFlex="initial" *ngIf="selectedTrajet.etat != 'Ended'">
-                <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
-            </div>
+
 
             <!-- geo location-->
             <app-geolocation *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'"></app-geolocation>
 
         </div>
-    </ng-container>
 
+
+        <!--liste des amis à notifier-->
+        <div fxFlex="initial" *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'">
+            <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
+        </div>
+
+    </ng-container>
 
 </div>
 <app-notification *ngIf="response" [message]="response"></app-notification>

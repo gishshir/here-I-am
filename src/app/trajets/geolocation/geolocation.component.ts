@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { TrajetService } from '../trajet.service';
+import { Message } from 'src/app/common/message.type';
 
 @Component({
   selector: 'app-geolocation',
@@ -7,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GeolocationComponent implements OnInit {
 
-  constructor() { }
+  @Input() trajetid: number;
+
+  constructor(private trajetService: TrajetService) { }
 
   geolocation: boolean;
   latitude: number;
@@ -51,10 +55,22 @@ export class GeolocationComponent implements OnInit {
   }
 
   private geo_success(position: Position) {
+
     console.log("success: " + position.timestamp);
+
+    let oldtimestamp = this.timestamp ? this.timestamp : 0;
+
     this.latitude = position.coords.latitude;
     this.longitude = position.coords.longitude;
     this.timestamp = position.timestamp;
+
+    // 10 s pour respirer...
+    if ((this.timestamp - oldtimestamp) > 10000) {
+      this.trajetService.insererNouvellePosition(this.trajetid, position, {
+        onMessage: (m: Message) => console.log(m.msg),
+        onError: (e: Message) => console.log(e.msg)
+      });
+    }
   }
   private geo_error() {
     console.log("Position inconnue!");

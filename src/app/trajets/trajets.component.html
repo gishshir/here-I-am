@@ -38,7 +38,8 @@
 
 
             <!-- geo location-->
-            <app-geolocation *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'"></app-geolocation>
+            <app-geolocation *ngIf="selectedTrajet && selectedTrajet.etat != 'Ended'" [trajetid]=selectedTrajet.id>
+            </app-geolocation>
 
         </div>
 

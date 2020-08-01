@@ -7,7 +7,7 @@ class Position implements IEntity  {
 
 
     private int $id;
-    private int $idtrajet;
+    private int $trajetid;
     private string $latitude;
     private string $longitude;
     private int $timestamp;
@@ -19,11 +19,11 @@ class Position implements IEntity  {
         $this->id = $id;
     }
 
-    function get_idtrajetd (): int {
-        return $this->idtrajet;
+    function get_trajetid (): int {
+        return $this->trajetid;
     }
-    function set_idtrajet (int $idtrajet) {
-        $this->idtrajet = $idtrajet;
+    function set_trajetid (int $trajetid) {
+        $this->trajetid = $trajetid;
     }
 
     function set_latitude (string $latitude) {
@@ -51,7 +51,7 @@ class Position implements IEntity  {
 
         $infos = array (
             "id"=>$this->id,
-            "idtrajet"=>$this->idtrajet,
+            "trajetid"=>$this->trajetid,
             "latitude"=>$this->latitude,
             "longitude"=>$this->longitude,
             "timestamp"=>$this->timestamp

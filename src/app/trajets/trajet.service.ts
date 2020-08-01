@@ -7,6 +7,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
 import { Message } from '../common/message.type';
+import { AppPosition } from './position.type';
 import { NotificationService } from '../common/notification/notification.service';
 
 @Injectable({
@@ -118,6 +119,29 @@ export class TrajetService {
     return this._callDernierTrajet().pipe(
       map((t?: any) => ((t && t.retour == false) || (t && t.id && t.etat == etat))));
   }
+
+  // ===========================================================
+  private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
+
+    let url = PHP_API_SERVER + "/geolocation/create.php";
+
+    return this.http.post<Message>(url, newPosition, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+  insererNouvellePosition(trajetid: number, position: Position, handler: MessageHandler): void {
+
+    let appPosition = {
+
+      trajetid: trajetid,
+      longitude: position.coords.latitude + "",
+      latitude: position.coords.longitude + "",
+      timestamp: position.timestamp
+    }
+    this._callInsertTrajetPosition(appPosition).subscribe(
+      this.commonService._createMessageObserver(handler));
+  }
+  // ===========================================================
 
   // ===========================================================
   private _callCreateTrajet(newTrajet: Trajet): Observable<any> {

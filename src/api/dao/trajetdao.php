@@ -41,6 +41,56 @@ function deleteTrajet (int $id) : Resultat {
 
 //========================================================================================
 /*
+* Ajout d'une position à un trajet
+*/
+function insertTrajetPosition (Position $position) :Resultat {
+
+    $result; $stmt;
+   
+    $con = connectMaBase();
+    $req_insertPosition = "insert INTO geolocation(trajetid, longitude, latitude, timestamp)
+     VALUES (?,?,?,?)";
+
+    try {
+
+        $stmt = _prepare ($con, $req_insertPosition);
+        if ($stmt->bind_param("issi", $trajetid, $longitude, $latitude, $timestamp) ) {
+
+            $trajetid = $position->get_trajetid();
+            $longitude = $position->get_longitude();
+            $latitude = $position->get_latitude();
+            $timestamp = $position->get_timestamp();
+
+            $stmt = _execute ($stmt);
+            
+            $nbligneImpactees = $stmt->affected_rows ;
+            if ($nbligneImpactees == 1) {
+
+                $result = buildResultat("Position inserée!");
+            } else {
+                throw new Exception("Pas de modification!!");    
+            }
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+    }
+    catch (Exception $e) {
+        $result = buildResultatError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $result;
+}
+
+
+//========================================================================================
+
+
+//========================================================================================
+/*
 * Creation d'un nouveau trajet
 */
 function createTrajet (Trajet $trajet) :ResultAndEntity {
@@ -48,12 +98,12 @@ function createTrajet (Trajet $trajet) :ResultAndEntity {
     $resultAndEntity; $stmt;
    
     $con = connectMaBase();
-    $req_createTrajet = "insert INTO trajet(userid, starttime, endtime, etat, mean) 
+    $req_insertPosition = "insert INTO trajet(userid, starttime, endtime, etat, mean) 
     VALUES (?, ?, ?, ?, ?)";
 
     try {
 
-        $stmt = _prepare ($con, $req_createTrajet);
+        $stmt = _prepare ($con, $req_insertPosition);
         if ($stmt->bind_param("iiiss", $userid, $starttime, $endtime, $etat, $mean) ) {
 
             $userid = getCurrentUserId();

@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   title = 'Où sont mes amis ?';
   loggedIn: boolean = false;
   response: Message;
+  networkUsage: boolean = false;
 
   constructor(private route: Router, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router) {
@@ -27,6 +28,10 @@ export class AppComponent implements OnInit {
     // abonnement au changement d'utilisateur
     this.notificationService.changeUser$.subscribe(
       (pseudo?: string) => this.mettreAJourBanniere(pseudo));
+
+    // abonnement à l'usage intensif du réseau
+    this.notificationService.networkUsage$.subscribe(
+      (usage: boolean) => this.networkUsage = usage)
 
   }
   ngOnInit(): void {
@@ -52,10 +57,12 @@ export class AppComponent implements OnInit {
     this.route.navigate(['/go-accueil']);
   }
 
-  mettreAJourBanniere(pseudo?: string) {
+  private mettreAJourBanniere(pseudo?: string) {
     console.log("AppComponent#mettreAJourBanniere() " + pseudo);
     this.title = pseudo != null ?
       "Bienvenue " + pseudo + " !!!" : "Où sont mes amis ?";
     this.loggedIn = pseudo != null;
   }
+
+
 }

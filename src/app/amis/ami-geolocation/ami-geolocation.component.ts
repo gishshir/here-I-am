@@ -4,6 +4,7 @@ import { Ami } from '../ami.type';
 import { Trajet, TrajetState } from 'src/app/trajets/trajet.type';
 import { Message } from 'src/app/common/message.type';
 import { AppPosition } from 'src/app/trajets/position.type';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Component({
   selector: 'app-ami-geolocation',
@@ -28,7 +29,7 @@ export class AmiGeolocationComponent implements OnInit {
   // token sur le timer
   private timerid: number = -1;
 
-  constructor(private trajetService: TrajetService) { }
+  constructor(private trajetService: TrajetService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
   }
@@ -41,6 +42,7 @@ export class AmiGeolocationComponent implements OnInit {
   private startTimer() {
     if (this.timerid == -1) {
       console.log("startTimer()");
+      this.notificationService.useNetwork(true);
 
       // rafraichir position toutes les 30s 
       this.timerid = window.setInterval(() => {
@@ -52,6 +54,7 @@ export class AmiGeolocationComponent implements OnInit {
   }
   private stopTimer() {
     console.log("stopTimer()");
+    this.notificationService.useNetwork(false);
     if (this.timerid >= 0) {
       clearInterval(this.timerid);
       this.timerid = -1;

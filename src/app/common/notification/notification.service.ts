@@ -17,6 +17,19 @@ export class NotificationService {
 
   //--------------------------------------------------
   // Observable string source
+  private networkUsageSource = new Subject<boolean>();
+  // observable string streams
+  networkUsage$ = this.networkUsageSource.asObservable();
+
+  // services message commands
+  useNetwork(usage: boolean) {
+    console.log("NotificationService#useNetword() " + usage);
+    this.networkUsageSource.next(usage);
+  }
+  //--------------------------------------------------
+
+  //--------------------------------------------------
+  // Observable string source
   private changeUserSource = new Subject<string>();
   // observable string streams
   changeUser$ = this.changeUserSource.asObservable();

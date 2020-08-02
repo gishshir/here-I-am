@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TrajetService } from '../trajet.service';
 import { Message } from 'src/app/common/message.type';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 
 /*
 * Utilise le GPS du system via le navigator pour recuperer
@@ -28,7 +29,7 @@ export class GeolocationComponent implements OnInit {
   // url pour voir la localisation sur google maps
   urlToMaps: string;
 
-  constructor(private trajetService: TrajetService) {
+  constructor(private trajetService: TrajetService, private notificationService: NotificationService) {
     if ("geolocation" in navigator) {
 
       console.log("geolocation existe");
@@ -70,6 +71,7 @@ export class GeolocationComponent implements OnInit {
   private startWatch() {
 
     console.log("startWatch()");
+    this.notificationService.useNetwork(true);
     if (this.geolocation) {
 
       this.pid = navigator.geolocation.watchPosition(
@@ -93,6 +95,7 @@ export class GeolocationComponent implements OnInit {
 
 
   private clearWatch() {
+    this.notificationService.useNetwork(false);
 
     if (this.pid >= 0) {
       console.log("clearWatch(): " + this.pid);

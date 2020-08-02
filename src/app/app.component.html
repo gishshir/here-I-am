@@ -6,6 +6,14 @@
   <h3 fxFlex="1 1 auto">{{title}}</h3>
 
 
+
+  <!--usage du reseau -->
+  <div fxFlex="initial" title="Usage du réseau">
+    <mat-icon class="material-icons md-48"
+      title="{{networkUsage?'Utilisation intense réseau':'Utilisation faible du réseau'}}"
+      color="{{networkUsage?'accent':'basic'}}">network_check</mat-icon>
+  </div>
+
   <!--logout-->
   <a *ngIf="loggedIn" fxFlex="initial" aria-label="déconnection" title="Logout" (click)="logout()"
     style="cursor: pointer;">

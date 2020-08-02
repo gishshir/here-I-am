@@ -25,6 +25,9 @@ export class GeolocationComponent implements OnInit {
     }
   }
 
+  // url pour voir la localisation sur google maps
+  urlToMaps: string;
+
   constructor(private trajetService: TrajetService) {
     if ("geolocation" in navigator) {
 
@@ -84,6 +87,11 @@ export class GeolocationComponent implements OnInit {
     console.log("ngOnDestroy()");
     this.clearWatch();
   }
+
+
+
+
+
   private clearWatch() {
 
     if (this.pid >= 0) {
@@ -101,6 +109,8 @@ export class GeolocationComponent implements OnInit {
     this.latitude = position.coords.latitude;
     this.longitude = position.coords.longitude;
     this.timestampSec = Math.floor(position.timestamp / 1000);
+
+    this.urlToMaps = this.trajetService.buildUrlToMaps(this.latitude, this.longitude);
 
 
     // 10 s pour respirer...

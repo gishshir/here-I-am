@@ -21,6 +21,7 @@ export class AmiGeolocationComponent implements OnInit {
   @Output() eventMessage = new EventEmitter<Message>();
 
   position: AppPosition;
+  urlToMaps: string;
 
   private _amiTrajet: Trajet;
 
@@ -41,12 +42,11 @@ export class AmiGeolocationComponent implements OnInit {
     if (this.timerid == -1) {
       console.log("startTimer()");
 
-      // rafraichir trajet toutes les 10s 
-      // jusqu'à arret du trajet
+      // rafraichir position toutes les 30s 
       this.timerid = window.setInterval(() => {
 
         this.findAmiTrajetPosition();
-      }, 10000);
+      }, 30000);
 
     }
   }
@@ -80,12 +80,25 @@ export class AmiGeolocationComponent implements OnInit {
 
   }
 
+  private buildUrlToMaps(): void {
+
+    if (this.position) {
+      let latitude = Number(this.position.latitude);
+      let longitude = Number(this.position.longitude);
+
+      this.urlToMaps = this.trajetService.buildUrlToMaps(latitude, longitude);
+    }
+  }
+
   private findAmiTrajetPosition(): void {
 
     console.log("findAmiTrajetPosition()");
     this.trajetService.findTrajetPosition(this._amiTrajet.id, {
 
-      onGetPosition: (p: AppPosition) => this.position = p,
+      onGetPosition: (p: AppPosition) => {
+        this.position = p;
+        this.buildUrlToMaps();
+      },
       onError: (e: Message) => console.log(e.msg)
     });
 

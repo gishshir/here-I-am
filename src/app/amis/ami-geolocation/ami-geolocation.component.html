@@ -6,7 +6,13 @@
             <div fxFlex="initial"><b>latitude:</b> {{position.latitude}}</div>
             <div fxFlex="initial"><b>longitude:</b> {{position.longitude}}</div>
             <div fxFlex="initial"><b>timestamp:</b> {{position.timestamp}}</div>
+
+            <a target="_blank" rel="noopener noreferrer" [href]="urlToMaps">
+                <mat-icon class="icon-map material-icons md-48" color="accent">location_on</mat-icon>
+                Voir la carte
+            </a>
         </ng-container>
+
     </mat-card-content>
 
     <ng-template #PositionNonConnue>

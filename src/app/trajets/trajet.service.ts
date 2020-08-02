@@ -17,7 +17,37 @@ export class TrajetService {
 
   constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) { }
 
+  //=============================================
+  buildUrlToMaps(latitude: number, longitude: number): string {
 
+    let sexaLat = this.convertToSexagesimal(latitude);
+    //console.log("latitude: " + sexaLat);
+    let sexaLong = this.convertToSexagesimal(longitude);
+    //console.log("longitude: " + sexaLong);
+
+    return "https://www.google.fr/maps/place/" + sexaLat + "N+" + sexaLong + "E/@" + latitude + "," + longitude;
+  }
+
+  private convertToSexagesimal(value: number): string {
+
+    let test: number = value;
+    let degres = Math.trunc(test);
+
+    test = test - degres;
+    test = test * 60;
+
+    let minutes = Math.trunc(test);
+
+    test = test - minutes;
+    test = test * 60 * 10;
+    test = Math.trunc(test);
+
+    let secondes = test / 10;
+
+    let result = degres + "%C2%B0" + minutes + "'" + secondes + "%22";
+    //degres + "%C2%B" + minutes + "'" + secondes + "%22";
+    return result;
+  }
   //=============================================
   private _callFindTrajetById(trajetid: number): Observable<any> {
 
@@ -160,8 +190,8 @@ export class TrajetService {
     let appPosition = {
 
       trajetid: trajetid,
-      longitude: position.coords.latitude + "",
-      latitude: position.coords.longitude + "",
+      latitude: position.coords.latitude + "",
+      longitude: position.coords.longitude + "",
       timestamp: Math.floor(position.timestamp / 1000)
     }
     this._callInsertTrajetPosition(appPosition).subscribe(

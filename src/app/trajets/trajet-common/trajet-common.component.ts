@@ -4,6 +4,11 @@ import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
 import { Message } from '../../common/message.type';
 
+
+/**
+ * composant de base à inclure dans des composants parents
+ * Suivi de l'etat d'un trajet avec timer
+ */
 @Component({
   selector: 'app-trajet-common',
   templateUrl: './trajet-common.component.html',
@@ -13,6 +18,8 @@ export class TrajetCommonComponent implements OnInit {
 
   @Input() trajet: Trajet;
   @Input() timerOn: boolean = false;
+
+  // lancement d'un evenement de changement etat
   @Output() trajetChangeEtatEvent = new EventEmitter<Trajet>();
 
 
@@ -43,7 +50,7 @@ export class TrajetCommonComponent implements OnInit {
     }
   }
 
-  // rafraichir trajet toutes les 5s 
+  // rafraichir trajet toutes les 30s 
   // jusqu'à arret du trajet
   private startTimer() {
 
@@ -51,14 +58,14 @@ export class TrajetCommonComponent implements OnInit {
     this.timerid = window.setInterval(() => {
 
       this.refreshTrajet();
-    }, 5000);
+    }, 30000);
   }
 
   private stopTimer() {
     console.log("stop timer");
     if (this.timerid >= 0) {
-      clearInterval(this.timerid
-      );
+      clearInterval(this.timerid);
+      this.timerid = -1;
     }
   }
 

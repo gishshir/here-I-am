@@ -5,6 +5,8 @@ import { TrajetService } from 'src/app/trajets/trajet.service';
 import { Ami } from '../ami.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
 
+
+
 @Component({
   selector: 'app-ami-trajet',
   templateUrl: './ami-trajet.component.html',

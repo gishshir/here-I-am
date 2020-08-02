@@ -42,20 +42,38 @@
 
     </div>
 
+    <ng-container *ngIf="selectedAmi">
 
-    <!-- COL2  Detail ami -->
-    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
-        <!--si relation valide-->
-        <ng-container *ngIf="selectedAmi.etatrelation == 'open'; else showrelation">
+        <!-- COL2  Detail ami -->
+        <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
-            <!-- détail d'un ami  -->
-            <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
-                (eventDelete)="onDelete($event)" (eventSuivre)="onSuivre($event)">
-            </app-ami-detail>
+            <!--si relation valide-->
+            <ng-container *ngIf="selectedAmi.etatrelation == 'open'; else showrelation">
 
-            <!--si conditions sont remplies: ami autorise que je suive son déplacement -->
-            <ng-container *ngIf="selectedAmi.suivre && suivreTrajetAmiAutorise; else suiviNonAutorise">
+                <!-- détail d'un ami  -->
+                <h3 fxFlex>Mon ami(e)</h3>
+                <app-ami-detail fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
+                    (eventDelete)="onDelete($event)" (eventSuivre)="onSuivre($event)">
+                </app-ami-detail>
+
+            </ng-container>
+
+            <!--détail de la relation si pending ou fermée-->
+            <ng-template #showrelation>
+                <app-ami-relation fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
+                    (eventUpdateRelation)="onUpdateRelation($event)">
+                </app-ami-relation>
+            </ng-template>
+
+
+        </div>
+
+        <!-- COL3  Detail trajet ami -->
+        <!--si conditions sont remplies: ami autorise que je suive son déplacement -->
+        <ng-container *ngIf="selectedAmi.suivre && suivreTrajetAmiAutorise; else suiviNonAutorise">
+
+            <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
                 <!--Detail trajet de l'ami -->
                 <app-ami-trajet fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
@@ -66,27 +84,20 @@
                     (eventMessage)="onMessage($event)">
                 </app-ami-geolocation>
 
-            </ng-container>
-
+            </div>
         </ng-container>
 
-        <!--détail de la relation si pending ou fermée-->
-        <ng-template #showrelation>
-            <app-ami-relation fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"
-                (eventUpdateRelation)="onUpdateRelation($event)">
-            </app-ami-relation>
-        </ng-template>
-
-        <!-- message is pas autorisation suivi -->
+        <!-- message si pas autorisation suivi -->
         <ng-template #suiviNonAutorise>
-            <div fxFlex="auto" *ngIf="selectedAmi && selectedAmi.suivre && !suivreTrajetAmiAutorise">
+            <div fxFlex="initial" *ngIf="selectedAmi && selectedAmi.suivre && !suivreTrajetAmiAutorise">
                 <div class="bloc-reponse" [style.background-color]="'lightcoral'">
                     <p>Mon ami {{selectedAmi.pseudo}} <br> ne m'a pas autorisé à suivre son trajet !</p>
                 </div>
 
             </div>
         </ng-template>
-    </div>
+
+    </ng-container>
 
 </div>
 

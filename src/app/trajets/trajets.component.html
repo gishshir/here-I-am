@@ -1,40 +1,36 @@
-<div class="container" fxLayout fxLayout.lt-md="column" fxLayoutAlign="center" fxLayoutGap="50px"
-    fxLayoutGap.lt-md="20px">
+<div class="container" fxLayout fxLayoutAlign="center start" fxLayoutGap="50px" fxLayout.lt-md="column"
+    fxLayoutGap.lt-md="50px" fxLayoutAlign.lt-md="center center">
 
-    <!-- liste de mes trajets -->
-    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
-        <h2 fxFlex>Mes trajets</h2>
+    <!-- COL1 liste de mes trajets -->
+    <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="20px">
 
-        <div fxFlex fxLayout="column" fxLayoutGap="20px" fxLayoutGap.xs="10px" fxLayoutAlign="start none">
-            <mat-card class="card" fxFlex *ngFor="let trajet of trajets"
-                [class.card-selected]="trajet === selectedTrajet" (click)="onSelect(trajet)">
+        <h2 fxFlex="initial">Liste de mes trajets</h2>
+        <mat-card class="card" fxFlex *ngFor="let trajet of trajets" [class.card-selected]="trajet === selectedTrajet"
+            (click)="onSelect(trajet)">
 
-                <span>
-                    <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
-                    <app-trajet-state-icon class="icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
-                    <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
-                </span>
+            <span>
+                <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
+                <app-trajet-state-icon class="icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
+                <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
+            </span>
 
-                <span class="icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
-                    (click)="confirmSupprimerTrajet(trajet)">
-                    <mat-icon class="material-icons md-48" color="primary">clear</mat-icon>
-                </span>
+            <span class="icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
+                (click)="confirmSupprimerTrajet(trajet)">
+                <mat-icon class="material-icons md-48" color="primary">clear</mat-icon>
+            </span>
 
-            </mat-card>
-        </div>
+        </mat-card>
         <div>Aujourd'hui nous sommes le {{today}}</div>
 
     </div>
 
     <ng-container *ngIf="selectedTrajet">
-        <!-- détail d'un trajet -->
+        <!-- COL2 détail d'un trajet -->
         <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedTrajet">
 
-            <h2 fxFlex="initial">Détail du trajet</h2>
             <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
                 (eventChangeState)="onChangeState($event)">
             </app-trajet-detail>
-
 
 
             <!-- geo location-->
@@ -45,7 +41,7 @@
         </div>
 
 
-        <!--liste des amis à notifier-->
+        <!-- COL3 liste des amis à notifier-->
         <div fxFlex="initial" *ngIf="selectedTrajet.etat != 'Ended'">
             <app-amis-notifier (eventMessage)="onMessage($event)"></app-amis-notifier>
         </div>

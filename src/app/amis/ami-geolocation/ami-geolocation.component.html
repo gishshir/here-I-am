@@ -1,0 +1,19 @@
+<mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
+
+    <mat-card-header fxFlex>
+        <h4>Position de mon ami(e):</h4>
+    </mat-card-header>
+
+    <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
+        <ng-container *ngIf="position; else PositionNonConnue">
+            <div fxFlex="initial"><b>latitude:</b> {{position.latitude}}</div>
+            <div fxFlex="initial"><b>longitude:</b> {{position.longitude}}</div>
+            <div fxFlex="initial"><b>timestamp:</b> {{position.timestamp}}</div>
+        </ng-container>
+    </mat-card-content>
+
+    <ng-template #PositionNonConnue>
+        <p>Position inconnue!</p>
+    </ng-template>
+
+</mat-card>

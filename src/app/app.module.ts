@@ -35,6 +35,7 @@ import { DialogDeleteRelationComponent } from './amis/relation/dialog-delete/dia
 import { AmiTrajetComponent } from './amis/ami-trajet/ami-trajet.component';
 import { TrajetCommonComponent } from './trajets/trajet-common/trajet-common.component';
 import { GeolocationComponent } from './trajets/geolocation/geolocation.component';
+import { AmiGeolocationComponent } from './amis/ami-geolocation/ami-geolocation.component';
 
 
 
@@ -65,7 +66,8 @@ import { GeolocationComponent } from './trajets/geolocation/geolocation.componen
     DialogDeleteRelationComponent,
     AmiTrajetComponent,
     TrajetCommonComponent,
-    GeolocationComponent
+    GeolocationComponent,
+    AmiGeolocationComponent
   ],
   imports: [
     BrowserModule,

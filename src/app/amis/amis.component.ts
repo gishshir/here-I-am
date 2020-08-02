@@ -9,6 +9,8 @@ import { AmisFilter } from './amis.pipe';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogInvitationComponent } from './dialog-invitation/dialog-invitation.component';
 import { AmiRelation } from './amiinfo.type';
+import { NotificationService } from '../common/notification/notification.service';
+import { Trajet } from '../trajets/trajet.type';
 
 
 @Component({
@@ -20,6 +22,7 @@ export class AmisComponent implements OnInit {
 
   amis: Ami[];
   selectedAmi: Ami;
+  selectedAmiTrajet: Trajet;
   selectedFilter: string = AmisFilter.valide;
   response: Message;
 
@@ -30,14 +33,21 @@ export class AmisComponent implements OnInit {
   //private worker: Worker;
 
 
-  constructor(private amiService: AmiService, private logger: LoggerService, private dialog: MatDialog) {
+  constructor(private amiService: AmiService, private logger: LoggerService, private dialog: MatDialog,
+    private notificationService: NotificationService) {
 
-    this.refreshList();
-
-
+    // abonnement au changement de trajet (ou etat de trajet)
+    // de l'ami en cours
+    this.notificationService.amiTrajet$.subscribe(
+      (trajet?: Trajet) => {
+        this.selectedAmiTrajet = trajet;
+        logger.log("selectedAmiTrajet: " + (trajet ? trajet.etat : "null"));
+      }
+    );
   }
 
   ngOnInit(): void {
+    this.refreshList();
   }
 
   onRadioChange($event: MatRadioChange) {
@@ -90,6 +100,8 @@ export class AmisComponent implements OnInit {
         onError: (e: Message) => this.response = e
 
       });
+    } else {
+      this.selectedAmiTrajet = null;
     }
   }
 
@@ -167,6 +179,7 @@ export class AmisComponent implements OnInit {
   }
 
   onSelect(ami: Ami) {
+    this.selectedAmiTrajet = null;
     this.selectedAmi = ami;
     this.response = null;
     this.refreshSuivreTrajetAmiAutorise();

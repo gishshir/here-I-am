@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     console.log("database: " + environment.database);
     console.log("apiUrl: " + environment.apiUrl);
 
-    // abonnement
+    // abonnement au changement d'utilisateur
     this.notificationService.changeUser$.subscribe(
       (pseudo?: string) => this.mettreAJourBanniere(pseudo));
 

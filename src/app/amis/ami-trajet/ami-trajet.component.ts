@@ -3,6 +3,7 @@ import { Trajet, TrajetState } from 'src/app/trajets/trajet.type';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { TrajetService } from 'src/app/trajets/trajet.service';
 import { Ami } from '../ami.type';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Component({
   selector: 'app-ami-trajet',
@@ -19,13 +20,16 @@ export class AmiTrajetComponent implements OnInit {
 
   amiTrajet: Trajet;
 
-  constructor(private trajetService: TrajetService) {
+  constructor(private trajetService: TrajetService, private notificationService: NotificationService) {
   }
 
   // event de changement d'etat du trajet
+  // envoyé par le component trajet-common
   onTrajetChangeEtatEvent(trajet: Trajet) {
 
     this.amiTrajet = trajet;
+    // propage l'evenement au niveau de l'application
+    this.notificationService.changeAmiTrajet(trajet);
   }
 
   getDescriptionTrajet(): string {
@@ -35,8 +39,8 @@ export class AmiTrajetComponent implements OnInit {
       switch (this.amiTrajet.etat) {
 
         case TrajetState.started: description = "Mon ami(e) est en chemin..."; break;
-        case TrajetState.pausing: description = "Mon ami(e) s'est arrêté..."; break;
-        case TrajetState.ended: description = "Mon ami(e) est arrivé à destination."; break;
+        case TrajetState.pausing: description = "Mon ami(e) s'est arrêté(e)..."; break;
+        case TrajetState.ended: description = "Mon ami(e) est arrivé(e) à destination."; break;
 
       }
     }
@@ -53,6 +57,8 @@ export class AmiTrajetComponent implements OnInit {
       onGetTrajet: t => {
         if (t && t.id) {
           this.amiTrajet = t;
+          // propage l'evenement au niveau de l'application
+          this.notificationService.changeAmiTrajet(t);
         }
       },
       onError: m => console.log(m)

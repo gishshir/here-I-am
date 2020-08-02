@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Trajet } from 'src/app/trajets/trajet.type';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,20 @@ export class NotificationService {
   }
   //--------------------------------------------------
 
+
+  //---------------------------------------------------------------
+  // notification d'un changement dans le trajet de mon ami en cours
+  // soit demarrage d'un nouveau trajet
+  // soit changement etat du trajet en cours
+  private amiTrajetSource = new Subject<Trajet>();
+  // observable Trajet streams
+  amiTrajet$ = this.amiTrajetSource.asObservable();
+
+  changeAmiTrajet(value: Trajet) {
+    console.log("NotificationService#changeAmiTrajet() " + value);
+    this.amiTrajetSource.next(value);
+  }
+  //---------------------------------------------------------------
 
 
 }

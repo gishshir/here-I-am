@@ -121,6 +121,32 @@ export class TrajetService {
   }
 
   // ===========================================================
+  // ===========================================================
+  private _callFindTrajetPosition(trajetid: number): Observable<any> {
+
+    let url = PHP_API_SERVER + "/geolocation/read_one.php";
+
+    let options = {
+      headers: HTTP_HEADER_URL,
+      params: new HttpParams().set("trajetid", trajetid + "")
+
+    };
+    // attention si pas de Position alors {"retour": false}
+    return this.http.get<AppPosition>(url, options)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+  findTrajetPosition(trajetid: number, handler: AppPositionHandler): void {
+
+    this._callFindTrajetPosition(trajetid).subscribe(
+
+      (p: AppPosition) => handler.onGetPosition(p),
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+    );
+  }
+
+
+  // ===========================================================
   private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
 
     let url = PHP_API_SERVER + "/geolocation/create.php";
@@ -263,4 +289,9 @@ export interface TrajetsHandler extends Handler {
 export interface TrajetHandler extends Handler {
 
   onGetTrajet(trajet?: Trajet): void;
+}
+
+export interface AppPositionHandler extends Handler {
+
+  onGetPosition(position?: AppPosition): void;
 }

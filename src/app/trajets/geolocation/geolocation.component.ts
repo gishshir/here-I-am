@@ -2,6 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { TrajetService } from '../trajet.service';
 import { Message } from 'src/app/common/message.type';
 
+/*
+* Utilise le GPS du system via le navigator pour recuperer
+* les informations de positions et les envoyer à la BDD
+*/
+
 @Component({
   selector: 'app-geolocation',
   templateUrl: './geolocation.component.html',

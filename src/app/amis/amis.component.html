@@ -2,7 +2,7 @@
     fxLayoutGap.lt-md="50px" fxLayoutAlign.lt-md="center center">
 
 
-
+    <!-- COL1 filtre et liste amis-->
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="40px">
         <h2 fxFlex>Mes amis</h2>
 
@@ -43,6 +43,7 @@
     </div>
 
 
+    <!-- COL2  Detail ami -->
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedAmi">
 
         <!--si relation valide-->
@@ -53,10 +54,19 @@
                 (eventDelete)="onDelete($event)" (eventSuivre)="onSuivre($event)">
             </app-ami-detail>
 
-            <!--Detail trajet de l'ami si conditions sont remplies: ami autorise notification pour moi -->
-            <app-ami-trajet fxFlex="auto" *ngIf="selectedAmi.suivre && suivreTrajetAmiAutorise; else suiviNonAutorise"
-                [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)"></app-ami-trajet>
+            <!--si conditions sont remplies: ami autorise que je suive son déplacement -->
+            <ng-container *ngIf="selectedAmi.suivre && suivreTrajetAmiAutorise; else suiviNonAutorise">
 
+                <!--Detail trajet de l'ami -->
+                <app-ami-trajet fxFlex="auto" [amiDetail]="selectedAmi" (eventMessage)="onMessage($event)">
+                </app-ami-trajet>
+
+                <!-- Geolocation ami -->
+                <app-ami-geolocation fxFlex="auto" *ngIf="selectedAmiTrajet" [amiTrajet]="selectedAmiTrajet"
+                    (eventMessage)="onMessage($event)">
+                </app-ami-geolocation>
+
+            </ng-container>
 
         </ng-container>
 
@@ -67,7 +77,7 @@
             </app-ami-relation>
         </ng-template>
 
-
+        <!-- message is pas autorisation suivi -->
         <ng-template #suiviNonAutorise>
             <div fxFlex="auto" *ngIf="selectedAmi && selectedAmi.suivre && !suivreTrajetAmiAutorise">
                 <div class="bloc-reponse" [style.background-color]="'lightcoral'">

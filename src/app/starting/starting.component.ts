@@ -4,6 +4,7 @@ import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { TrajetService } from '../trajets/trajet.service';
 import { Message } from '../common/message.type';
 import { AmiService } from '../amis/ami.service';
+import { NotificationService } from '../common/notification/notification.service';
 
 
 
@@ -20,7 +21,7 @@ export class StartingComponent implements OnInit {
   nouveauTrajet: Trajet;
   response: Message;
 
-  constructor(private trajetService: TrajetService, private amiService: AmiService) {
+  constructor(private trajetService: TrajetService, private notificationService: NotificationService) {
     let trajetMeansKeys: string[] = Object.keys(TrajetMeans);
     trajetMeansKeys.forEach(v => {
 
@@ -39,12 +40,13 @@ export class StartingComponent implements OnInit {
 
   onChangeMean(mean: TrajetMeans) {
     this.selectedMean = mean;
-    // todo mettre à jour le moyen de trajet si trajet démarré...
+    // mettre à jour le moyen de trajet si trajet démarré...
     if (this.nouveauTrajet) {
       this.trajetService.changerMeanTrajet(this.nouveauTrajet.id, mean, {
 
         onGetTrajet: (t: Trajet) => {
           this.nouveauTrajet.mean = t.mean;
+          this.notificationService.changeMonTrajet(t);
           this.response = { msg: "moyen de transport '" + t.mean + "' pris en compte!", error: false }
         },
         onError: (error: Message) => this.response = error
@@ -69,7 +71,10 @@ export class StartingComponent implements OnInit {
 
     this.trajetService.changerStatusTrajet(this.nouveauTrajet.id, TrajetState.ended, {
 
-      onGetTrajet: (t: Trajet) => this.nouveauTrajet = t,
+      onGetTrajet: (t: Trajet) => {
+        this.nouveauTrajet = t;
+        this.notificationService.changeMonTrajet(t);
+      },
       onError: (error: Message) => this.response = error
     });
 
@@ -78,7 +83,10 @@ export class StartingComponent implements OnInit {
 
     this.trajetService.demarrerNouveauTrajet(this.selectedMean, {
 
-      onGetTrajet: t => this.nouveauTrajet = t,
+      onGetTrajet: t => {
+        this.nouveauTrajet = t;
+        this.notificationService.changeMonTrajet(t);
+      },
       onError: e => this.response = e
     });
   }

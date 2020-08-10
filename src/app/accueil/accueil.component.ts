@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Trajet, TrajetState } from '../trajets/trajet.type';
 import { TrajetService } from '../trajets/trajet.service';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { NotificationService } from '../common/notification/notification.service';
 
 @Component({
   selector: 'app-accueil',
@@ -14,7 +15,10 @@ export class AccueilComponent implements OnInit {
   dernierTrajet: Trajet;
   response: Message;
 
-  constructor(private trajetService: TrajetService) {
+  constructor(private trajetService: TrajetService, private notificationService: NotificationService) {
+
+    // s'inscrit aux evenements de changement de trajet ou etat de trajet
+    this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
 
     this.refreshDernierTrajet();
   }

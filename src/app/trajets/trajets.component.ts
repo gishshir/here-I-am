@@ -4,9 +4,9 @@ import { TrajetService } from './trajet.service';
 import { ToolsService } from '../common/tools.service';
 import { LoggerService } from '../common/logger.service';
 import { Message } from '../common/message.type';
-import { AmiService } from '../amis/ami.service';
 import { DialogDeleteTrajetComponent } from './dialog-delete/dialog-delete-trajet.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { NotificationService } from '../common/notification/notification.service';
 
 
 
@@ -25,8 +25,11 @@ export class TrajetsComponent implements OnInit {
   response: Message;
 
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
-    private logger: LoggerService, private amiService: AmiService, public dialog: MatDialog) {
+    private logger: LoggerService, public dialog: MatDialog,
+    private notificationService: NotificationService) {
     this.today = toolsService.formatDate(new Date().getTime() / 1000);
+    // s'inscrit aux evenements de changement de trajet ou etat de trajet
+    this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
     this.refreshList(-1);
   }
 

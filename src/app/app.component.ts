@@ -5,6 +5,7 @@ import { Message } from './common/message.type';
 import { Router } from '@angular/router';
 import { AccountService } from './account/account.service';
 import { NotificationService } from './common/notification/notification.service';
+import { Trajet } from './trajets/trajet.type';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,12 @@ export class AppComponent implements OnInit {
     // abonnement à l'usage intensif du réseau
     this.notificationService.networkUsage$.subscribe(
       (usage: boolean) => this.networkUsage = usage)
+
+    // abonnement à une modification de mon trajet
+    //nouveau | changement etat | changement moyen transport
+    this.notificationService.monTrajet$.subscribe(
+      (t: Trajet) => this.onChangeTrajet(t)
+    )
 
   }
   ngOnInit(): void {
@@ -64,5 +71,9 @@ export class AppComponent implements OnInit {
     this.loggedIn = pseudo != null;
   }
 
+  private onChangeTrajet(trajet: Trajet) {
+    console.log("AppComponent#onChangeTrajet");
+    // TODO faire qq chose...
+  }
 
 }

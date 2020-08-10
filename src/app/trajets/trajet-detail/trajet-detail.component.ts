@@ -3,6 +3,7 @@ import { Trajet, TrajetState } from '../trajet.type';
 import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
 import { Message } from 'src/app/common/message.type';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 
 
 @Component({
@@ -13,10 +14,11 @@ import { Message } from 'src/app/common/message.type';
 export class TrajetDetailComponent implements OnInit {
 
   @Input() trajetDetail: Trajet;
-  @Output() eventChangeState = new EventEmitter<Trajet>();
+  //@Output() eventChangeState = new EventEmitter<Trajet>();
   @Output() eventMessage = new EventEmitter<Message>();
 
-  constructor(private toolsService: ToolsService, private trajetService: TrajetService) {
+  constructor(private toolsService: ToolsService, private trajetService: TrajetService,
+    private notificationService: NotificationService) {
     console.log("trajet-detail-component constructeur...");
   }
 
@@ -43,7 +45,7 @@ export class TrajetDetailComponent implements OnInit {
       onGetTrajet: (t: Trajet) => {
         this.trajetDetail = t;
         this.eventMessage.emit({ msg: "changement état réussi!", error: false });
-        this.eventChangeState.emit(this.trajetDetail);
+        this.notificationService.changeMonTrajet(this.trajetDetail);
       },
       onError: (error: Message) => this.eventMessage.emit(error)
     });

@@ -33,8 +33,7 @@
 <!-- DERNIER TRAJET -->
 <div *ngIf="dernierTrajet" style="margin-top: 30px; text-align:center;">
 
-  <app-trajet-detail [trajetDetail]="dernierTrajet" (eventChangeState)="onChangeState($event)"
-    (eventMessage)="onMessage($event)"></app-trajet-detail>
+  <app-trajet-detail [trajetDetail]="dernierTrajet" (eventMessage)="onMessage($event)"></app-trajet-detail>
 </div>
 
 <app-notification *ngIf="response" [message]="response"></app-notification>

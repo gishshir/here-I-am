@@ -28,8 +28,7 @@
         <!-- COL2 détail d'un trajet -->
         <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" *ngIf="selectedTrajet">
 
-            <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)"
-                (eventChangeState)="onChangeState($event)">
+            <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)">
             </app-trajet-detail>
 
 

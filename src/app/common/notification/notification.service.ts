@@ -69,5 +69,19 @@ export class NotificationService {
   }
   //---------------------------------------------------------------
 
+  //---------------------------------------------------------------
+  // notification d'un changement dans mon dernier trajet
+  // soit demarrage d'un nouveau trajet
+  // soit changement etat du trajet en cours
+  private monTrajetSource = new Subject<Trajet>();
+  // observable Trajet streams
+  monTrajet$ = this.monTrajetSource.asObservable();
+
+  changeMonTrajet(value: Trajet) {
+    console.log("NotificationService#changeMonTrajet() " + value);
+    this.monTrajetSource.next(value);
+  }
+  //---------------------------------------------------------------
+
 
 }

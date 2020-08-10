@@ -9,11 +9,11 @@ import { NotificationService } from 'src/app/common/notification/notification.se
 */
 
 @Component({
-  selector: 'app-geolocation',
-  templateUrl: './geolocation.component.html',
-  styleUrls: ['./geolocation.component.scss']
+  selector: 'app-trajet-geolocation',
+  templateUrl: './trajet-geolocation.component.html',
+  styleUrls: ['./trajet-geolocation.component.scss']
 })
-export class GeolocationComponent implements OnInit {
+export class TrajetGeolocationComponent implements OnInit {
 
   @Input() trajetid: number;
   @Input()

@@ -157,7 +157,7 @@ function insertTrajetPosition (Position $position) :Resultat {
     try {
 
         // on supprime toutes les autres positions
-        _deleteTrajetPositions($con, $position->get_trajetid());
+        //_deleteTrajetPositions($con, $position->get_trajetid());
 
         // on insère la position
         $stmt = _prepare ($con, $req_insertPosition);

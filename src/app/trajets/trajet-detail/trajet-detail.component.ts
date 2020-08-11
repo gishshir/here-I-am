@@ -14,7 +14,6 @@ import { NotificationService } from 'src/app/common/notification/notification.se
 export class TrajetDetailComponent implements OnInit {
 
   @Input() trajetDetail: Trajet;
-  //@Output() eventChangeState = new EventEmitter<Trajet>();
   @Output() eventMessage = new EventEmitter<Message>();
 
   constructor(private toolsService: ToolsService, private trajetService: TrajetService,

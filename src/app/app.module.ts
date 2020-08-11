@@ -34,7 +34,6 @@ import { DialogConfirmInvitationComponent } from './amis/dialog-invitation/confi
 import { DialogDeleteRelationComponent } from './amis/relation/dialog-delete/dialog-delete-relation.component';
 import { AmiTrajetComponent } from './amis/ami-trajet/ami-trajet.component';
 import { TrajetCommonComponent } from './trajets/trajet-common/trajet-common.component';
-import { TrajetGeolocationComponent } from './trajets/trajet-geolocation/trajet-geolocation.component';
 import { AmiGeolocationComponent } from './amis/ami-geolocation/ami-geolocation.component';
 import { GeolocationComponent } from './geolocation/geolocation.component';
 
@@ -67,7 +66,6 @@ import { GeolocationComponent } from './geolocation/geolocation.component';
     DialogDeleteRelationComponent,
     AmiTrajetComponent,
     TrajetCommonComponent,
-    TrajetGeolocationComponent,
     AmiGeolocationComponent,
     GeolocationComponent
   ],

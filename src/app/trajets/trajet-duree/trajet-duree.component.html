@@ -1,7 +1,9 @@
-<div *ngIf="dureeHMS" [style.background-color]="color" class="app-component-duree">
+<ng-container *ngIf="dureeHMS">
+    <div [style.background-color]="color" class="app-component-duree">
 
-    <div *ngIf="dureeExtra" class="app-duree-extra">{{dureeExtra}} et</div>
-    <div class="app-duree">{{dureeHMS}}</div>
+        <div *ngIf="dureeExtra" class="app-duree-extra">{{dureeExtra}} et</div>
+        <div class="app-duree">{{dureeHMS}}</div>
 
 
-</div>
+    </div>
+</ng-container>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Trajet } from 'src/app/trajets/trajet.type';
+import { AppPosition } from 'src/app/trajets/position.type';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,14 @@ export class NotificationService {
   }
 
   //--------------------------------------------------
-  // Observable string source
+  // Observable boolean source
   private networkUsageSource = new Subject<boolean>();
-  // observable string streams
+  // observable boolean streams
   networkUsage$ = this.networkUsageSource.asObservable();
 
   // services message commands
   useNetwork(usage: boolean) {
-    console.log("NotificationService#useNetword() " + usage);
+    console.log("NotificationService#useNetwork() " + usage);
     this.networkUsageSource.next(usage);
   }
   //--------------------------------------------------
@@ -43,9 +44,9 @@ export class NotificationService {
 
 
   //--------------------------------------------------
-  //Observable string source
+  //Observable boolean source
   private closedSessionSource = new Subject<boolean>();
-  // observable string streams
+  // observable boolean streams
   closedSession$ = this.closedSessionSource.asObservable();
 
   informClosedSession(value: boolean) {
@@ -64,7 +65,7 @@ export class NotificationService {
   amiTrajet$ = this.amiTrajetSource.asObservable();
 
   changeAmiTrajet(value: Trajet) {
-    console.log("NotificationService#changeAmiTrajet() " + value);
+    console.log("NotificationService#changeAmiTrajet() " + value.id);
     this.amiTrajetSource.next(value);
   }
   //---------------------------------------------------------------
@@ -78,8 +79,20 @@ export class NotificationService {
   monTrajet$ = this.monTrajetSource.asObservable();
 
   changeMonTrajet(value: Trajet) {
-    console.log("NotificationService#changeMonTrajet() " + value);
+    console.log("NotificationService#changeMonTrajet() " + value.id + " - " + value.etat);
     this.monTrajetSource.next(value);
+  }
+  //---------------------------------------------------------------
+
+  //---------------------------------------------------------------
+  // notification d'une nouvelle position de mon trajet
+  private maPositionSource = new Subject<AppPosition>();
+  // observable AppPosition streams
+  maPosition$ = this.maPositionSource.asObservable();
+
+  changeMaPosition(value: AppPosition) {
+    console.log("NotificationService#changeMaPosition() " + value.timestamp);
+    this.maPositionSource.next(value);
   }
   //---------------------------------------------------------------
 

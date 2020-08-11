@@ -1,17 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { TrajetService } from 'src/app/trajets/trajet.service';
 import { Ami } from '../ami.type';
 import { Trajet, TrajetState } from 'src/app/trajets/trajet.type';
 import { Message } from 'src/app/common/message.type';
 import { AppPosition } from 'src/app/trajets/position.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
+import { GeolocationService } from 'src/app/geolocation/geolocation.service';
 
 @Component({
   selector: 'app-ami-geolocation',
   templateUrl: './ami-geolocation.component.html',
   styleUrls: ['./ami-geolocation.component.scss']
 })
-export class AmiGeolocationComponent implements OnInit {
+export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
   @Input()
   set amiTrajet(trajet: Trajet) {
@@ -29,7 +30,7 @@ export class AmiGeolocationComponent implements OnInit {
   // token sur le timer
   private timerid: number = -1;
 
-  constructor(private trajetService: TrajetService, private notificationService: NotificationService) { }
+  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
   }
@@ -82,25 +83,14 @@ export class AmiGeolocationComponent implements OnInit {
     }
 
   }
-
-  private buildUrlToMaps(): void {
-
-    if (this.position) {
-      let latitude = Number(this.position.latitude);
-      let longitude = Number(this.position.longitude);
-
-      this.urlToMaps = this.trajetService.buildUrlToMaps(latitude, longitude);
-    }
-  }
-
   private findAmiTrajetPosition(): void {
 
     console.log("findAmiTrajetPosition()");
-    this.trajetService.findTrajetPosition(this._amiTrajet.id, {
+    this.geolocationService.findTrajetPosition(this._amiTrajet.id, {
 
       onGetPosition: (p: AppPosition) => {
         this.position = p;
-        this.buildUrlToMaps();
+        this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
       },
       onError: (e: Message) => console.log(e.msg)
     });

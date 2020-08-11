@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Trajet, TrajetState } from '../trajet.type';
 import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
@@ -15,7 +15,7 @@ import { NotificationService } from 'src/app/common/notification/notification.se
   templateUrl: './trajet-common.component.html',
   styleUrls: ['./trajet-common.component.scss']
 })
-export class TrajetCommonComponent implements OnInit {
+export class TrajetCommonComponent implements OnInit, OnDestroy {
 
   @Input() trajet: Trajet;
   @Input() timerOn: boolean = false;

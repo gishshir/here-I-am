@@ -17,15 +17,12 @@ export class AccueilComponent implements OnInit {
 
   constructor(private trajetService: TrajetService, private notificationService: NotificationService) {
 
-    // s'inscrit aux evenements de changement de trajet ou etat de trajet
-    this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
-
     this.refreshDernierTrajet();
   }
 
   onChangeState(trajet: Trajet): void {
 
-    this.dernierTrajet = trajet;
+    this.dernierTrajet.etat = trajet.etat;
   }
   // reception d'un evenement de message
   onMessage(response: Message) {
@@ -37,9 +34,14 @@ export class AccueilComponent implements OnInit {
     this.dernierTrajet = null;
     this.trajetService.chercherDernierTrajet({
 
-      onGetTrajet: t => {
+      onGetTrajet: (t: Trajet) => {
         if (t && t.id) {
           this.dernierTrajet = t;
+          this.notificationService.changeMonTrajet(t);
+
+          // s'inscrit aux evenements de changement de trajet ou etat de trajet
+          this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
+
         }
       },
       onError: m => console.log(m)

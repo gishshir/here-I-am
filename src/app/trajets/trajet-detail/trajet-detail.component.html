@@ -1,18 +1,20 @@
 <div fxLayout fxLayout="column" fxLayoutAlign="start center">
 
-    <h3 fxFlex>{{getTrajetDescription()}}</h3>
-    <app-trajet-common fxFlex *ngIf="trajetDetail" [trajet]="trajetDetail"></app-trajet-common>
+    <ng-container *ngIf="trajetDetail">
+        <h3 fxFlex>{{getTrajetDescription()}}</h3>
+        <app-trajet-common fxFlex [trajet]="trajetDetail"></app-trajet-common>
 
-    <!-- changement etat du trajet-->
-    <div fxFlex="initial" style="margin-top:20px">
-        <div fxLayout fxLayoutGap="20px" fxLayoutAlign="space-between" *ngIf="trajetDetail.etat != 'Ended'">
-            <button fxFlex mat-raised-button color="primary" *ngIf="trajetDetail.etat == 'Started'" name="pause"
-                (click)="mettreEnPause()">pause</button>
-            <button fxFlex mat-raised-button color="warn" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre"
-                (click)="reprendreTrajet()">reprendre</button>
-            <button fxFlex mat-raised-button color="accent" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
-                (click)="arreterTrajet()">terminer</button>
+        <!-- changement etat du trajet-->
+        <div fxFlex="initial" style="margin-top:20px">
+            <div fxLayout fxLayoutGap="20px" fxLayoutAlign="space-between" *ngIf="trajetDetail.etat != 'Ended'">
+                <button fxFlex mat-raised-button color="primary" *ngIf="trajetDetail.etat == 'Started'" name="pause"
+                    (click)="mettreEnPause()">pause</button>
+                <button fxFlex mat-raised-button color="warn" *ngIf="trajetDetail.etat == 'Pausing'" name="reprendre"
+                    (click)="reprendreTrajet()">reprendre</button>
+                <button fxFlex mat-raised-button color="accent" *ngIf="trajetDetail.etat != 'Ended'" name="terminer"
+                    (click)="arreterTrajet()">terminer</button>
+            </div>
         </div>
-    </div>
+    </ng-container>
 
 </div>

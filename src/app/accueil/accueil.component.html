@@ -19,14 +19,14 @@
   </mat-card>
 
   <!-- NOUVEAU TRAJET -->
-  <mat-card class="card" fxFlex="initial" *ngIf="dernierTrajet == null || dernierTrajet.etat == 'Ended'"
-    routerLink="/go-starting" routerLinkActive="active">
-    <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
-      <mat-icon fxFlex="initial" class="material-icons md-48" color="primary">flight_takeof</mat-icon>
-      <mat-card-title fxFlex="grow">Commencer un trajet</mat-card-title>
-    </mat-card-header>
-  </mat-card>
-
+  <nf-container *ngIf="dernierTrajet === undefined || dernierTrajet == null || dernierTrajet.etat == 'Ended'">
+    <mat-card class="card" fxFlex="initial" routerLink="/go-starting" routerLinkActive="active">
+      <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+        <mat-icon fxFlex="initial" class="material-icons md-48" color="primary">flight_takeof</mat-icon>
+        <mat-card-title fxFlex="grow">Commencer un trajet</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+  </nf-container>
 
 </div>
 

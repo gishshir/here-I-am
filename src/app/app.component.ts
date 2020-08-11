@@ -5,7 +5,9 @@ import { Message } from './common/message.type';
 import { Router } from '@angular/router';
 import { AccountService } from './account/account.service';
 import { NotificationService } from './common/notification/notification.service';
-import { Trajet } from './trajets/trajet.type';
+import { Trajet, TrajetState } from './trajets/trajet.type';
+import { GeolocationService } from './geolocation/geolocation.service';
+import { TrajetService } from './trajets/trajet.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,7 @@ export class AppComponent implements OnInit {
   response: Message;
   networkUsage: boolean = false;
 
-  constructor(private route: Router, private accountService: AccountService,
+  constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private route: Router, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router) {
 
     console.log("production: " + environment.production);
@@ -34,15 +36,13 @@ export class AppComponent implements OnInit {
     this.notificationService.networkUsage$.subscribe(
       (usage: boolean) => this.networkUsage = usage)
 
-    // abonnement à une modification de mon trajet
-    //nouveau | changement etat | changement moyen transport
-    this.notificationService.monTrajet$.subscribe(
-      (t: Trajet) => this.onChangeTrajet(t)
-    )
-
   }
   ngOnInit(): void {
     console.log("App onInit()...");
+    this.trajetService.chercherDernierTrajet({
+      onGetTrajet: (t: Trajet) => this.notificationService.changeMonTrajet(t),
+      onError: (e: Message) => console.log(e.msg)
+    });
   }
 
   logout() {
@@ -69,11 +69,6 @@ export class AppComponent implements OnInit {
     this.title = pseudo != null ?
       "Bienvenue " + pseudo + " !!!" : "Où sont mes amis ?";
     this.loggedIn = pseudo != null;
-  }
-
-  private onChangeTrajet(trajet: Trajet) {
-    console.log("AppComponent#onChangeTrajet");
-    // TODO faire qq chose...
   }
 
 }

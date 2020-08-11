@@ -7,7 +7,7 @@ import { Trajet, TrajetState } from '../trajet.type';
   templateUrl: './trajet-duree.component.html',
   styleUrls: ['./trajet-duree.component.css']
 })
-export class TrajetDureeComponent implements OnInit {
+export class TrajetDureeComponent implements OnInit, OnDestroy {
 
 
   dureeExtra: string;

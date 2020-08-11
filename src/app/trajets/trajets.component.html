@@ -33,9 +33,7 @@
 
 
             <!-- geo location-->
-            <app-trajet-geolocation *ngIf="selectedTrajet.etat != 'Ended'" [trajetid]="selectedTrajet.id"
-                [activate]="selectedTrajet.etat == 'Started'">
-            </app-trajet-geolocation>
+            <app-geolocation *ngIf="selectedTrajet.etat != 'Ended'"> </app-geolocation>
 
         </div>
 

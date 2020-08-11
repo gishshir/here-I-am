@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,7 +7,6 @@ import { catchError, map } from 'rxjs/operators';
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
 import { Message } from '../common/message.type';
-import { AppPosition } from './position.type';
 import { NotificationService } from '../common/notification/notification.service';
 
 @Injectable({
@@ -15,39 +14,10 @@ import { NotificationService } from '../common/notification/notification.service
 })
 export class TrajetService {
 
-  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) { }
+  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService,
+    private notificationService: NotificationService) { }
 
-  //=============================================
-  buildUrlToMaps(latitude: number, longitude: number): string {
 
-    let sexaLat = this.convertToSexagesimal(latitude);
-    //console.log("latitude: " + sexaLat);
-    let sexaLong = this.convertToSexagesimal(longitude);
-    //console.log("longitude: " + sexaLong);
-
-    return "https://www.google.fr/maps/place/" + sexaLat + "N+" + sexaLong + "E/@" + latitude + "," + longitude;
-  }
-
-  private convertToSexagesimal(value: number): string {
-
-    let test: number = value;
-    let degres = Math.trunc(test);
-
-    test = test - degres;
-    test = test * 60;
-
-    let minutes = Math.trunc(test);
-
-    test = test - minutes;
-    test = test * 60 * 10;
-    test = Math.trunc(test);
-
-    let secondes = test / 10;
-
-    let result = degres + "%C2%B0" + minutes + "'" + secondes + "%22";
-    //degres + "%C2%B" + minutes + "'" + secondes + "%22";
-    return result;
-  }
   //=============================================
   private _callFindTrajetById(trajetid: number): Observable<any> {
 
@@ -151,53 +121,8 @@ export class TrajetService {
   }
 
   // ===========================================================
-  // ===========================================================
-  private _callFindTrajetPosition(trajetid: number): Observable<any> {
-
-    let url = PHP_API_SERVER + "/geolocation/read_one.php";
-
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("trajetid", trajetid + "")
-
-    };
-    // attention si pas de Position alors {"retour": false}
-    return this.http.get<AppPosition>(url, options)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  findTrajetPosition(trajetid: number, handler: AppPositionHandler): void {
-
-    this._callFindTrajetPosition(trajetid).subscribe(
-
-      (p: AppPosition) => handler.onGetPosition(p),
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
-    );
-  }
 
 
-  // ===========================================================
-  private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
-
-    let url = PHP_API_SERVER + "/geolocation/create.php";
-
-    return this.http.post<Message>(url, newPosition, this.commonService.httpOptionsHeaderJson)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  insererNouvellePosition(trajetid: number, position: Position, handler: MessageHandler): void {
-
-    let appPosition = {
-
-      trajetid: trajetid,
-      latitude: position.coords.latitude + "",
-      longitude: position.coords.longitude + "",
-      timestamp: Math.floor(position.timestamp / 1000)
-    }
-    this._callInsertTrajetPosition(appPosition).subscribe(
-      this.commonService._createMessageObserver(handler));
-  }
-  // ===========================================================
 
   // ===========================================================
   private _callCreateTrajet(newTrajet: Trajet): Observable<any> {
@@ -321,7 +246,3 @@ export interface TrajetHandler extends Handler {
   onGetTrajet(trajet?: Trajet): void;
 }
 
-export interface AppPositionHandler extends Handler {
-
-  onGetPosition(position?: AppPosition): void;
-}

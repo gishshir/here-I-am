@@ -87,7 +87,8 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.geolocation && this.pid < 0) {
       console.log("startWatch()");
-      this.notificationService.useNetwork(true);
+
+      this.notificationService.activateGeolocation(true);
 
       this.pid = navigator.geolocation.watchPosition(
         (position: Position) => this.geo_success(position),
@@ -101,8 +102,9 @@ export class GeolocationService implements OnInit, OnDestroy {
   private clearWatch() {
 
     if (this.pid >= 0) {
-      this.notificationService.useNetwork(false);
 
+      this.notificationService.activateGeolocation(false);
+      this.notificationService.useNetwork(false);
       console.log("clearWatch(): " + this.pid);
       navigator.geolocation.clearWatch(this.pid);
       this.pid = -1;
@@ -127,8 +129,14 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (this.trajetid > 0) {
       console.log("appel du service insererNouvellePosition()...");
       this.insererNouvellePosition(this.trajetid, this.currentPosition, {
-        onMessage: (m: Message) => console.log(m.msg),
-        onError: (e: Message) => console.log(e.msg)
+        onMessage: (m: Message) => {
+          console.log(m.msg);
+          this.notificationService.useNetwork(true);
+        },
+        onError: (e: Message) => {
+          console.log(e.msg);
+          this.notificationService.useNetwork(false);
+        }
       });
     }
 

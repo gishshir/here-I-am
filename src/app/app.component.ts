@@ -8,6 +8,9 @@ import { NotificationService } from './common/notification/notification.service'
 import { Trajet, TrajetState } from './trajets/trajet.type';
 import { GeolocationService } from './geolocation/geolocation.service';
 import { TrajetService } from './trajets/trajet.service';
+import { AppPosition } from './trajets/position.type';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 
 @Component({
   selector: 'app-root',
@@ -20,9 +23,10 @@ export class AppComponent implements OnInit {
   loggedIn: boolean = false;
   response: Message;
   networkUsage: boolean = false;
+  geolocationUsage: boolean;
 
   constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private route: Router, private accountService: AccountService,
-    private notificationService: NotificationService, private router: Router) {
+    private notificationService: NotificationService, private router: Router, private dialog: MatDialog) {
 
     console.log("production: " + environment.production);
     console.log("database: " + environment.database);
@@ -34,7 +38,11 @@ export class AppComponent implements OnInit {
 
     // abonnement à l'usage intensif du réseau
     this.notificationService.networkUsage$.subscribe(
-      (usage: boolean) => this.networkUsage = usage)
+      (usage: boolean) => this.networkUsage = usage);
+
+    // abonnement à l'activation de la recherche de position
+    this.notificationService.geolocation$.subscribe(
+      (activate: boolean) => this.geolocationUsage = activate);
 
   }
   ngOnInit(): void {
@@ -69,6 +77,24 @@ export class AppComponent implements OnInit {
     this.title = pseudo != null ?
       "Bienvenue " + pseudo + " !!!" : "Où sont mes amis ?";
     this.loggedIn = pseudo != null;
+  }
+
+
+  showDialogGeolocation(): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      titre: (this.geolocationUsage ? "Ma position actuelle" : "Dernière position connue")
+    }
+
+    const dialogRef = this.dialog.open(DialogGeolocationComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      data => console.log("close dialog!")
+    );
   }
 
 }

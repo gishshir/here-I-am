@@ -13,12 +13,15 @@ import { GeolocationService } from './geolocation.service';
 export class GeolocationComponent implements OnInit, OnDestroy {
 
 
+  @Input() titre: string = "Ma position actuelle";
   appPosition: AppPosition;
 
   // url pour voir la localisation sur google maps
   urlToMaps: string;
 
   constructor(private geolocationService: GeolocationService, private notificationService: NotificationService) {
+
+    this.appPosition = this.geolocationService.getCurrentPosition();
 
     // s'abonne aux evenements de changement de position
     this.notificationService.maPosition$.subscribe(

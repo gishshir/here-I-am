@@ -96,5 +96,17 @@ export class NotificationService {
   }
   //---------------------------------------------------------------
 
+  //---------------------------------------------------------------
+  // notification de l'activation de la geoposition
+  private geolocationSource = new Subject<Boolean>();
+  // observable boolean streams
+  geolocation$ = this.geolocationSource.asObservable();
+
+  activateGeolocation(value: Boolean) {
+    console.log("NotificationService#activateGeolocation() " + value);
+    this.geolocationSource.next(value);
+  }
+  //---------------------------------------------------------------
+
 
 }

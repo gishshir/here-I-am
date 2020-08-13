@@ -23,7 +23,10 @@ export class ToolsService {
   }
   formatDateAndTime(timestamp: number): string {
 
-    return this._formatDate(timestamp, 'D MMM YYYY hh:mm');
+    return this._formatDate(timestamp, 'D MMM YYYY HH:mm');
+  }
+  formatTime(timestamp: number): string {
+    return this._formatDate(timestamp, 'HH:mm:ss');
   }
 
   formatDuree(tsStart: number, tsEnd: number): DureeDecoupee {

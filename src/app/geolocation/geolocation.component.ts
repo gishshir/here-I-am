@@ -4,6 +4,7 @@ import { TrajetService } from '../trajets/trajet.service';
 import { Message } from '../common/message.type';
 import { AppPosition } from '../trajets/position.type';
 import { GeolocationService } from './geolocation.service';
+import { ToolsService } from '../common/tools.service';
 
 @Component({
   selector: 'app-geolocation',
@@ -19,17 +20,22 @@ export class GeolocationComponent implements OnInit, OnDestroy {
   // url pour voir la localisation sur google maps
   urlToMaps: string;
 
-  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService) {
+  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService,
+    private tools: ToolsService) {
 
-    this.appPosition = this.geolocationService.getCurrentPosition();
+    this.setPosition(this.geolocationService.getCurrentPosition());
 
     // s'abonne aux evenements de changement de position
     this.notificationService.maPosition$.subscribe(
       (p: AppPosition) => {
-        this.appPosition = p;
-        this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
+        this.setPosition(p);
       }
     )
+  }
+
+  private setPosition(p: AppPosition): void {
+    this.appPosition = p;
+    this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
   }
 
 
@@ -40,7 +46,23 @@ export class GeolocationComponent implements OnInit, OnDestroy {
 
   }
 
+  displayDate(): string {
 
+    if (this.appPosition) {
+      return this.tools.formatDate(this.appPosition.timestamp);
+    } else {
+      return "";
+    }
+  }
+
+  displayTime(): string {
+
+    if (this.appPosition) {
+      return this.tools.formatTime(this.appPosition.timestamp);
+    } else {
+      return "";
+    }
+  }
 
 
 }

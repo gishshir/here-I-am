@@ -85,7 +85,7 @@ export class AppComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
-    dialogConfig.autoFocus = true;
+    dialogConfig.autoFocus = false;
     dialogConfig.data = {
       titre: (this.geolocationUsage ? "Ma position actuelle" : "Dernière position connue")
     }

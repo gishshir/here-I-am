@@ -1,0 +1,7 @@
+.scroller {
+    overflow: auto;
+    scrollbar-color: rebeccapurple green;
+    scrollbar-width: thin;
+  }
+
+  

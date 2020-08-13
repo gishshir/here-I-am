@@ -125,7 +125,16 @@ export class TrajetsComponent implements OnInit {
 
   }
 
+  displayDescriptionTrajet(t: Trajet): string {
 
+    let description = "";
+    if (t) {
+
+      description = "Du " + this.toolsService.formatDateAndTime(t.starttime) + " au "
+        + (t.etat == TrajetState.ended ? this.toolsService.formatDateAndTime(t.endtime) : "...");
+    }
+    return description;
+  }
 
   // started & pausing: date de depart
   // ended: date fin trajet

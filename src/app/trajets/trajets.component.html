@@ -6,7 +6,7 @@
 
         <h2 fxFlex="initial">Liste de mes trajets</h2>
         <mat-card class="card" fxFlex *ngFor="let trajet of trajets" [class.card-selected]="trajet === selectedTrajet"
-            (click)="onSelect(trajet)">
+            (click)="onSelect(trajet)" title={{displayDescriptionTrajet(trajet)}}>
 
             <span>
                 <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>

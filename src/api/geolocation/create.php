@@ -1,7 +1,7 @@
 <?php
 require_once '../config/config.php';
 
-// insertion d'une position pour un trajet donné
+// insertion de position(s) pour un trajet
 if($_SERVER["REQUEST_METHOD"] == "POST")  {
 
     verifyUserAuthentifie();
@@ -12,20 +12,35 @@ if($_SERVER["REQUEST_METHOD"] == "POST")  {
      if (isset($postdata) && !empty ($postdata)) {
  
          $bodyobj = json_decode ($postdata);
- 
-         $position = new Position();
-         $position->set_trajetid($bodyobj->trajetid);
-         
-         $latitude = $bodyobj->latitude;
-         $position->set_latitude($latitude);
+         $listPositions = array();
 
-         $longitude = $bodyobj->longitude;
-         $position->set_longitude($longitude);
-         $position->set_timestamp($bodyobj->timestamp);
- 
-         $result = insertTrajetPosition($position);
-         sendHttpResponseAndExit($result);
-     }
+         // insertion d'une liste de positions d'un trajet
+         // (on efface les autres)
+         if (is_array($bodyobj)) {
+
+     
+            foreach ((array)$bodyobj as $item) {
+                $position = buildPositionFromObj($item);
+                array_push($listPositions, $position);
+            }
+            
+
+          } else {
+    
+            // insertion d'une position pour un trajet donné
+            // au fil de l'eau
+            // on ne garde que la dernière
+            $position = buildPositionFromObj($bodyobj);
+            array_push($listPositions, $position);
+            
+          }
+
+          //echo var_dump ($listPositions);
+          if (sizeof ($listPositions) > 0) {
+            $result = insertTrajetListePositions($listPositions, true);
+            sendHttpResponseAndExit($result);
+          }
+      }
 
 
 }

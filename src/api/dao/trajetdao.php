@@ -140,11 +140,27 @@ function _deleteTrajetPositions ($con, int $trajetid) : Resultat {
 
     return $result;
 }
+
+function buildPositionFromObj (object $bodyobj): Position {
+
+    $position = new Position();
+    $position->set_trajetid($bodyobj->trajetid);
+         
+    $latitude = $bodyobj->latitude;
+    $position->set_latitude($latitude);
+
+    $longitude = $bodyobj->longitude;
+    $position->set_longitude($longitude);
+    $position->set_timestamp($bodyobj->timestamp);
+
+    return $position;
+}
+
 /*
-* Creation d'une position à un trajet
-* (on supprime toutes les autres, on ne garde toujours que la dernière)
+* Insertion d'une liste de position pour un trajet
+* deleteOther: (on supprime toutes les autres)
 */
-function insertTrajetPosition (Position $position) :Resultat {
+function insertTrajetListePositions (array $listPositions, bool $deleteOther) :Resultat {
 
     $result; $stmt;
    
@@ -157,23 +173,32 @@ function insertTrajetPosition (Position $position) :Resultat {
     try {
 
         // on supprime toutes les autres positions
-        //_deleteTrajetPositions($con, $position->get_trajetid());
+        if ($deleteOther && sizeof($listPositions) > 0) {
+
+          $position =  current($listPositions);
+          $idTrajet = $position->get_trajetid();
+          _deleteTrajetPositions($con, $idTrajet);
+        }
 
         // on insère la position
         $stmt = _prepare ($con, $req_insertPosition);
+        $nbligneImpactees = 0;
         if ($stmt->bind_param("issi", $trajetid, $longitude, $latitude, $timestamp) ) {
 
-            $trajetid = $position->get_trajetid();
-            $longitude = $position->get_longitude();
-            $latitude = $position->get_latitude();
-            $timestamp = $position->get_timestamp();
+            foreach ($listPositions as $position) {
 
-            $stmt = _execute ($stmt);
-            
-            $nbligneImpactees = $stmt->affected_rows ;
-            if ($nbligneImpactees == 1) {
+                $trajetid = $position->get_trajetid();
+                $longitude = $position->get_longitude();
+                $latitude = $position->get_latitude();
+                $timestamp = $position->get_timestamp();
+    
+                $stmt = _execute ($stmt);
+                $nbligneImpactees += $stmt->affected_rows;
+            }
+    
+            if ($nbligneImpactees >= 1) {
 
-                $result = buildResultat("Position inserée!");
+                $result = buildResultat("Liste de positions inserées!");
                 _commitTransaction($con);
             } else {
                 throw new Exception("Pas de modification!!");    
@@ -193,8 +218,6 @@ function insertTrajetPosition (Position $position) :Resultat {
 
     return $result;
 }
-
-
 //========================================================================================
 
 

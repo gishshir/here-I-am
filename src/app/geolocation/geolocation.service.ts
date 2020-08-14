@@ -75,8 +75,21 @@ export class GeolocationService implements OnInit, OnDestroy {
       }
       this.startWatch();
     } else {
+
+      // trajet ended
       this.clearWatch();
       this.saveListPositionsToLocalStorage();
+
+      // sauvegarde sur le serveur de la liste complète
+      if (this.listPositions) {
+        this.insererListePositions(this.listPositions, {
+          onError: (e: Message) => console.log(e.msg),
+          onMessage: (m: Message) => {
+            console.log(m.msg);
+            this.storage.remove(this.buildLocalStorageKey());
+          }
+        });
+      }
     }
   }
 
@@ -127,7 +140,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.trajetid > 0) {
       console.log("appel du service insererNouvellePosition()...");
-      this.insererNouvellePosition(this.trajetid, this.currentPosition, {
+      this.insererNouvellePosition(this.currentPosition, {
         onMessage: (m: Message) => {
           console.log(m.msg);
           this.notificationService.useNetwork(true);
@@ -157,11 +170,14 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   }
 
+  private buildLocalStorageKey(): string {
+    return "TRAJET#" + this.trajetid;
+  }
   private restoreListePositionsFromLocalStorage(): void {
 
     console.log("restoreListePositionsFromLocalStorage...")
     if (this.trajetid > 0) {
-      let key: string = "TRAJET#" + this.trajetid;
+      let key: string = this.buildLocalStorageKey();
       if (this.storage.has(key)) {
         // on récupère les valeurs stockées sur ce même trajet
         this.listPositions = JSON.parse(this.storage.get(key));
@@ -176,12 +192,14 @@ export class GeolocationService implements OnInit, OnDestroy {
   private saveListPositionsToLocalStorage(): void {
 
     if (this.trajetid > 0 && this.listPositions) {
-      let key: string = "TRAJET#" + this.trajetid;
+      let key: string = this.buildLocalStorageKey();
       let values = JSON.stringify(this.listPositions);
       console.log("saveListPositionsToLocalStorage(): " + values);
       this.storage.set(key, values);
     }
   }
+
+
 
   // ===========================================================
   private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
@@ -192,9 +210,25 @@ export class GeolocationService implements OnInit, OnDestroy {
       .pipe(catchError(this.commonService.handleError));
 
   }
-  private insererNouvellePosition(trajetid: number, currentPosition: AppPosition, handler: MessageHandler): void {
+  private insererNouvellePosition(currentPosition: AppPosition, handler: MessageHandler): void {
 
     this._callInsertTrajetPosition(currentPosition).subscribe(
+      this.commonService._createMessageObserver(handler));
+  }
+  // ===========================================================
+
+  // ===========================================================
+  private _callInsertTrajetListePositions(listPositions: Array<AppPosition>): Observable<any> {
+
+    let url = PHP_API_SERVER + "/geolocation/create.php";
+
+    return this.http.post<Message>(url, listPositions, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+  private insererListePositions(listPositions: Array<AppPosition>, handler: MessageHandler): void {
+
+    this._callInsertTrajetListePositions(listPositions).subscribe(
       this.commonService._createMessageObserver(handler));
   }
   // ===========================================================
@@ -227,15 +261,20 @@ export class GeolocationService implements OnInit, OnDestroy {
   //=============================================
   buildUrlToMaps(position: AppPosition): string {
 
-    let latitude = Number(position.latitude);
-    let longitude = Number(position.longitude);
+    if (position) {
+      let latitude = Number(position.latitude);
+      let longitude = Number(position.longitude);
 
-    let sexaLat = this.convertToSexagesimal(latitude);
-    //console.log("latitude: " + sexaLat);
-    let sexaLong = this.convertToSexagesimal(longitude);
-    //console.log("longitude: " + sexaLong);
+      let sexaLat = this.convertToSexagesimal(latitude);
+      //console.log("latitude: " + sexaLat);
+      let sexaLong = this.convertToSexagesimal(longitude);
+      //console.log("longitude: " + sexaLong);
 
-    return "https://www.google.fr/maps/place/" + sexaLat + "N+" + sexaLong + "E/@" + latitude + "," + longitude;
+      return "https://www.google.fr/maps/place/" + sexaLat + "N+" + sexaLong + "E/@" + latitude + "," + longitude;
+    }
+    else {
+      return null;
+    }
   }
 
   private convertToSexagesimal(value: number): string {

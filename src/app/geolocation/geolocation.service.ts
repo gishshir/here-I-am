@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable, OnDestroy, OnInit, Inject, HostListener } from '@angular/core';
 import { NotificationService } from '../common/notification/notification.service';
 import { Message } from '../common/message.type';
 import { Trajet, TrajetState } from '../trajets/trajet.type';
@@ -7,6 +7,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppPosition } from '../trajets/position.type';
+import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,8 @@ export class GeolocationService implements OnInit, OnDestroy {
 
 
   private currentPosition: AppPosition;
+  // stockage en mémoire de la  liste des positions
+  private listPositions: Array<AppPosition>;
 
   private geo_options = {
     enableHighAccuracy: true,
@@ -28,7 +31,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   };
 
   constructor(private notificationService: NotificationService, private http: HttpClient,
-    private commonService: CommonService) {
+    private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService) {
     if ("geolocation" in navigator) {
 
       console.log("geolocation existe");
@@ -49,36 +52,31 @@ export class GeolocationService implements OnInit, OnDestroy {
   ngOnInit(): void {
 
   }
+  @HostListener('window:beforeunload')
   ngOnDestroy(): void {
     this.clearWatch();
+    this.saveListPositionsToLocalStorage();
   }
 
   getCurrentPosition(): AppPosition {
     return this.currentPosition;
   }
 
-  private initCurrentLocation() {
-
-    if (this.geolocation && this.currentPosition === undefined) {
-
-      navigator.geolocation.getCurrentPosition(
-        (position: Position) => this.geo_success(position),
-        () => this.geo_error(),
-        this.geo_options);
-    }
-
-  }
-
 
   private onChangeMonTrajet(trajet: Trajet) {
     console.log("GeolocationService#onChangeTrajet");
 
+    let newtrajet = trajet && this.trajetid != trajet.id;
     this.trajetid = trajet ? trajet.id : -1;
 
     if (trajet && trajet.etat != TrajetState.ended) {
+      if (newtrajet) {
+        this.restoreListePositionsFromLocalStorage();
+      }
       this.startWatch();
     } else {
       this.clearWatch();
+      this.saveListPositionsToLocalStorage();
     }
   }
 
@@ -124,6 +122,7 @@ export class GeolocationService implements OnInit, OnDestroy {
       timestamp: Math.floor(position.timestamp / 1000)
     }
 
+    this.storePosition(this.currentPosition);
     this.notificationService.changeMaPosition(this.currentPosition);
 
     if (this.trajetid > 0) {
@@ -147,6 +146,42 @@ export class GeolocationService implements OnInit, OnDestroy {
     //this.clearWatch();
   }
 
+  // stockage en mémoire et dans le LocalStorage
+  private storePosition(appPosition: AppPosition): void {
+
+    if (appPosition && appPosition.trajetid > 0) {
+
+      this.listPositions.push(appPosition);
+      this.saveListPositionsToLocalStorage();
+    }
+
+  }
+
+  private restoreListePositionsFromLocalStorage(): void {
+
+    console.log("restoreListePositionsFromLocalStorage...")
+    if (this.trajetid > 0) {
+      let key: string = "TRAJET#" + this.trajetid;
+      if (this.storage.has(key)) {
+        // on récupère les valeurs stockées sur ce même trajet
+        this.listPositions = JSON.parse(this.storage.get(key));
+
+        this.listPositions.forEach(p => console.log("position: [trajetid:" + p.timestamp + " - tmst: " + p.timestamp));
+      } else {
+        console.log(".. pas de positions stockées!")
+        this.listPositions = new Array<AppPosition>();
+      }
+    }
+  }
+  private saveListPositionsToLocalStorage(): void {
+
+    if (this.trajetid > 0 && this.listPositions) {
+      let key: string = "TRAJET#" + this.trajetid;
+      let values = JSON.stringify(this.listPositions);
+      console.log("saveListPositionsToLocalStorage(): " + values);
+      this.storage.set(key, values);
+    }
+  }
 
   // ===========================================================
   private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {

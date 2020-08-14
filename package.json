@@ -24,6 +24,7 @@
     "@angular/router": "~10.0.0",
     "moment": "^2.27.0",
     "ngx-cookie-service": "^3.0.4",
+    "ngx-webstorage-service": "^4.1.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "w3-css": "^4.1.0",

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from '../environments/environment';
 
 import { Message } from './common/message.type';
@@ -17,7 +17,7 @@ import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dia
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   title = 'Où sont mes amis ?';
   loggedIn: boolean = false;
@@ -44,6 +44,9 @@ export class AppComponent implements OnInit {
     this.notificationService.geolocation$.subscribe(
       (activate: boolean) => this.geolocationUsage = activate);
 
+  }
+  ngOnDestroy(): void {
+    this.geolocationService.ngOnDestroy();
   }
   ngOnInit(): void {
     console.log("App onInit()...");

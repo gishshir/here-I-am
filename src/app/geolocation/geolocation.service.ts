@@ -123,16 +123,24 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   }
 
-  private geo_success(position: Position) {
+  private geo_success(position: Position): void {
 
-    console.log("geo_success: " + position.timestamp);
+    // ne pas soliciter trop le reseau
+    let timestampSec = Math.floor(position.timestamp / 1000);
+    console.log("geo_success - TS (sec): " + timestampSec);
+
+
+    if (this.currentPosition &&
+      (timestampSec - this.currentPosition.timestamp < 30)) {
+      return;
+    }
 
     this.currentPosition = {
 
       trajetid: this.trajetid,
       latitude: position.coords.latitude + "",
       longitude: position.coords.longitude + "",
-      timestamp: Math.floor(position.timestamp / 1000)
+      timestamp: timestampSec
     }
 
     this.storePosition(this.currentPosition);

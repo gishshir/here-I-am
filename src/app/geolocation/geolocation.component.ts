@@ -49,7 +49,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
   displayDate(): string {
 
     if (this.appPosition) {
-      return this.tools.formatDate(this.appPosition.timestamp);
+      return this.tools.formatDateJourMois(this.appPosition.timestamp);
     } else {
       return "";
     }

@@ -43,6 +43,11 @@ export class GeolocationService implements OnInit, OnDestroy {
         (t: Trajet) => this.onChangeMonTrajet(t)
       )
 
+      // abonnement a un logout
+      this.notificationService.closedSession$.subscribe(
+        (v: boolean) => this.clearWatchAndSave()
+      )
+
     } else {
       console.log("fonction geolocation n'existe pas sur ce navigateur!");
       this.geolocation = false;
@@ -54,6 +59,10 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
   @HostListener('window:beforeunload')
   ngOnDestroy(): void {
+    this.clearWatchAndSave();
+  }
+
+  private clearWatchAndSave(): void {
     this.clearWatch();
     this.saveListPositionsToLocalStorage();
   }
@@ -77,8 +86,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     } else {
 
       // trajet ended
-      this.clearWatch();
-      this.saveListPositionsToLocalStorage();
+      this.clearWatchAndSave();
 
       // sauvegarde sur le serveur de la liste complète
       if (this.listPositions) {
@@ -260,7 +268,10 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     this._callFindTrajetPosition(trajetid).subscribe(
 
-      (p: AppPosition) => handler.onGetPosition(p),
+      (p: any) => {
+        p = (p && p.retour == false) ? null : p;
+        handler.onGetPosition(p);
+      },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
     );
   }

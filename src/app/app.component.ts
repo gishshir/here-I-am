@@ -58,6 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logout() {
 
+
     this.accountService.logout({
       onMessage: (m: Message) => {
         this.response = m;

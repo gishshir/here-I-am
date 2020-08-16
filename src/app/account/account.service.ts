@@ -126,6 +126,7 @@ export class AccountService {
   logout(handler: MessageHandler): void {
     this.logger.log("logout");
 
+    this.notificationService.informClosedSession(true);
     this._callLogout().subscribe({
 
       next: (m: Message) => {

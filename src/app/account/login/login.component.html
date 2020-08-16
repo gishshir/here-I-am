@@ -9,7 +9,7 @@
 
         <mat-form-field fxFlex appearance="legacy">
             <mat-label>login</mat-label>
-            <input matInput placeholder="login" formControlName="loginControl" required>
+            <input matInput placeholder="login" formControlName="loginControl" required autofocus>
             <mat-hint>Au minimum 4 caractères</mat-hint>
             <mat-error *ngIf="loginControl.invalid && loginControl.errors.required">Le login est obligatoire!
             </mat-error>

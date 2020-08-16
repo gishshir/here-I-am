@@ -1,11 +1,11 @@
 <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
 
-    <h4 fxFlex>Position de mon ami(e):</h4>
+    <h4 fxFlex>{{titre}}</h4>
     <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
-        <ng-container *ngIf="position; else PositionNonConnue">
-            <div fxFlex="initial"><b>latitude:</b> {{position.latitude}}</div>
-            <div fxFlex="initial"><b>longitude:</b> {{position.longitude}}</div>
-            <div fxFlex="initial"><b>timestamp:</b> {{position.timestamp}}</div>
+        <ng-container *ngIf="appPosition; else PositionNonConnue">
+            <div fxFlex="initial"><b>latitude:</b> {{appPosition.latitude}}</div>
+            <div fxFlex="initial"><b>longitude:</b> {{appPosition.longitude}}</div>
+            <div fxFlex="initial"><b>date:</b> {{displayDate()}}&nbsp;&nbsp;{{displayTime()}}</div>
 
             <a target="_blank" rel="noopener noreferrer" [href]="urlToMaps">
                 <mat-icon class="icon-map material-icons md-48" color="accent">location_on</mat-icon>

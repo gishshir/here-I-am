@@ -6,6 +6,7 @@ import { Message } from 'src/app/common/message.type';
 import { AppPosition } from 'src/app/trajets/position.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
 import { GeolocationService } from 'src/app/geolocation/geolocation.service';
+import { ToolsService } from 'src/app/common/tools.service';
 
 @Component({
   selector: 'app-ami-geolocation',
@@ -22,21 +23,41 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
   @Output() eventMessage = new EventEmitter<Message>();
 
-  position: AppPosition;
+  appPosition: AppPosition;
   urlToMaps: string;
+  titre: string = "Position de mon ami(e)";
 
   private _amiTrajet: Trajet;
 
   // token sur le timer
   private timerid: number = -1;
 
-  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService) { }
+  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService,
+    private tools: ToolsService) { }
 
   ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
     this.stopTimer();
+  }
+
+  displayDate(): string {
+
+    if (this.appPosition) {
+      return this.tools.formatDateJourMois(this.appPosition.timestamp);
+    } else {
+      return "";
+    }
+  }
+
+  displayTime(): string {
+
+    if (this.appPosition) {
+      return this.tools.formatTime(this.appPosition.timestamp);
+    } else {
+      return "";
+    }
   }
 
   // demarre timer si necessaire
@@ -66,7 +87,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
     if (this._amiTrajet) {
 
-      if (this.position == undefined) {
+      if (this.appPosition == undefined) {
         this.findAmiTrajetPosition();
       }
       switch (this._amiTrajet.etat) {
@@ -74,12 +95,15 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
         case TrajetState.started: this.startTimer(); break;
 
         case TrajetState.pausing:
-        case TrajetState.ended: this.stopTimer();
+        case TrajetState.ended: {
+          this.stopTimer();
+          this.titre = "Dernière position connue";
+        }
       }
 
     }
     else {
-      this.position = null;
+      this.appPosition = null;
     }
 
   }
@@ -89,7 +113,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     this.geolocationService.findTrajetPosition(this._amiTrajet.id, {
 
       onGetPosition: (p: AppPosition) => {
-        this.position = p;
+        this.appPosition = p;
         this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
       },
       onError: (e: Message) => console.log(e.msg)

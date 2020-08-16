@@ -2,9 +2,9 @@
   <h2 fxFlex>Démarrer un nouveau trajet</h2>
 
   <div fxFlex="initial" class="scroller">
-    <mat-button-toggle-group fxLayout #group="matButtonToggleGroup">
+    <mat-button-toggle-group fxLayout="row wrap" fxLayoutAlign="start center" #group="matButtonToggleGroup">
 
-      <mat-button-toggle fxFlex="auto" *ngFor="let mean of trajetMeansEnum">
+      <mat-button-toggle fxFlex="initial" *ngFor="let mean of trajetMeansEnum">
         <app-trajet-means-icon [trajetMean]="mean" [taille]="48" (click)="onChangeMean(mean)"></app-trajet-means-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>

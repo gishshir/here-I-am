@@ -65,9 +65,10 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
   }
 
   private stopTimer() {
-    console.log("stop timer");
-    this.notificationService.useNetwork(false);
+
     if (this.timerid >= 0) {
+      console.log("stop timer");
+      this.notificationService.useNetwork(false);
       clearInterval(this.timerid);
       this.timerid = -1;
     }
@@ -89,6 +90,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    console.log("trajet en cours: " + this.trajetService);
     if (this.timerOn) {
       this.startTimer();
     }

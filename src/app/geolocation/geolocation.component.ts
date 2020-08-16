@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { NotificationService } from '../common/notification/notification.service';
 import { TrajetService } from '../trajets/trajet.service';
 import { Message } from '../common/message.type';
@@ -20,6 +20,8 @@ export class GeolocationComponent implements OnInit, OnDestroy {
   // url pour voir la localisation sur google maps
   urlToMaps: string;
 
+  @Input() showLienToMaps: boolean = true;
+
   constructor(private geolocationService: GeolocationService, private notificationService: NotificationService,
     private tools: ToolsService) {
 
@@ -32,6 +34,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
       }
     )
   }
+
 
   private setPosition(p: AppPosition): void {
     this.appPosition = p;

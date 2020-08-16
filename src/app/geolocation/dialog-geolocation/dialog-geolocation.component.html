@@ -1,1 +1,14 @@
-<app-geolocation [titre]="titre"></app-geolocation>
+<div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
+    <app-geolocation #geolocation fxFlex [titre]="titre" [showLienToMaps]="false"></app-geolocation>
+
+    <mat-dialog-actions fxFlexFill fxLayout fxLayoutGap="10px">
+
+        <button fxFlex="initial" class="mat-raised-button" (click)="close()">Fermer</button>
+
+        <a fxFlex="initial" class="mat-raised-button mat-primary" target="_blank" rel="noopener noreferrer"
+            [href]="geolocation.urlToMaps">
+            <mat-icon class="icon-map material-icons md-48" color="accent">location_on</mat-icon>
+            Voir la carte
+        </a>
+    </mat-dialog-actions>
+</div>

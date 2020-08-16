@@ -7,10 +7,12 @@
             <div fxFlex="initial"><b>longitude:</b> {{appPosition.longitude}}</div>
             <div fxFlex="initial"><b>date:</b> {{displayDate()}}&nbsp;&nbsp;{{displayTime()}}</div>
 
-            <a target="_blank" rel="noopener noreferrer" [href]="urlToMaps">
-                <mat-icon class="icon-map material-icons md-48" color="accent">location_on</mat-icon>
-                Voir la carte
-            </a>
+            <ng-container *ngIf="showLienToMaps">
+                <a target="_blank" rel="noopener noreferrer" [href]="urlToMaps">
+                    <mat-icon class="icon-map material-icons md-48" color="accent">location_on</mat-icon>
+                    Voir la carte
+                </a>
+            </ng-container>
 
         </mat-card-content>
 

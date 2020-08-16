@@ -91,9 +91,9 @@ export class TrajetDureeComponent implements OnInit, OnDestroy {
     console.log("definir color");
     let color: string;
     switch (this._etat) {
-      case TrajetState.ended: color = 'brown'; break;
-      case TrajetState.pausing: color = 'yellow'; break;
-      case TrajetState.started: color = 'lightgreen'; break;
+      case TrajetState.ended: color = 'chocolate'; break;
+      case TrajetState.pausing: color = 'gold'; break;
+      case TrajetState.started: color = 'darkturquoise'; break;
       default: color = 'grey';
     }
     this.color = color;

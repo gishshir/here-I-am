@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        creator="tsadeo" 
+        xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+	<metadata>
+		<name>here-I-am</name>
+		<desc>trajet_67 de 2020-08-01T16:27:19Z à 2020-08-01T17:01:59Z</desc>
+		<time>2020-08-19T15:45:16Z</time>
+	</metadata>
+	<wpt lat="46.227638" lon="2.213749">
+		<time>2020-08-01T17:19:07Z</time>
+		<name>Position: 358</name>
+	</wpt>
+	<wpt lat="46.227639" lon="2.213750">
+		<time>2020-08-01T17:19:23Z</time>
+		<name>Position: 359</name>
+	</wpt>
+</gpx>

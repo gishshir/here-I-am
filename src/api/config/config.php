@@ -28,7 +28,7 @@ require DIR_DAO.'amidao.php';
 require DIR_DAO.'logindao.php';
 require DIR_DAO.'relationdao.php';
 require DIR_DAO.'trajetdao.php';
-
+require DIR_DAO.'geolocationdao.php';
 
 
 ?>

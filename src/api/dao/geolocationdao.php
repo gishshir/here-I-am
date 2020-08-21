@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/Brussels');
+
 // cree le fichier gpx a partir d'une liste de positions d'un trajet
 // si existe et retourne le nom du fichier
 // sinon erreur
@@ -76,10 +78,11 @@ function createGpxFile (Trajet $trajet, array $listPositions, string $target_dir
     foreach ($listPositions as $position) {
 
         $date = getXmlDate($position->get_timestamp());
+        $time = getTime($position->get_timestamp());
         $wp = array (
             $TAB."<wpt lat=\"".$position->get_latitude()."\" lon=\"".$position->get_longitude()."\">".$SAUT,
             $TAB.$TAB."<time>".$date."</time>".$SAUT,
-            $TAB.$TAB."<name>Position: ".$position->get_id()."</name>".$SAUT,
+            $TAB.$TAB."<name>Position ".$position->get_id().": ".$time."</name>".$SAUT,
             $TAB."</wpt>".$SAUT
         );
         foreach($wp as $line) {
@@ -103,6 +106,13 @@ function getXmlDate(int $timestamp): string {
    return date("Y-m-d", $unix_timestamp)."T".date("H:i:s" , $unix_timestamp)."Z";
 
 }
+function getTime(int $timestamp): string {
+
+    $unix_timestamp = $timestamp;
+ 
+    return date("H:i:s" , $unix_timestamp);
+ 
+ }
 function getXmlDateNow(): string {
  
     return date("Y-m-d")."T".date("H:i:s")."Z";
@@ -114,13 +124,13 @@ function findListPositionForTrajet (int $trajetid): ResultAndDatas {
     $resultAndDatas; $stmt;
       
     $con = connectMaBase();
-    $req_ListPosiitions = "select id, longitude, latitude, timestamp FROM geolocation WHERE trajetid = ?
+    $req_ListPositions = "select id, longitude, latitude, timestamp FROM geolocation WHERE trajetid = ?
     order by timestamp";
 
 
     try {
 
-        $stmt = _prepare ($con, $req_ListPosiitions);
+        $stmt = _prepare ($con, $req_ListPositions);
         
         if ($stmt->bind_param("i", $trajetid)) {
 

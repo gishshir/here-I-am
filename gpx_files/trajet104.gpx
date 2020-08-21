@@ -4,15 +4,11 @@
         xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
 	<metadata>
 		<name>here-I-am</name>
-		<desc>trajet_98 de 2020-08-15T17:27:05Z à 2020-08-15T17:27:59Z</desc>
-		<time>2020-08-21T12:13:02Z</time>
+		<desc>trajet_104 de 2020-08-21T12:07:45Z à 2020-08-21T12:08:52Z</desc>
+		<time>2020-08-21T12:15:40Z</time>
 	</metadata>
 	<wpt lat="48.699802999999996" lon="6.1878074">
-		<time>2020-08-15T17:27:06Z</time>
-		<name>Position: 449</name>
-	</wpt>
-	<wpt lat="48.699802999999996" lon="6.1878074">
-		<time>2020-08-15T17:27:40Z</time>
-		<name>Position: 450</name>
+		<time>2020-08-21T12:07:47Z</time>
+		<name>Position: 598</name>
 	</wpt>
 </gpx>

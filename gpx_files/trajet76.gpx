@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        creator="tsadeo" 
+        xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+	<metadata>
+		<name>here-I-am</name>
+		<desc>trajet_76 de 2020-08-10T17:02:45Z à 2020-08-10T17:03:03Z</desc>
+		<time>2020-08-21T12:07:20Z</time>
+	</metadata>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-10T17:02:45Z</time>
+		<name>Position: 68</name>
+	</wpt>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-10T17:02:47Z</time>
+		<name>Position: 69</name>
+	</wpt>
+</gpx>

@@ -31,9 +31,9 @@
             <app-trajet-detail fxFlex="initial" [trajetDetail]="selectedTrajet" (eventMessage)="onMessage($event)">
             </app-trajet-detail>
 
-
-            <!-- geo location (uniquement pour le trajet en cours)-->
-            <app-geolocation *ngIf="selectedTrajet.etat != 'Ended'"> </app-geolocation>
+            <!-- geo location-->
+            <app-trajet-geolocation fxFlex="initial" [trajet]="selectedTrajet" (eventMessage)="onMessage($event)">
+            </app-trajet-geolocation>
 
         </div>
 

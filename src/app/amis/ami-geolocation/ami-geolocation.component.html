@@ -4,17 +4,24 @@
         <h4 fxFlex>{{titre}}</h4>
         <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
 
-            <div fxFlex="initial"><b>latitude:</b> {{appPosition.latitude}}</div>
-            <div fxFlex="initial"><b>longitude:</b> {{appPosition.longitude}}</div>
-            <div fxFlex="initial"><b>date:</b> {{displayDate()}}&nbsp;&nbsp;{{displayTime()}}</div>
-
-            <a target="_blank" rel="noopener noreferrer" [href]="urlToMaps">
-                <mat-icon class="icon-map material-icons md-48" color="accent">location_on</mat-icon>
-                Voir la carte
-            </a>
-
+            <div fxFlex fxLayout="column" fxLayoutGap="5px" style="margin-bottom: 30px;">
+                <div fxFlex="initial"><b>latitude:</b> {{appPosition.latitude}}</div>
+                <div fxFlex="initial"><b>longitude:</b> {{appPosition.longitude}}</div>
+                <div fxFlex="initial"><b>date:</b> {{displayDate()}}&nbsp;&nbsp;{{displayTime()}}</div>
+            </div>
         </mat-card-content>
 
+        <mat-dialog-actions fxFlex fxLayout="column" fxLayoutGap="10px">
+            <a fxFlex target="_blank" rel="noopener noreferrer" class="mat-raised-button mat-primary"
+                [href]="urlToMaps">
+                <mat-icon class="icon-map material-icons md-48">location_on</mat-icon>
+                Voir la carte
+            </a>
+            <a fxFlex *ngIf="gpxfile" class="mat-raised-button " (click)="download()">
+                <mat-icon class="icon-map material-icons md-48" color="accent">archive</mat-icon>
+                Télécharger {{gpxfile}}
+            </a>
+        </mat-dialog-actions>
 
     </mat-card>
 </ng-container>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        creator="tsadeo" 
+        xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+	<metadata>
+		<name>here-I-am</name>
+		<desc>trajet_98 de 2020-08-15T17:27:05Z à 2020-08-15T17:27:59Z</desc>
+		<time>2020-08-21T11:25:48Z</time>
+	</metadata>
+	<wpt lat="48.699802999999996" lon="6.1878074">
+		<time>2020-08-15T17:27:06Z</time>
+		<name>Position: 449</name>
+	</wpt>
+	<wpt lat="48.699802999999996" lon="6.1878074">
+		<time>2020-08-15T17:27:40Z</time>
+		<name>Position: 450</name>
+	</wpt>
+</gpx>

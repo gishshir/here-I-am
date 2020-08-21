@@ -14,7 +14,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "moment"
+              "moment",
+              "file-saver"
             ],
             "outputPath": "dist/here-I-am",
             "index": "src/index.html",
@@ -30,7 +31,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/moment/dist/moment.js"
+              "node_modules/moment/dist/moment.js",
+              "node_modules/file-saver/dist/FileSaver.js"
             ]
           },
           "configurations": {

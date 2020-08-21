@@ -25,6 +25,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
   appPosition: AppPosition;
   urlToMaps: string;
+  gpxfile: string;
   titre: string = "Position de mon ami(e)";
 
   private _amiTrajet: Trajet;
@@ -58,6 +59,24 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     } else {
       return "";
     }
+  }
+
+  createGpxFile() {
+    this.gpxfile = null;
+    if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
+      this.geolocationService.createGpxfile(this._amiTrajet.id, {
+
+        onResponse: (f: string) => this.gpxfile = f,
+        onError: (e: Message) => console.log(e.msg)
+      });
+    }
+  }
+
+  download() {
+    this.geolocationService.downloadGpxfile(this.gpxfile, {
+      onMessage: (m: Message) => this.eventMessage.emit(m),
+      onError: (e: Message) => this.eventMessage.emit(e)
+    })
   }
 
   // demarre timer si necessaire
@@ -97,6 +116,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
         case TrajetState.pausing:
         case TrajetState.ended: {
           this.stopTimer();
+          this.createGpxFile();
           this.titre = "Dernière position connue";
         }
       }

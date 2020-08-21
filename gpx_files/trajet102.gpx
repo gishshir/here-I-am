@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        creator="tsadeo" 
+        xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+	<metadata>
+		<name>here-I-am</name>
+		<desc>trajet_102 de 2020-08-16T16:05:26Z à 2020-08-19T16:32:16Z</desc>
+		<time>2020-08-19T16:44:45Z</time>
+	</metadata>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-16T16:05:26Z</time>
+		<name>Position: 583</name>
+	</wpt>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-16T16:14:16Z</time>
+		<name>Position: 584</name>
+	</wpt>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-16T16:14:51Z</time>
+		<name>Position: 585</name>
+	</wpt>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-16T16:17:36Z</time>
+		<name>Position: 586</name>
+	</wpt>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-16T16:18:29Z</time>
+		<name>Position: 587</name>
+	</wpt>
+	<wpt lat="43.8927232" lon="3.2827625">
+		<time>2020-08-16T16:20:16Z</time>
+		<name>Position: 588</name>
+	</wpt>
+	<wpt lat="48.699802999999996" lon="6.1878074">
+		<time>2020-08-19T16:32:13Z</time>
+		<name>Position: 589</name>
+	</wpt>
+</gpx>

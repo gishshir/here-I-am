@@ -7,23 +7,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST")  {
 
     verifyUserAuthentifie();
 
-    if (isset($_POST["trajetid"])) {
+    $postdata = file_get_contents ("php://input");
+
+     if (isset($postdata) && !empty ($postdata)) {
+ 
+        $bodyobj = json_decode ($postdata);
         
         $result;
-        $trajetid = xssPreventFromPost("trajetid");
+        $trajetid = $bodyobj->trajetid;
         $resultAndDatas = findListPositionForTrajet($trajetid);
 
         if (!$resultAndDatas->is_error()) {
 
             $datas = $resultAndDatas->get_datas();
+            if (sizeof($datas) == 0) {
 
-            $resultAndEntity = findTrajetById($trajetid);
-            if (!$resultAndEntity->is_error() && $resultAndEntity->get_entity() != null) {
-                $trajet = $resultAndEntity->get_entity();
-                $path = createGpxFile ($trajet, $datas);  
-                $result = buildResultat($path); 
-            } else {
-                $result = buildResultatError($resultAndEntity->get_msg());
+                $result = buildResultatError("pas de positions pour ce trajet!");
+            }
+            else {
+                $resultAndEntity = findTrajetById($trajetid);
+                if (!$resultAndEntity->is_error() && $resultAndEntity->get_entity() != null) {
+                    $trajet = $resultAndEntity->get_entity();
+                    $path = createGpxFile ($trajet, $datas);  
+                    $result = buildResultat($path); 
+                } else {
+                    $result = buildResultatError($resultAndEntity->get_msg());
+                }
             }
             
         } else {

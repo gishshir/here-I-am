@@ -2,12 +2,13 @@ import { Injectable, OnDestroy, OnInit, Inject, HostListener } from '@angular/co
 import { NotificationService } from '../common/notification/notification.service';
 import { Message } from '../common/message.type';
 import { Trajet, TrajetState } from '../trajets/trajet.type';
-import { PHP_API_SERVER, CommonService, MessageHandler, HTTP_HEADER_URL, Handler } from '../common/common.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { PHP_API_SERVER, CommonService, MessageHandler, HTTP_HEADER_URL, Handler, StringResponseHandler } from '../common/common.service';
+import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppPosition } from '../trajets/position.type';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import * as fileSaver from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -215,8 +216,56 @@ export class GeolocationService implements OnInit, OnDestroy {
     }
   }
 
+  // ===========================================================
+  private _callDownloadGpxfile(gpxfile: string): Observable<string> {
 
+    let url = PHP_API_SERVER + "/geolocation/gpx/read.php";
+    let options = {
+      headers: HTTP_HEADER_URL,
+      reportProgress: true,
+      params: new HttpParams().set("gpx", gpxfile),
+      responseType: 'text' as const
+    };
+    return this.http.get(url, options)
+      .pipe(catchError(this.commonService.handleError));
 
+  }
+  downloadGpxfile(gpxfile: string, handler: MessageHandler): void {
+
+    this._callDownloadGpxfile(gpxfile).subscribe({
+      next: (data: string) => {
+        handler.onMessage({ msg: "téléchargement en cours...", error: false })
+        var file = new File([data], gpxfile, { type: "text/plain;charset=utf-8" });
+        fileSaver.saveAs(file);
+      },
+      error: (error: string) => {
+        this.commonService._propageErrorToHandler(error, handler);
+      }
+    }
+    )
+  }
+  // ===========================================================
+  private _callCreateGpxfile(trajetid: number): Observable<any> {
+
+    let url = PHP_API_SERVER + "/geolocation/gpx/create.php";
+
+    return this.http.post<Message>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+  createGpxfile(trajetid: number, handler: StringResponseHandler): void {
+
+    this._callCreateGpxfile(trajetid).subscribe({
+      next: (resp: Message) => {
+        // le nom du fichier est dans le msg
+        handler.onResponse(resp.msg);
+      },
+      error: (error: string) => {
+        this.commonService._propageErrorToHandler(error, handler);
+      }
+    }
+    )
+  }
   // ===========================================================
   private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
 

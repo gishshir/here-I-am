@@ -4,7 +4,7 @@ require_once '../../config/config.php';
 // download le fichier gpx
 if($_SERVER["REQUEST_METHOD"] == "GET" )
  { 
-
+   
     verifyUserAuthentifie();
 
     $result;
@@ -23,6 +23,7 @@ if($_SERVER["REQUEST_METHOD"] == "GET" )
          else {
 
       // Récupération du fichier passé en paramètre
+      
       $filename = realpath(dirname(__DIR__, 4)."/gpx_files/".$gpxfile);     
          
       // vérifie l'existence et l'accès en lecture au fichier

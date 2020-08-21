@@ -120,3 +120,6 @@ export interface MessageHandler extends Handler {
 export interface BoolResponseHandler extends Handler {
   onResponse(value: boolean): void;
 }
+export interface StringResponseHandler extends Handler {
+  onResponse(value: string): void;
+}

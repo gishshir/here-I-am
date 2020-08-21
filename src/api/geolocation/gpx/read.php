@@ -22,9 +22,8 @@ if($_SERVER["REQUEST_METHOD"] == "GET" )
               
          else {
 
-      // Récupération du fichier passé en paramètre
-      
-      $filename = realpath(dirname(__DIR__, 4)."/gpx_files/".$gpxfile);     
+      // Récupération du fichier passé en paramètre   
+      $filename = DIR_GPX.$gpxfile;     
          
       // vérifie l'existence et l'accès en lecture au fichier
       if (!is_file($filename) || !is_readable($filename)) {

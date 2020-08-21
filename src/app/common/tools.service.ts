@@ -21,9 +21,9 @@ export class ToolsService {
 
     return this._formatDate(timestamp, 'D MMM YYYY');
   }
-  formatDateJourMois(timestamp: number): string {
+  formatDateJourMoisYY(timestamp: number): string {
 
-    return this._formatDate(timestamp, 'D MMM');
+    return this._formatDate(timestamp, 'D MMM YY');
   }
   formatDateAndTime(timestamp: number): string {
 

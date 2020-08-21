@@ -33,7 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
 
             // on cree le fichier gpx si possible
             if ($etat === "Ended") {
-                //TODO
+                createGpxFileFromTrajetId($id, DIR_GPX);
             }
             sendHttpEntityAndExit($resultAndEntity);
         }

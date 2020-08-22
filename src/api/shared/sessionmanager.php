@@ -1,6 +1,10 @@
 <?php
 
-session_start();
+// This sends a persistent cookie that lasts a day.
+session_start([
+    'cookie_lifetime' => 86400,
+    'gc_maxlifetime' => 86400
+]);
 
 // session déjà ouverte. 
 // vérification que le client est toujours le même...
@@ -19,8 +23,8 @@ if (isset($_SESSION["ipaddress"])) {
       unsetSession();
     }
 
-    // Is the last access over an hour ago?
-    if (time() > ($_SESSION['lastaccess'] + 3600))
+    // Is the last access over 3 hour ago?
+    if (time() > ($_SESSION['lastaccess'] + (3600 * 3)))
     {
         unsetSession();
         

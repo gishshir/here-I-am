@@ -20,6 +20,9 @@ export class GeolocationService implements OnInit, OnDestroy {
   private pid: number = -1;
   private trajetid: number = -1;
 
+  // token sur le timer
+  private timerid: number = -1;
+
 
   private currentPosition: AppPosition;
   // stockage en mémoire de la  liste des positions
@@ -103,31 +106,39 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
 
 
+  // utilisation d'un timer à la place de l'API de geolocation
+  // qui n'est pas fiable
   private startWatch() {
 
-    if (this.geolocation && this.pid < 0) {
+    if (this.geolocation && this.timerid < 0) {
       console.log("startWatch()");
 
       this.notificationService.activateGeolocation(true);
 
-      this.pid = navigator.geolocation.watchPosition(
-        (position: Position) => this.geo_success(position),
-        () => this.geo_error(),
-        this.geo_options);
-      console.log("geolocation pid: " + this.pid);
+      //rafraichir position toutes les 30s 
+      this.timerid = window.setInterval(() => {
+
+        navigator.geolocation.getCurrentPosition(
+          (position: Position) => this.geo_success(position),
+          () => this.geo_error(),
+          this.geo_options);
+
+
+      }, 30000);
+      console.log("geolocation timerid: " + this.timerid);
     }
 
   }
 
   private clearWatch() {
 
-    if (this.pid >= 0) {
+    if (this.timerid >= 0) {
 
       this.notificationService.activateGeolocation(false);
       this.notificationService.useNetwork(false);
-      console.log("clearWatch(): " + this.pid);
-      navigator.geolocation.clearWatch(this.pid);
-      this.pid = -1;
+      console.log("clearWatch()");
+      clearInterval(this.timerid);
+      this.timerid = -1;
     }
 
   }

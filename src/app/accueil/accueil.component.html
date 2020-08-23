@@ -1,4 +1,5 @@
-<div class="container" fxLayout fxLayout.lt-sm="column" fxLayoutAlign="center" fxLayoutGap="20px" fxLayoutGap.xs="10px">
+<div class="container" fxLayout fxLayout.lt-sm="column" fxLayoutAlign="center" fxLayoutAlign.lt-sm="start stretch"
+  fxLayoutGap="20px" fxLayoutGap.xs="10px">
 
   <!-- [flex-grow] [flex-shrink] flex-basis-->
 
@@ -20,7 +21,7 @@
 
   <!-- NOUVEAU TRAJET -->
   <nf-container *ngIf="dernierTrajet === undefined || dernierTrajet == null || dernierTrajet.etat == 'Ended'">
-    <mat-card class="card" fxFlex="initial" routerLink="/go-starting" routerLinkActive="active">
+    <mat-card class="card" fxFlex="grow" routerLink="/go-starting" routerLinkActive="active">
       <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
         <mat-icon fxFlex="initial" class="material-icons md-48" color="primary">flight_takeof</mat-icon>
         <mat-card-title fxFlex="grow">Commencer un trajet</mat-card-title>

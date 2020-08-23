@@ -2,10 +2,13 @@
 
     <h2 fxFlex="grow">Authentification</h2>
 
+    <div fxFlex="initial" *ngIf="response" class="bloc-reponse"
+        [style.background-color]="response.error?'lightcoral':'lightgreen'">
+        <p>{{response.msg}}</p>
+    </div>
+
     <form fxFlex="grow" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center"
         [formGroup]="authenticationFormGroup" (ngSubmit)="onSubmit()">
-
-
 
         <mat-form-field fxFlex appearance="legacy">
             <mat-label>login</mat-label>
@@ -37,10 +40,6 @@
         routerLink="/go-account-create" routerLinkActive="active">
         Ouvrir un compte ?
     </a>
-
-    <div *ngIf="response" class="bloc-reponse" [style.background-color]="response.error?'lightcoral':'lightgreen'">
-        <p>{{response.msg}}</p>
-    </div>
 
 
 </div>

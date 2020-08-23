@@ -114,20 +114,25 @@ export class GeolocationService implements OnInit, OnDestroy {
       console.log("startWatch()");
 
       this.notificationService.activateGeolocation(true);
+      this.findCurrentPosition();
 
       //rafraichir position toutes les 30s 
       this.timerid = window.setInterval(() => {
 
-        navigator.geolocation.getCurrentPosition(
-          (position: Position) => this.geo_success(position),
-          () => this.geo_error(),
-          this.geo_options);
-
+        this.findCurrentPosition();
 
       }, 30000);
       console.log("geolocation timerid: " + this.timerid);
     }
 
+  }
+
+  private findCurrentPosition(): void {
+
+    navigator.geolocation.getCurrentPosition(
+      (position: Position) => this.geo_success(position),
+      () => this.geo_error(),
+      this.geo_options);
   }
 
   private clearWatch() {

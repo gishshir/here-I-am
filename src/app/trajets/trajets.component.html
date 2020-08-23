@@ -9,14 +9,14 @@
             (click)="onSelect(trajet)" title={{displayDescriptionTrajet(trajet)}}>
 
             <span>
-                <app-trajet-means-icon class="icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
-                <app-trajet-state-icon class="icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
+                <app-trajet-means-icon class="trajet-icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
+                <app-trajet-state-icon class="trajet-icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
                 <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
             </span>
 
-            <span class="icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
+            <span class="trajet-icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
                 (click)="confirmSupprimerTrajet(trajet)">
-                <mat-icon class="material-icons md-24" color="primary">clear</mat-icon>
+                <mat-icon class="material-icons md-24" color="primary">delete_outline</mat-icon>
             </span>
 
         </mat-card>

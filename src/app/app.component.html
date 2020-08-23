@@ -1,5 +1,5 @@
 <!-- Toolbar -->
-<div class="mat-toolbar mat-primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="20px" role="banner">
+<div class="bandeau mat-toolbar mat-primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="20px" role="banner">
 
   <!--go accueil-->
   <div fxFlex="initial" aria-label="Accès à la page principale" color="basic" title="Accueil" routerLink="/go-accueil"
@@ -26,14 +26,14 @@
 
   <!--logout-->
   <div *ngIf="loggedIn" fxFlex="initial" aria-label="déconnection" title="Logout" (click)="logout()"
-    style="margin-right: 5px; cursor: pointer; ">
+    style="cursor: pointer; ">
     <mat-icon class="material-icons md-24">toggle_off</mat-icon>
   </div>
 
 
   <!--go login-->
   <div *ngIf="!loggedIn" fxFlex="initial" aria-label="Accès à la page d'authentification" title="Login"
-    routerLink="/go-login" routerLinkActive="active" style="margin-right: 5px; cursor: pointer;">
+    routerLink="/go-login" routerLinkActive="active" style=" cursor: pointer;">
     <mat-icon class="material-icons md-24">login</mat-icon>
   </div>
 

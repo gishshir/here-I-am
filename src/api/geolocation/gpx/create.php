@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")  {
         
         $result;
         $trajetid = $bodyobj->trajetid;
-        $result = createGpxFileFromTrajetId($trajetid, DIR_GPX);
+        $result = createGpxFileFromTrajetId($trajetid);
 
         sendHttpResponseAndExit($result);
     

@@ -18,6 +18,9 @@ if($_SERVER["REQUEST_METHOD"] == "DELETE")  {
         if (isset($id)) {
             
             $result = deleteTrajet($id);
+            if (!$result->is_error()) {
+                deleteGpxfile($id);
+            }
 
         } else {
             $result = buildResultatError ("paramètre de requete id absent!");

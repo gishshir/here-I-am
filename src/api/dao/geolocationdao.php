@@ -1,12 +1,14 @@
 <?php
+//require_once '../config/constantes.php';
 
 date_default_timezone_set('Europe/Brussels');
 
 // cree le fichier gpx a partir d'une liste de positions d'un trajet
 // si existe et retourne le nom du fichier
 // sinon erreur
-function createGpxFileFromTrajetId(int $trajetid, string $target_dir):Resultat{
+function createGpxFileFromTrajetId(int $trajetid):Resultat{
 
+    $target_dir = DIR_GPX;
     $resultAndDatas = findListPositionForTrajet($trajetid);
 
     if (!$resultAndDatas->is_error()) {
@@ -34,18 +36,35 @@ function createGpxFileFromTrajetId(int $trajetid, string $target_dir):Resultat{
     return $result;
 }
 
+function buildGpxfileName (int $trajetid): string {
+    return "trajet".$trajetid.".gpx";
+}
+
+function deleteGpxfile (int $trajetid): void {
+
+    $target_dir = DIR_GPX;
+    $filename = buildGpxfileName($trajetid);
+    $filepath = $target_dir.$filename;
+
+    if (file_exists($filepath)) {
+		unlink ($filepath);
+	}
+}
+
 // cree le fichier gpx et retourne son chemin
-function createGpxFile (Trajet $trajet, array $listPositions, string $target_dir): string {
+function createGpxFile (Trajet $trajet, array $listPositions): string {
 
     $SAUT = "\n";
     $TAB =  "\t"; 
+
+    $target_dir = DIR_GPX;
 
     // Check if target_dir exists
 	if (!file_exists($target_dir)) {
 		mkdir($target_dir);
 	}
 
-    $filename = "trajet".$trajet->get_id().".gpx";
+    $filename = buildGpxfileName($trajet->get_id());
     $filepath = $target_dir.$filename;
     // s'il existe on ne le cree pas une deuxième fois
     if (file_exists($filepath)) {

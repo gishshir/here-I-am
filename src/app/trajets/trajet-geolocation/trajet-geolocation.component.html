@@ -22,11 +22,11 @@
         <mat-dialog-actions fxFlex fxLayout="column" fxLayoutGap="10px">
             <a fxFlex="initial" target="_blank" rel="noopener noreferrer" class="mat-raised-button mat-primary"
                 [href]="urlToMaps">
-                <mat-icon class="icon-map material-icons md-48">location_on</mat-icon>
+                <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
                 Voir la carte
             </a>
             <button fxFlex="initial" *ngIf="gpxfile" class="mat-raised-button " (click)="download()">
-                <mat-icon class="icon-map material-icons md-48" color="accent">archive</mat-icon>
+                <mat-icon class="icon-map material-icons md-24" color="accent">archive</mat-icon>
                 Télécharger {{gpxfile}}
             </button>
         </mat-dialog-actions>

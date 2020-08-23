@@ -13,11 +13,10 @@
 
         <!-- filtre-->
         <div fxFlex="initial">
-            <span style="margin-right: 10px;" class="mat-radio-label-content">Relation:</span>
             <mat-radio-group [(ngModel)]="selectedFilter" name="radioGpFilter" (change)="onRadioChange($event)">
-                <mat-radio-button value="valide">valide</mat-radio-button>
-                <mat-radio-button value="aValider">à valider</mat-radio-button>
-                <mat-radio-button value="refuse">refusée</mat-radio-button>
+                <mat-radio-button value="valide" title="relations valides">valide</mat-radio-button>
+                <mat-radio-button value="aValider" title="relations à valider">à valider</mat-radio-button>
+                <mat-radio-button value="refuse" title="relations refusées">refusée</mat-radio-button>
             </mat-radio-group>
         </div>
 

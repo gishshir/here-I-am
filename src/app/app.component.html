@@ -1,17 +1,17 @@
 <!-- Toolbar -->
-<div class="mat-toolbar" color="Primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="20px" role="banner">
+<div class="mat-toolbar mat-primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="20px" role="banner">
 
   <!--go accueil-->
-  <a fxFlex="initial" aria-label="Accès à la page principale" title="Accueil" routerLink="/go-accueil"
-    routerLinkActive="active">
-    <mat-icon class="home-icon material-icons md-48" color="primary">home</mat-icon>
-  </a>
+  <div fxFlex="initial" aria-label="Accès à la page principale" color="basic" title="Accueil" routerLink="/go-accueil"
+    routerLinkActive="active" style="cursor: pointer;">
+    <mat-icon class="home-icon material-icons md-48">home</mat-icon>
+  </div>
   <h3 fxFlex="1 1 auto">{{title}}</h3>
 
   <!--geolocation -->
   <ng-container *ngIf="geolocationUsage !== undefined">
     <a fxFlex="initial" title="géo-localisataion" (click)="showDialogGeolocation()" style="cursor: pointer;">
-      <mat-icon class="material-icons md-48"
+      <mat-icon class="material-icons md-24"
         title="{{geolocationUsage?'Géolocalisation active':'Géolocalisation inactive'}}"
         color="{{geolocationUsage?'accent':'basic'}}">location_on</mat-icon>
     </a>
@@ -19,23 +19,23 @@
 
   <!--usage du reseau -->
   <div fxFlex="initial" title="Usage du réseau">
-    <mat-icon class="material-icons md-48"
+    <mat-icon class="material-icons md-24"
       title="{{networkUsage?'Utilisation intense réseau':'Utilisation faible du réseau'}}"
       color="{{networkUsage?'accent':'basic'}}">network_check</mat-icon>
   </div>
 
   <!--logout-->
-  <a *ngIf="loggedIn" fxFlex="initial" aria-label="déconnection" title="Logout" (click)="logout()"
-    style="cursor: pointer;">
-    <mat-icon class="material-icons md-48" color="primary">toggle_off</mat-icon>
-  </a>
+  <div *ngIf="loggedIn" fxFlex="initial" aria-label="déconnection" title="Logout" (click)="logout()"
+    style="margin-right: 5px; cursor: pointer; ">
+    <mat-icon class="material-icons md-24">toggle_off</mat-icon>
+  </div>
 
 
   <!--go login-->
-  <a *ngIf="!loggedIn" fxFlex="initial" aria-label="Accès à la page d'authentification" title="Login"
-    routerLink="/go-login" routerLinkActive="active">
-    <mat-icon class="material-icons md-48" color="primary">login</mat-icon>
-  </a>
+  <div *ngIf="!loggedIn" fxFlex="initial" aria-label="Accès à la page d'authentification" title="Login"
+    routerLink="/go-login" routerLinkActive="active" style="margin-right: 5px; cursor: pointer;">
+    <mat-icon class="material-icons md-24">login</mat-icon>
+  </div>
 
 
 </div>

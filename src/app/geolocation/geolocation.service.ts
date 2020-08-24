@@ -30,8 +30,8 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private geo_options = {
     enableHighAccuracy: true,
-    maximumAge: 20000,
-    timeout: 20000
+    maximumAge: 0,
+    timeout: 10000
   };
 
   constructor(private notificationService: NotificationService, private http: HttpClient,

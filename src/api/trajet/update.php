@@ -30,11 +30,6 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")  {
             $trajet->set_endtime($endtime);
 
             $resultAndEntity = updateStateTrajet($trajet);
-
-            // on cree le fichier gpx si possible
-            if ($etat === "Ended") {
-                createGpxFileFromTrajetId($id);
-            }
             sendHttpEntityAndExit($resultAndEntity);
         }
 

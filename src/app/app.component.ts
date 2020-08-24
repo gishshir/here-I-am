@@ -79,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private mettreAJourBanniere(pseudo?: string) {
     console.log("AppComponent#mettreAJourBanniere() " + pseudo);
     this.title = pseudo != null ?
-      "Bienvenue " + pseudo + " !!!" : "Où sont mes amis ?";
+      pseudo : "Où sont mes amis ?";
     this.loggedIn = pseudo != null;
   }
 

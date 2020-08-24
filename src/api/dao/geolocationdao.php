@@ -143,7 +143,14 @@ function findListPositionForTrajet (int $trajetid): ResultAndDatas {
     $resultAndDatas; $stmt;
       
     $con = connectMaBase();
-    $req_ListPositions = "select id, longitude, latitude, timestamp FROM geolocation WHERE trajetid = ?
+    $req_ListPositions = "select geolocation.id as id, longitude, latitude, timestamp
+    FROM geolocation
+    
+    left join trajet on trajet.id = geolocation.trajetid
+        
+    WHERE geolocation.trajetid = ?
+     and geolocation.timestamp >= trajet.starttime
+     and geolocation.timestamp <= trajet.endtime
     order by timestamp";
 
 

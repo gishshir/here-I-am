@@ -3,7 +3,10 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import 'moment/locale/fr';
 
-
+function _window(): any {
+  // return the global native browser window object
+  return window;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +15,19 @@ export class ToolsService {
 
   constructor() { }
 
+  private get nativeWindow(): any {
+    return _window();
+  }
+
   private _formatDate(timestamp: number, format: string): string {
     let date = new Date(timestamp * 1000);
     return moment(date).format(format);
+  }
+
+  openNewWindow(url: string): void {
+
+    let oWin = this.nativeWindow.open(url, '', '');
+    oWin.focus();
   }
 
   formatDate(timestamp: number): string {

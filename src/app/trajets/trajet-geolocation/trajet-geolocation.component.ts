@@ -49,6 +49,10 @@ export class TrajetGeolocationComponent implements OnInit {
     }
   }
 
+  openMaps() {
+    this.tools.openNewWindow(this.urlToMaps);
+  }
+
   createGpxFile() {
     this.gpxfile = null;
     if (this._trajet && this._trajet.etat == TrajetState.ended) {

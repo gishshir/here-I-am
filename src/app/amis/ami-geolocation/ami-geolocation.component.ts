@@ -42,6 +42,9 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopTimer();
   }
+  openMaps() {
+    this.tools.openNewWindow(this.urlToMaps);
+  }
 
   displayDate(): string {
 

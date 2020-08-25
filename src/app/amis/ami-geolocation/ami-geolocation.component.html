@@ -12,15 +12,14 @@
         </mat-card-content>
 
         <mat-dialog-actions fxFlex fxLayout="column" fxLayoutGap="10px">
-            <a fxFlex target="_blank" rel="noopener noreferrer" class="mat-raised-button mat-primary"
-                [href]="urlToMaps">
+            <div fxFlex="grow" class="mat-raised-button mat-primary" (click)="openMaps()" style="cursor: pointer;">
                 <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
-                Voir la carte
-            </a>
-            <a fxFlex *ngIf="gpxfile" class="mat-raised-button " (click)="download()">
+                Carte
+            </div>
+            <div fxFlex="grow" *ngIf="gpxfile" class="mat-raised-button" (click)="download()" style="cursor: pointer;">
                 <mat-icon class="icon-map material-icons md-24" color="accent">archive</mat-icon>
-                Télécharger {{gpxfile}}
-            </a>
+                Télécharger
+            </div>
         </mat-dialog-actions>
 
     </mat-card>

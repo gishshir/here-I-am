@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, OnInit, Inject, HostListener } from '@angular/core';
 import { NotificationService } from '../common/notification/notification.service';
 import { Message } from '../common/message.type';
-import { Trajet, TrajetState } from '../trajets/trajet.type';
+import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { PHP_API_SERVER, CommonService, MessageHandler, HTTP_HEADER_URL, Handler, StringResponseHandler } from '../common/common.service';
 import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -22,6 +22,9 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   // token sur le timer
   private timerid: number = -1;
+
+  private frequenceRafraichissement: number = 30000;
+  private facteurMoyenTransport: number = 1;
 
 
   private currentPosition: AppPosition;
@@ -86,7 +89,10 @@ export class GeolocationService implements OnInit, OnDestroy {
       if (newtrajet) {
         this.restoreListePositionsFromLocalStorage();
       }
-      this.startWatch();
+      // on ralentit la mesure de position si on est en pause
+      // on ralentit également selon le moyen de transport
+      let frequence = this.calculerFrequence(trajet);
+      this.restart(frequence);
     } else {
 
       // trajet ended
@@ -105,13 +111,42 @@ export class GeolocationService implements OnInit, OnDestroy {
     }
   }
 
+  // la fréquence de rafraichissement dépend de l'état et
+  // du moyen de transport.
+  private calculerFrequence(trajet: Trajet): number {
+
+    let ralentir = 1;
+    switch (trajet.etat) {
+      case TrajetState.started: ralentir = 1; break;
+      case TrajetState.pausing: ralentir = 4; break;
+      case TrajetState.ended: ralentir = 0; break;
+    }
+
+    let facteur = 1;
+    switch (trajet.mean) {
+
+      case TrajetMeans.pied: facteur = 4; break;
+      case TrajetMeans.velo: facteur = 2; break;
+      case TrajetMeans.avion: facteur = 0.5; break;
+      default: facteur = 1; break;
+    }
+
+
+    return this.frequenceRafraichissement * ralentir * facteur;
+  }
+
+  private restart(frequence: number) {
+    this.clearWatch();
+    this.startWatch(frequence);
+  }
+
 
   // utilisation d'un timer à la place de l'API de geolocation
   // qui n'est pas fiable
-  private startWatch() {
+  private startWatch(frequence: number) {
 
     if (this.geolocation && this.timerid < 0) {
-      console.log("startWatch()");
+      console.log("startWatch(): toutes les " + (frequence / 1000) + " s");
 
       this.notificationService.activateGeolocation(true);
       this.findCurrentPosition();
@@ -121,7 +156,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
         this.findCurrentPosition();
 
-      }, 30000);
+      }, frequence);
       console.log("geolocation timerid: " + this.timerid);
     }
 

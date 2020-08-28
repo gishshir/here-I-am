@@ -9,6 +9,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import * as fileSaver from 'file-saver';
 
+/**
+ * Gestion des positions d'un trajet quelconque
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -97,7 +100,7 @@ export class PositionService {
   // ===========================================================
 
   // ===========================================================
-  private _callFindTrajetPosition(trajetid: number): Observable<any> {
+  private _callFindTrajetLastPosition(trajetid: number): Observable<any> {
 
     let url = PHP_API_SERVER + "/geolocation/read_one.php";
 
@@ -111,9 +114,9 @@ export class PositionService {
       .pipe(catchError(this.commonService.handleError));
 
   }
-  findTrajetPosition(trajetid: number, handler: AppPositionHandler): void {
+  findTrajetLastPosition(trajetid: number, handler: AppPositionHandler): void {
 
-    this._callFindTrajetPosition(trajetid).subscribe(
+    this._callFindTrajetLastPosition(trajetid).subscribe(
 
       (p: any) => {
         p = (p && p.retour == false) ? null : p;

@@ -39,12 +39,17 @@ export class TrajetGeolocationComponent implements OnInit {
   private chercherLastPosition() {
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
 
-      this.positionService.findTrajetPosition(this._trajet.id, {
+      this.positionService.findTrajetLastPosition(this._trajet.id, {
         onError: (e: Message) => this.eventMessage.emit(e),
         onGetPosition: (p: AppPosition) => {
           this.appPosition = p;
-          this.urlToMaps = this.positionService.buildUrlToMaps(p);
-          this.createGpxFile();
+          if (this.appPosition) {
+            this.urlToMaps = this.positionService.buildUrlToMaps(p);
+            this.createGpxFile();
+          } else {
+            // pas de positions. S'assurer que c'est normal...
+            this.verifierSiListPositionExisteInLocalStorage();
+          }
         }
       });
     }
@@ -52,6 +57,23 @@ export class TrajetGeolocationComponent implements OnInit {
 
   openMaps() {
     this.tools.openNewWindow(this.urlToMaps);
+  }
+
+  /*
+  * aucune position n'est enregistrée.
+  * Verifier le local storage contient ces informations
+  * Si c'est le cas elles sont envoyées au serveur et le local storage est nettoyé.
+  * C'est une fonction de récupération dans le cas où l'envoi normal a échoué pour
+  * un problème réseau.
+  */
+  verifierSiListPositionExisteInLocalStorage() {
+
+    let listPositions = this.positionService.restoreListePositionsFromLocalStorage(this.trajet.id);
+    if (listPositions && listPositions.length > 0) {
+
+      // on les envoie sur le serveur distant
+      this.positionService.insererListePositionAndClearLocalStorage(this.trajet.id, listPositions);
+    }
   }
 
   createGpxFile() {

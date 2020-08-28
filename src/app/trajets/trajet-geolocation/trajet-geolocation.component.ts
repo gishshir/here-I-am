@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Trajet, TrajetState } from '../trajet.type';
 import { AppPosition } from '../position.type';
-import { GeolocationService } from 'src/app/geolocation/geolocation.service';
 import { Message } from 'src/app/common/message.type';
 import { ToolsService } from 'src/app/common/tools.service';
+import { PositionService } from 'src/app/geolocation/position.service';
 
 @Component({
   selector: 'app-trajet-geolocation',
@@ -30,7 +30,8 @@ export class TrajetGeolocationComponent implements OnInit {
   gpxfile: string;
 
 
-  constructor(private geolocationService: GeolocationService, private tools: ToolsService) { }
+  constructor(private positionService: PositionService,
+    private tools: ToolsService) { }
 
   ngOnInit(): void {
   }
@@ -38,11 +39,11 @@ export class TrajetGeolocationComponent implements OnInit {
   private chercherLastPosition() {
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
 
-      this.geolocationService.findTrajetPosition(this._trajet.id, {
+      this.positionService.findTrajetPosition(this._trajet.id, {
         onError: (e: Message) => this.eventMessage.emit(e),
         onGetPosition: (p: AppPosition) => {
           this.appPosition = p;
-          this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
+          this.urlToMaps = this.positionService.buildUrlToMaps(p);
           this.createGpxFile();
         }
       });
@@ -56,7 +57,7 @@ export class TrajetGeolocationComponent implements OnInit {
   createGpxFile() {
     this.gpxfile = null;
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
-      this.geolocationService.createGpxfile(this._trajet.id, {
+      this.positionService.createGpxfile(this._trajet.id, {
 
         onResponse: (f: string) => this.gpxfile = f,
         onError: (e: Message) => console.log(e.msg)
@@ -65,7 +66,7 @@ export class TrajetGeolocationComponent implements OnInit {
   }
 
   download() {
-    this.geolocationService.downloadGpxfile(this.gpxfile, {
+    this.positionService.downloadGpxfile(this.gpxfile, {
       onMessage: (m: Message) => this.eventMessage.emit(m),
       onError: (e: Message) => this.eventMessage.emit(e)
     })

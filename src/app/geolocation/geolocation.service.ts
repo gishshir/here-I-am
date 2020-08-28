@@ -2,14 +2,13 @@ import { Injectable, OnDestroy, OnInit, Inject, HostListener } from '@angular/co
 import { NotificationService } from '../common/notification/notification.service';
 import { Message } from '../common/message.type';
 import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
-import { PHP_API_SERVER, CommonService, MessageHandler, HTTP_HEADER_URL, Handler, StringResponseHandler } from '../common/common.service';
-import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { AppPosition } from '../trajets/position.type';
-import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
-import * as fileSaver from 'file-saver';
+import { PositionService } from './position.service';
 
+/*
+* Service gerant la localisation du trajet en cours
+* en utilisant l'API navigator geolocation si disponible
+*/
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +16,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   // determine si la geolocation est possible ou non sur le navigateur/systeme
   private geolocation: boolean;
-  private pid: number = -1;
+  //private pid: number = -1;
   private trajetid: number = -1;
 
   // token sur le timer
@@ -33,15 +32,15 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private geo_options = {
     enableHighAccuracy: true,
-    maximumAge: 0,
-    timeout: 10000
+    maximumAge: 20000,
+    timeout: 29000
   };
 
-  constructor(private notificationService: NotificationService, private http: HttpClient,
-    private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService) {
+  constructor(private notificationService: NotificationService,
+    private positionService: PositionService) {
     if ("geolocation" in navigator) {
 
-      console.log("geolocation existe");
+      console.log("geolocation active dans le navigateur!");
       this.geolocation = true;
 
       // abonnement à une modification de mon trajet
@@ -71,7 +70,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private clearWatchAndSave(): void {
     this.clearWatch();
-    this.saveListPositionsToLocalStorage();
+    this.positionService.saveListPositionsToLocalStorage(this.trajetid, this.listPositions);
   }
 
   getCurrentPosition(): AppPosition {
@@ -87,7 +86,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (trajet && trajet.etat != TrajetState.ended) {
       if (newtrajet) {
-        this.restoreListePositionsFromLocalStorage();
+        this.listPositions = this.positionService.restoreListePositionsFromLocalStorage(this.trajetid);
       }
       // on ralentit la mesure de position si on est en pause
       // on ralentit également selon le moyen de transport
@@ -99,15 +98,8 @@ export class GeolocationService implements OnInit, OnDestroy {
       this.clearWatchAndSave();
 
       // sauvegarde sur le serveur de la liste complète
-      if (this.listPositions) {
-        this.insererListePositions(this.listPositions, {
-          onError: (e: Message) => console.log(e.msg),
-          onMessage: (m: Message) => {
-            console.log(m.msg);
-            this.storage.remove(this.buildLocalStorageKey());
-          }
-        });
-      }
+      this.positionService.insererListePositionAndClearLocalStorage(this.trajetid, this.listPositions);
+
     }
   }
 
@@ -166,7 +158,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     navigator.geolocation.getCurrentPosition(
       (position: Position) => this.geo_success(position),
-      () => this.geo_error(),
+      (error: PositionError) => this.geo_error(error),
       this.geo_options);
   }
 
@@ -208,7 +200,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.trajetid > 0) {
       console.log("appel du service insererNouvellePosition()...");
-      this.insererNouvellePosition(this.currentPosition, {
+      this.positionService.insererNouvellePosition(this.currentPosition, {
         onMessage: (m: Message) => {
           console.log(m.msg);
           this.notificationService.useNetwork(true);
@@ -222,9 +214,9 @@ export class GeolocationService implements OnInit, OnDestroy {
 
 
   }
-  private geo_error() {
-    console.log("Position inconnue!");
-    //this.clearWatch();
+  private geo_error(error: PositionError) {
+
+    console.log("Position inconnue! (" + error.code + " - " + error.message + ")");
   }
 
   // stockage en mémoire et dans le LocalStorage
@@ -233,193 +225,10 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (appPosition && appPosition.trajetid > 0) {
 
       this.listPositions.push(appPosition);
-      this.saveListPositionsToLocalStorage();
+      this.positionService.saveListPositionsToLocalStorage(this.trajetid, this.listPositions);
     }
 
-  }
-
-  private buildLocalStorageKey(): string {
-    return "TRAJET#" + this.trajetid;
-  }
-  private restoreListePositionsFromLocalStorage(): void {
-
-    console.log("restoreListePositionsFromLocalStorage...")
-    if (this.trajetid > 0) {
-      let key: string = this.buildLocalStorageKey();
-      if (this.storage.has(key)) {
-        // on récupère les valeurs stockées sur ce même trajet
-        this.listPositions = JSON.parse(this.storage.get(key));
-
-        this.listPositions.forEach(p => console.log("position: [trajetid:" + p.timestamp + " - tmst: " + p.timestamp));
-      } else {
-        console.log(".. pas de positions stockées!")
-        this.listPositions = new Array<AppPosition>();
-      }
-    }
-  }
-  private saveListPositionsToLocalStorage(): void {
-
-    if (this.trajetid > 0 && this.listPositions) {
-      let key: string = this.buildLocalStorageKey();
-      let values = JSON.stringify(this.listPositions);
-      console.log("saveListPositionsToLocalStorage(): " + values);
-      this.storage.set(key, values);
-    }
-  }
-
-  // ===========================================================
-  private _callDownloadGpxfile(gpxfile: string): Observable<string> {
-
-    let url = PHP_API_SERVER + "/geolocation/gpx/read.php";
-    let options = {
-      headers: HTTP_HEADER_URL,
-      reportProgress: true,
-      params: new HttpParams().set("gpx", gpxfile),
-      responseType: 'text' as const
-    };
-    return this.http.get(url, options)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  downloadGpxfile(gpxfile: string, handler: MessageHandler): void {
-
-    this._callDownloadGpxfile(gpxfile).subscribe({
-      next: (data: string) => {
-        handler.onMessage({ msg: "téléchargement en cours...", error: false })
-        var file = new File([data], gpxfile, { type: "text/plain;charset=utf-8" });
-        fileSaver.saveAs(file);
-      },
-      error: (error: string) => {
-        this.commonService._propageErrorToHandler(error, handler);
-      }
-    }
-    )
-  }
-  // ===========================================================
-  private _callCreateGpxfile(trajetid: number): Observable<any> {
-
-    let url = PHP_API_SERVER + "/geolocation/gpx/create.php";
-
-    return this.http.post<Message>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  createGpxfile(trajetid: number, handler: StringResponseHandler): void {
-
-    this._callCreateGpxfile(trajetid).subscribe({
-      next: (resp: Message) => {
-        // le nom du fichier est dans le msg
-        handler.onResponse(resp.msg);
-      },
-      error: (error: string) => {
-        this.commonService._propageErrorToHandler(error, handler);
-      }
-    }
-    )
-  }
-  // ===========================================================
-  private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
-
-    let url = PHP_API_SERVER + "/geolocation/create.php";
-
-    return this.http.post<Message>(url, newPosition, this.commonService.httpOptionsHeaderJson)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  private insererNouvellePosition(currentPosition: AppPosition, handler: MessageHandler): void {
-
-    this._callInsertTrajetPosition(currentPosition).subscribe(
-      this.commonService._createMessageObserver(handler));
-  }
-  // ===========================================================
-
-  // ===========================================================
-  private _callInsertTrajetListePositions(listPositions: Array<AppPosition>): Observable<any> {
-
-    let url = PHP_API_SERVER + "/geolocation/create.php";
-
-    return this.http.post<Message>(url, listPositions, this.commonService.httpOptionsHeaderJson)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  private insererListePositions(listPositions: Array<AppPosition>, handler: MessageHandler): void {
-
-    this._callInsertTrajetListePositions(listPositions).subscribe(
-      this.commonService._createMessageObserver(handler));
-  }
-  // ===========================================================
-
-  // ===========================================================
-  private _callFindTrajetPosition(trajetid: number): Observable<any> {
-
-    let url = PHP_API_SERVER + "/geolocation/read_one.php";
-
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("trajetid", trajetid + "")
-
-    };
-    // attention si pas de Position alors {"retour": false}
-    return this.http.get<AppPosition>(url, options)
-      .pipe(catchError(this.commonService.handleError));
-
-  }
-  findTrajetPosition(trajetid: number, handler: AppPositionHandler): void {
-
-    this._callFindTrajetPosition(trajetid).subscribe(
-
-      (p: any) => {
-        p = (p && p.retour == false) ? null : p;
-        handler.onGetPosition(p);
-      },
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
-    );
-  }
-
-
-  //=============================================
-  buildUrlToMaps(position: AppPosition): string {
-
-    if (position) {
-      let latitude = Number(position.latitude);
-      let longitude = Number(position.longitude);
-
-      let sexaLat = this.convertToSexagesimal(latitude);
-      //console.log("latitude: " + sexaLat);
-      let sexaLong = this.convertToSexagesimal(longitude);
-      //console.log("longitude: " + sexaLong);
-
-      return "https://www.google.fr/maps/place/" + sexaLat + "N+" + sexaLong + "E/@" + latitude + "," + longitude;
-    }
-    else {
-      return null;
-    }
-  }
-
-  private convertToSexagesimal(value: number): string {
-
-    let test: number = value;
-    let degres = Math.trunc(test);
-
-    test = test - degres;
-    test = test * 60;
-
-    let minutes = Math.trunc(test);
-
-    test = test - minutes;
-    test = test * 60 * 10;
-    test = Math.trunc(test);
-
-    let secondes = test / 10;
-
-    let result = degres + "%C2%B0" + minutes + "'" + secondes + "%22";
-    //degres + "%C2%B" + minutes + "'" + secondes + "%22";
-    return result;
   }
 
 }
 
-export interface AppPositionHandler extends Handler {
-
-  onGetPosition(position?: AppPosition): void;
-}

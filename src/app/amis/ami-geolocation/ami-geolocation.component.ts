@@ -1,12 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { TrajetService } from 'src/app/trajets/trajet.service';
-import { Ami } from '../ami.type';
 import { Trajet, TrajetState } from 'src/app/trajets/trajet.type';
 import { Message } from 'src/app/common/message.type';
 import { AppPosition } from 'src/app/trajets/position.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
-import { GeolocationService } from 'src/app/geolocation/geolocation.service';
 import { ToolsService } from 'src/app/common/tools.service';
+import { PositionService } from 'src/app/geolocation/position.service';
 
 @Component({
   selector: 'app-ami-geolocation',
@@ -33,7 +31,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   // token sur le timer
   private timerid: number = -1;
 
-  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService,
+  constructor(private positionService: PositionService, private notificationService: NotificationService,
     private tools: ToolsService) { }
 
   ngOnInit(): void {
@@ -67,7 +65,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   createGpxFile() {
     this.gpxfile = null;
     if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
-      this.geolocationService.createGpxfile(this._amiTrajet.id, {
+      this.positionService.createGpxfile(this._amiTrajet.id, {
 
         onResponse: (f: string) => this.gpxfile = f,
         onError: (e: Message) => console.log(e.msg)
@@ -76,7 +74,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   }
 
   download() {
-    this.geolocationService.downloadGpxfile(this.gpxfile, {
+    this.positionService.downloadGpxfile(this.gpxfile, {
       onMessage: (m: Message) => this.eventMessage.emit(m),
       onError: (e: Message) => this.eventMessage.emit(e)
     })
@@ -133,11 +131,11 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   private findAmiTrajetPosition(): void {
 
     console.log("findAmiTrajetPosition()");
-    this.geolocationService.findTrajetPosition(this._amiTrajet.id, {
+    this.positionService.findTrajetPosition(this._amiTrajet.id, {
 
       onGetPosition: (p: AppPosition) => {
         this.appPosition = p;
-        this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
+        this.urlToMaps = this.positionService.buildUrlToMaps(p);
       },
       onError: (e: Message) => console.log(e.msg)
     });

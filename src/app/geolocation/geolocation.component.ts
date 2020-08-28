@@ -5,6 +5,7 @@ import { Message } from '../common/message.type';
 import { AppPosition } from '../trajets/position.type';
 import { GeolocationService } from './geolocation.service';
 import { ToolsService } from '../common/tools.service';
+import { PositionService } from './position.service';
 
 @Component({
   selector: 'app-geolocation',
@@ -22,7 +23,9 @@ export class GeolocationComponent implements OnInit, OnDestroy {
 
   @Input() showLienToMaps: boolean = true;
 
-  constructor(private geolocationService: GeolocationService, private notificationService: NotificationService,
+  constructor(private geolocationService: GeolocationService,
+    private positionService: PositionService,
+    private notificationService: NotificationService,
     private tools: ToolsService) {
 
     this.setPosition(this.geolocationService.getCurrentPosition());
@@ -38,7 +41,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
 
   private setPosition(p: AppPosition): void {
     this.appPosition = p;
-    this.urlToMaps = this.geolocationService.buildUrlToMaps(p);
+    this.urlToMaps = this.positionService.buildUrlToMaps(p);
   }
 
 

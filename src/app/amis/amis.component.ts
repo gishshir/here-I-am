@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Predicate } from '@angular/core';
 import { Ami } from './ami.type';
 import { AmiService } from './ami.service';
 import { LoggerService } from '../common/logger.service';
@@ -11,6 +11,8 @@ import { DialogInvitationComponent } from './dialog-invitation/dialog-invitation
 import { AmiRelation } from './amiinfo.type';
 import { NotificationService } from '../common/notification/notification.service';
 import { Trajet } from '../trajets/trajet.type';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 @Component({
@@ -30,7 +32,10 @@ export class AmisComponent implements OnInit {
 
   private _listToUpdate: boolean = false;
 
-  //private worker: Worker;
+  // material table
+  tableColumns: string[] = ['item'];
+  dataSource: MatTableDataSource<Ami> = new MatTableDataSource<Ami>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
   constructor(private amiService: AmiService, private logger: LoggerService, private dialog: MatDialog,
@@ -50,9 +55,11 @@ export class AmisComponent implements OnInit {
     this.refreshList();
   }
 
+
   onRadioChange($event: MatRadioChange) {
 
     console.log($event.source.name, $event.value);
+    this.dataSource.filter = $event.value;
     if (!this.selectedAmi) {
       return;
     }
@@ -122,6 +129,28 @@ export class AmisComponent implements OnInit {
     this.refreshList();
   }
 
+
+  private createFilter() {
+
+    let filterFunction = function (ami: Ami, filter: string): boolean {
+
+      if (!filter || filter == AmisFilter.tous) {
+        return true;
+      }
+
+      switch (filter) {
+
+        case AmisFilter.valide: return ami.etatrelation == RelationState.open;
+        case AmisFilter.aValider: return ami.etatrelation == RelationState.pending;
+        case AmisFilter.refuse: return ami.etatrelation == RelationState.closed;
+      }
+      return false;
+    }
+
+    return filterFunction;
+
+  }
+
   private refreshList(): void {
     this.logger.log("rafraichir la liste des amis");
 
@@ -135,6 +164,12 @@ export class AmisComponent implements OnInit {
       {
         onGetList: list => {
           this.amis = list;
+
+          this.dataSource = new MatTableDataSource<Ami>(list);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.filterPredicate = this.createFilter();
+          this.dataSource.filter = this.selectedFilter;
+
           let ami = this.findSelectedAmi(selectedRelationId);
           if (ami && this.selectedFilter) {
             switch (this.selectedFilter) {

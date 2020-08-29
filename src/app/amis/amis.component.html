@@ -21,22 +21,36 @@
         </div>
 
         <!-- liste des amis -->
-        <div fxFlex>
-            <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start none">
-                <mat-card class="card" fxFlex *ngFor="let ami of (amis | amiFilter : selectedFilter)"
-                    [class.card-selected]="ami === selectedAmi" (click)="onSelect(ami)">
+        <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="20px">
+            <table fxFlex mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-                    <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">
-                        <app-ami-state-icon fxFlex="initial" [amiState]="ami.etat"></app-ami-state-icon>
-                        <span fxFlex="grow">{{ami.pseudo}}</span>
-                        <app-ami-suivi-icon fxFlex="initial" [suivre]="ami.suivre" [notifier]="ami.notifier"
-                            [size]="16">
-                        </app-ami-suivi-icon>
-                    </mat-card-header>
+                <!-- définition d'une colonne-->
+                <ng-container matColumnDef="item">
+                    <mat-header-cell *matHeaderCellDef>Amis</mat-header-cell>
+                    <mat-cell *matCellDef="let ami">
 
-                </mat-card>
-            </div>
+                        <mat-card class="card" fxFlex [class.card-selected]="ami === selectedAmi"
+                            (click)="onSelect(ami)">
 
+                            <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">
+                                <app-ami-state-icon fxFlex="initial" [amiState]="ami.etat"></app-ami-state-icon>
+                                <span fxFlex="grow">{{ami.pseudo}}</span>
+                                <app-ami-suivi-icon fxFlex="initial" [suivre]="ami.suivre" [notifier]="ami.notifier"
+                                    [size]="16">
+                                </app-ami-suivi-icon>
+                            </mat-card-header>
+
+                        </mat-card>
+
+                    </mat-cell>
+                </ng-container>
+
+                <!--lignes de la table-->
+                <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: tableColumns"></mat-row>
+
+            </table>
+            <mat-paginator fxFlex [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons hidePageSize></mat-paginator>
         </div>
 
     </div>

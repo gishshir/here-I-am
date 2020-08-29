@@ -2,15 +2,47 @@
     <!-- liste des amis à notifier-->
     <h3 hxFlex>Partager ma position avec</h3>
 
-    <ng-container *ngIf="listAmis">
-        <div fxFlex fxLayout fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="10px">
+    <ng-container *ngIf="dataSource.data">
+
+
+        <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="20px">
+
+            <table fxFlex mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                <!-- définition d'une colonne-->
+                <ng-container matColumnDef="item">
+                    <mat-header-cell *matHeaderCellDef>Amis</mat-header-cell>
+                    <mat-cell *matCellDef="let ami">
+
+                        <div fxLayout fxLayoutGap="5px">
+                            <mat-checkbox color="primary" fxFlex="initial" [(ngModel)]="ami.notifier"
+                                (click)="notifierAmi(ami)">
+                            </mat-checkbox>
+                            <span fxFlex="initial">{{ami.id}}</span>
+                            <span fxFlex="grow">{{ami.pseudo}}</span>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <!--lignes de la table-->
+                <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: tableColumns"></mat-row>
+
+            </table>
+
+            <mat-paginator fxFlex [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons hidePageSize></mat-paginator>
+        </div>
+
+
+        <!-- <div fxFlex fxLayout fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="10px">
             <div fxFlex fxLayout fxLayoutGap="5px" *ngFor="let ami of  (listAmis | amiFilter : 'valide')">
                 <mat-checkbox color="primary" fxFlex="initial" [(ngModel)]="ami.notifier" (click)="notifierAmi(ami)">
                 </mat-checkbox>
                 <span fxFlex="initial">{{ami.id}}</span>
                 <span fxFlex="grow">{{ami.pseudo}}</span>
             </div>
-        </div>
+        </div> -->
+
     </ng-container>
 
 

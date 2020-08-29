@@ -22,7 +22,7 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 export class AmisComponent implements OnInit {
 
-  amis: Ami[];
+  private amis: Ami[];
   selectedAmi: Ami;
   selectedAmiTrajet: Trajet;
   selectedFilter: string = AmisFilter.valide;
@@ -130,26 +130,7 @@ export class AmisComponent implements OnInit {
   }
 
 
-  private createFilter() {
 
-    let filterFunction = function (ami: Ami, filter: string): boolean {
-
-      if (!filter || filter == AmisFilter.tous) {
-        return true;
-      }
-
-      switch (filter) {
-
-        case AmisFilter.valide: return ami.etatrelation == RelationState.open;
-        case AmisFilter.aValider: return ami.etatrelation == RelationState.pending;
-        case AmisFilter.refuse: return ami.etatrelation == RelationState.closed;
-      }
-      return false;
-    }
-
-    return filterFunction;
-
-  }
 
   private refreshList(): void {
     this.logger.log("rafraichir la liste des amis");
@@ -167,7 +148,7 @@ export class AmisComponent implements OnInit {
 
           this.dataSource = new MatTableDataSource<Ami>(list);
           this.dataSource.paginator = this.paginator;
-          this.dataSource.filterPredicate = this.createFilter();
+          this.dataSource.filterPredicate = this.amiService.createEtaRelationFilter();
           this.dataSource.filter = this.selectedFilter;
 
           let ami = this.findSelectedAmi(selectedRelationId);

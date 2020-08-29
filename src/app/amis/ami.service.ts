@@ -8,6 +8,8 @@ import { AmiInfo, AmiPersonne, AmiRelation } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
 import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
 import { Message, BoolResponse } from '../common/message.type';
+import { AmisFilter } from './amis.pipe';
+import { RelationState } from './relation/relationinfo.type';
 
 
 
@@ -18,6 +20,27 @@ export class AmiService {
 
   constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) {
     console.log("amiService constructor");
+  }
+
+  createEtaRelationFilter() {
+
+    let filterFunction = function (ami: Ami, filter: string): boolean {
+
+      if (!filter || filter == AmisFilter.tous) {
+        return true;
+      }
+
+      switch (filter) {
+
+        case AmisFilter.valide: return ami.etatrelation == RelationState.open;
+        case AmisFilter.aValider: return ami.etatrelation == RelationState.pending;
+        case AmisFilter.refuse: return ami.etatrelation == RelationState.closed;
+      }
+      return false;
+    }
+
+    return filterFunction;
+
   }
 
   // =============================================

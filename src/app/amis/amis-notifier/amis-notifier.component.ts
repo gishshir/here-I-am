@@ -1,7 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Ami } from '../ami.type';
 import { AmiService } from '../ami.service';
 import { Message } from 'src/app/common/message.type';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { AmisFilter } from '../amis.pipe';
 
 @Component({
   selector: 'app-amis-notifier',
@@ -10,16 +13,19 @@ import { Message } from 'src/app/common/message.type';
 })
 export class AmisNotifierComponent implements OnInit {
 
-  @Input()
-  listAmis: Ami[];
+  private listAmis: Ami[];
+
+  // material table
+  tableColumns: string[] = ['item'];
+  dataSource: MatTableDataSource<Ami> = new MatTableDataSource<Ami>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @Output() eventMessage = new EventEmitter<Message>();
 
-  constructor(private amiService: AmiService) {
-    this.chercherListAmis();
-  }
+  constructor(private amiService: AmiService) { }
 
   ngOnInit(): void {
+    this.chercherListAmis();
   }
 
   chercherListAmis(): Ami[] {
@@ -27,7 +33,15 @@ export class AmisNotifierComponent implements OnInit {
     if (this.listAmis == null) {
       console.log("chercherListAmis()");
       this.amiService.getListeAmis({
-        onGetList: (l: Ami[]) => this.listAmis = l,
+        onGetList: (l: Ami[]) => {
+          this.listAmis = l;
+
+          this.dataSource = new MatTableDataSource<Ami>(l);
+          this.dataSource.paginator = this.paginator;
+          console.log("paginator: " + this.dataSource.paginator);
+          //this.dataSource.filterPredicate = this.amiService.createEtaRelationFilter();
+          //this.dataSource.filter = AmisFilter.valide;
+        },
         onError: (e: Message) => console.log(e.msg)
       });
     }

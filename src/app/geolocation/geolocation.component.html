@@ -1,4 +1,4 @@
-<ng-container *ngIf="appPosition">
+<ng-container *ngIf="appPosition; else noPosition">
     <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
 
         <h4 fxFlex>{{titre}}</h4>
@@ -20,4 +20,10 @@
         </mat-card-content>
 
     </mat-card>
+
+
 </ng-container>
+
+<ng-template #noPosition>
+    <h4>Pas de position connue!</h4>
+</ng-template>

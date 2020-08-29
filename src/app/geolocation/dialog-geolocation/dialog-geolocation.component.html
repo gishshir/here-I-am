@@ -5,10 +5,12 @@
 
         <button fxFlex="initial" class="mat-raised-button" (click)="close()">Fermer</button>
 
-        <a fxFlex="initial" class="mat-raised-button mat-primary" target="_blank" rel="noopener noreferrer"
-            [href]="geolocation.urlToMaps">
-            <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
-            Carte
-        </a>
+        <ng-container *ngIf="geolocation.urlToMaps">
+            <a fxFlex="initial" class="mat-raised-button mat-primary" target="_blank" rel="noopener noreferrer"
+                [href]="geolocation.urlToMaps">
+                <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
+                Carte
+            </a>
+        </ng-container>
     </mat-dialog-actions>
 </div>

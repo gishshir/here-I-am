@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loggedIn: boolean = false;
   response: Message;
   networkUsage: boolean = false;
-  geolocationUsage: boolean;
+  geolocationUsage: boolean = false;
 
   constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private route: Router, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router, private dialog: MatDialog) {
@@ -86,12 +86,22 @@ export class AppComponent implements OnInit, OnDestroy {
 
   showDialogGeolocation(): void {
 
+    let titreDial: string;
+
+    // au cas où .. on cherche une position
+    if (!this.geolocationUsage) {
+      let forcePosition: boolean = this.geolocationService.forceCurrentPosition();
+      titreDial = forcePosition ? "Ma position actuelle" : "Dernière position connue";
+    } else {
+      titreDial = "Ma position actuelle";
+    }
+
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
     dialogConfig.data = {
-      titre: (this.geolocationUsage ? "Ma position actuelle" : "Dernière position connue")
+      titre: titreDial
     }
 
     const dialogRef = this.dialog.open(DialogGeolocationComponent, dialogConfig);

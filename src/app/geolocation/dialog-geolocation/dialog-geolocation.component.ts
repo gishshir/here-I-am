@@ -12,8 +12,6 @@ export class DialogGeolocationComponent implements OnInit {
 
 
   titre: string;
-  // url pour voir la localisation sur google maps
-  urlToMaps: string;
 
   constructor(
     private dialogRef: MatDialogRef<DialogGeolocationComponent>, @Inject(MAT_DIALOG_DATA) data) {
@@ -21,10 +19,6 @@ export class DialogGeolocationComponent implements OnInit {
     this.titre = data.titre;
   }
 
-  setUrlToMaps(url: string): void {
-    console.log("setUrlToMaps()");
-    this.urlToMaps = url;
-  }
 
   ngOnInit(): void {
   }

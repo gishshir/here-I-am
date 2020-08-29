@@ -154,6 +154,20 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * force la recherche d'une position 
+   * si le timer de la geolocation n'est pas en route.
+   */
+  forceCurrentPosition(): boolean {
+
+    console.log("force current position...");
+    if (this.timerid == -1) {
+      this.findCurrentPosition();
+      return true;
+    }
+
+    return false;
+  }
   private findCurrentPosition(): void {
 
     navigator.geolocation.getCurrentPosition(

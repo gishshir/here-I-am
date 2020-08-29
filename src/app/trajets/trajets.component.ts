@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Trajet, TrajetState } from './trajet.type';
 import { TrajetService } from './trajet.service';
 import { ToolsService } from '../common/tools.service';
@@ -7,6 +7,8 @@ import { Message } from '../common/message.type';
 import { DialogDeleteTrajetComponent } from './dialog-delete/dialog-delete-trajet.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NotificationService } from '../common/notification/notification.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 
@@ -18,11 +20,16 @@ import { NotificationService } from '../common/notification/notification.service
 })
 export class TrajetsComponent implements OnInit {
 
-  trajets: Trajet[];
+  private trajets: Trajet[];
   selectedTrajet: Trajet;
   today: string;
 
   response: Message;
+
+  // material table
+  tableColumns: string[] = ['item'];
+  dataSource: MatTableDataSource<Trajet> = new MatTableDataSource<Trajet>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
     private logger: LoggerService, public dialog: MatDialog,
@@ -31,6 +38,9 @@ export class TrajetsComponent implements OnInit {
     // s'inscrit aux evenements de changement de trajet ou etat de trajet
     this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
     this.refreshList(-1);
+  }
+  ngOnInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   // reception d'un evenement de message
@@ -117,6 +127,8 @@ export class TrajetsComponent implements OnInit {
 
       onGetList: list => {
         this.trajets = list;
+        this.dataSource = new MatTableDataSource<Trajet>(list);
+        this.dataSource.paginator = this.paginator;
         this.selectedTrajet = this.getTrajetById(selectedid);
       },
       onError: m => this.response = m
@@ -175,8 +187,7 @@ export class TrajetsComponent implements OnInit {
     this.selectedTrajet = trajet;
   }
 
-  ngOnInit(): void {
-  }
+
 
 }
 

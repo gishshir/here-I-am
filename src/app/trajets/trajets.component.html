@@ -3,26 +3,45 @@
 
     <!-- COL1 liste de mes trajets -->
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="20px">
-
         <h2 fxFlex="initial">Liste de mes trajets</h2>
-        <mat-card class="card" fxFlex *ngFor="let trajet of trajets" [class.card-selected]="trajet === selectedTrajet"
-            (click)="onSelect(trajet)" title={{displayDescriptionTrajet(trajet)}}>
+        <table fxFlex mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-            <span>
-                <app-trajet-means-icon class="trajet-icon" [trajetMean]="trajet.mean"></app-trajet-means-icon>
-                <app-trajet-state-icon class="trajet-icon" [trajetState]="trajet.etat"></app-trajet-state-icon>
-                <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
-            </span>
+            <!-- définition d'une colone-->
+            <ng-container matColumnDef="item">
+                <mat-header-cell *matHeaderCellDef>
+                    Trajets
+                </mat-header-cell>
+                <mat-cell *matCellDef="let trajet">
 
-            <span class="trajet-icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
-                (click)="confirmSupprimerTrajet(trajet)">
-                <mat-icon class="material-icons md-24" color="primary">delete_outline</mat-icon>
-            </span>
+                    <mat-card class="card" [class.card-selected]="trajet === selectedTrajet" (click)="onSelect(trajet)"
+                        title={{displayDescriptionTrajet(trajet)}}>
 
-        </mat-card>
-        <div>Aujourd'hui nous sommes le {{today}}</div>
+                        <span>
+                            <app-trajet-means-icon class="trajet-icon" [trajetMean]="trajet.mean">
+                            </app-trajet-means-icon>
+                            <app-trajet-state-icon class="trajet-icon" [trajetState]="trajet.etat">
+                            </app-trajet-state-icon>
+                            <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
+                        </span>
 
+                        <span class="trajet-icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
+                            (click)="confirmSupprimerTrajet(trajet)">
+                            <mat-icon class="material-icons md-24" color="primary">delete_outline</mat-icon>
+                        </span>
+
+                    </mat-card>
+
+                </mat-cell>
+            </ng-container>
+
+            <!--lignes de la table-->
+            <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: tableColumns"></mat-row>
+
+        </table>
+        <mat-paginator fxFlex [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons hidePageSize></mat-paginator>
     </div>
+
 
     <ng-container *ngIf="selectedTrajet">
         <!-- COL2 détail d'un trajet -->

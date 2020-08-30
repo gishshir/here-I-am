@@ -22,6 +22,23 @@ export class AmiService {
     console.log("amiService constructor");
   }
 
+  createPseudoFilter(etatRelation: RelationState) {
+
+
+    let filterFunction = function (ami: Ami, filter: string): boolean {
+
+      if (ami.etatrelation != etatRelation) {
+        return false;
+      }
+      if (!filter || filter == "*") {
+        return true;
+      }
+      return ami.pseudo.toLowerCase().search(filter) > -1
+    }
+
+    return filterFunction;
+
+  }
   createEtaRelationFilter() {
 
     let filterFunction = function (ami: Ami, filter: string): boolean {

@@ -7,6 +7,11 @@
 
         <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="20px">
 
+            <div fxLayout fxLayoutAlign="center center">
+                <mat-form-field fxFlex="40%">
+                    <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="rechercher">
+                </mat-form-field>
+            </div>
             <table fxFlex mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
                 <!-- définition d'une colonne-->

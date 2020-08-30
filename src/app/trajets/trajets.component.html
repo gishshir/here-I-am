@@ -14,21 +14,21 @@
                 <mat-cell *matCellDef="let trajet">
 
                     <mat-card class="card" [class.card-selected]="trajet === selectedTrajet" (click)="onSelect(trajet)"
-                        title={{displayDescriptionTrajet(trajet)}}>
+                        title={{displayDescriptionTrajet(trajet)}} style="width: 100%;">
 
-                        <span>
-                            <app-trajet-means-icon class="trajet-icon" [trajetMean]="trajet.mean">
+                        <div fxLayout fxLayoutGap="4px" fxLayout="start center">
+
+                            <app-trajet-means-icon fxFlex="initial" class="trajet-icon" [trajetMean]="trajet.mean">
                             </app-trajet-means-icon>
-                            <app-trajet-state-icon class="trajet-icon" [trajetState]="trajet.etat">
+                            <app-trajet-state-icon fxFlex="initial" class="trajet-icon" [trajetState]="trajet.etat">
                             </app-trajet-state-icon>
-                            <span style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
-                        </span>
+                            <span fxFlex="auto" style="padding: 10px;">{{getStartOrEndDate(trajet.id)}}</span>
 
-                        <span class="trajet-icon" title="suppression du trajet" *ngIf="trajet.etat == 'Ended'"
-                            (click)="confirmSupprimerTrajet(trajet)">
-                            <mat-icon class="material-icons md-24" color="primary">delete_outline</mat-icon>
-                        </span>
-
+                            <span fxFlex="initial" class="trajet-icon" title="suppression du trajet"
+                                *ngIf="trajet.etat == 'Ended'" (click)="confirmSupprimerTrajet(trajet)">
+                                <mat-icon class="material-icons md-24" color="primary">delete_outline</mat-icon>
+                            </span>
+                        </div>
                     </mat-card>
 
                 </mat-cell>

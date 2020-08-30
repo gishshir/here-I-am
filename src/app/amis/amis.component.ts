@@ -210,6 +210,7 @@ export class AmisComponent implements OnInit {
     dialogConfig.data = {
       id: -1
     };
+    dialogConfig.panelClass = ["dialog-inviter"];
 
     const dialogRef = this.dialog.open(DialogInvitationComponent, dialogConfig);
 

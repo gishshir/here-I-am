@@ -29,8 +29,8 @@
                     <mat-header-cell *matHeaderCellDef>Amis</mat-header-cell>
                     <mat-cell *matCellDef="let ami">
 
-                        <mat-card class="card" fxFlex [class.card-selected]="ami === selectedAmi"
-                            (click)="onSelect(ami)">
+                        <mat-card class="card" [class.card-selected]="ami === selectedAmi" (click)="onSelect(ami)"
+                            style="width: 100%;">
 
                             <mat-card-header fxLayout fxLayoutGap="10px" fxLayoutAlign="start center">
                                 <app-ami-state-icon fxFlex="initial" [amiState]="ami.etat"></app-ami-state-icon>

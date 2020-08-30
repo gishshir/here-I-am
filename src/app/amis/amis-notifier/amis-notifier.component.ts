@@ -5,6 +5,7 @@ import { Message } from 'src/app/common/message.type';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { AmisFilter } from '../amis.pipe';
+import { RelationState } from '../relation/relationinfo.type';
 
 @Component({
   selector: 'app-amis-notifier',
@@ -27,7 +28,10 @@ export class AmisNotifierComponent implements OnInit {
   ngOnInit(): void {
     this.chercherListAmis();
   }
+  doFilter(pseudoFilter: string): void {
 
+    this.dataSource.filter = pseudoFilter.trim().toLowerCase();
+  }
   chercherListAmis(): Ami[] {
 
     if (this.listAmis == null) {
@@ -39,8 +43,8 @@ export class AmisNotifierComponent implements OnInit {
           this.dataSource = new MatTableDataSource<Ami>(l);
           this.dataSource.paginator = this.paginator;
           console.log("paginator: " + this.dataSource.paginator);
-          //this.dataSource.filterPredicate = this.amiService.createEtaRelationFilter();
-          //this.dataSource.filter = AmisFilter.valide;
+          this.dataSource.filterPredicate = this.amiService.createPseudoFilter(RelationState.open);
+          this.dataSource.filter = "*";
         },
         onError: (e: Message) => console.log(e.msg)
       });

@@ -1,10 +1,13 @@
-import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { AmiPersonne } from '../amiinfo.type';
 import { AmiService } from '../ami.service';
 import { Message } from 'src/app/common/message.type';
 import { DialogConfirmInvitationComponent } from './confirm/dialog-confirm-invitation.component';
 import { RelationService } from '../relation/relation.service';
+import { MatTableDataSource } from '@angular/material/table';
+import { Ami } from '../ami.type';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-dialog-invitation',
@@ -14,9 +17,12 @@ import { RelationService } from '../relation/relation.service';
 export class DialogInvitationComponent implements OnInit {
 
   id: number;
-  listPersonnes: AmiPersonne[];
   selectedPersonne: AmiPersonne;
 
+  // material table
+  tableColumns: string[] = ['item'];
+  dataSource: MatTableDataSource<AmiPersonne> = new MatTableDataSource<AmiPersonne>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private amiService: AmiService, private relationService: RelationService, private dialog: MatDialog,
     private dialogRef: MatDialogRef<DialogInvitationComponent>,
@@ -25,11 +31,39 @@ export class DialogInvitationComponent implements OnInit {
     this.id = data.id;
   }
 
+  doFilter(pseudoFilter: string): void {
+
+    if (!pseudoFilter) {
+      pseudoFilter = "*";
+    }
+    this.dataSource.filter = pseudoFilter.trim().toLowerCase();
+  }
+  createPseudoFilter() {
+
+    let filterFunction = function (ami: AmiPersonne, filter: string): boolean {
+
+      if (!filter || filter == "*") {
+        return true;
+      }
+      let result: boolean = ami.pseudo.toLowerCase().search(filter) > -1
+      return result;
+    }
+
+    return filterFunction;
+  }
+
   ngOnInit(): void {
 
     this.amiService.getListePersonneNonAmis({
 
-      onGetList: (list: AmiPersonne[]) => this.listPersonnes = list,
+      onGetList: (list: AmiPersonne[]) => {
+
+        this.dataSource = new MatTableDataSource<AmiPersonne>(list);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.filterPredicate = this.createPseudoFilter();
+        this.dataSource.filter = "*";
+
+      },
       onError: (e: Message) => console.log(e.msg)
 
     });

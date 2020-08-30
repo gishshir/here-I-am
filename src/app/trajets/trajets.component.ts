@@ -20,7 +20,6 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class TrajetsComponent implements OnInit {
 
-  private trajets: Trajet[];
   selectedTrajet: Trajet;
   today: string;
 
@@ -64,7 +63,7 @@ export class TrajetsComponent implements OnInit {
 
     let list: Trajet[] = [];
 
-    this.trajets.forEach(t => {
+    this.dataSource.data.forEach(t => {
 
       if (t.id != trajet.id) {
         list.push(t);
@@ -74,7 +73,7 @@ export class TrajetsComponent implements OnInit {
       }
     });
 
-    this.trajets = list;
+    this.dataSource.data = list;
 
   }
 
@@ -126,7 +125,6 @@ export class TrajetsComponent implements OnInit {
     this.trajetService.getListeTrajets({
 
       onGetList: list => {
-        this.trajets = list;
         this.dataSource = new MatTableDataSource<Trajet>(list);
         this.dataSource.paginator = this.paginator;
         this.selectedTrajet = this.getTrajetById(selectedid);
@@ -176,7 +174,7 @@ export class TrajetsComponent implements OnInit {
 
   private getTrajetById(trajetid: number): Trajet {
 
-    return this.trajets.find(t => t.id == trajetid);
+    return this.dataSource.data.find(t => t.id == trajetid);
 
   }
 

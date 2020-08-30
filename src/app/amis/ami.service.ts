@@ -33,7 +33,9 @@ export class AmiService {
       if (!filter || filter == "*") {
         return true;
       }
-      return ami.pseudo.toLowerCase().search(filter) > -1
+
+      let result: boolean = ami.pseudo.toLowerCase().search(filter) > -1
+      return result;
     }
 
     return filterFunction;

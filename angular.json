@@ -15,7 +15,8 @@
           "options": {
             "allowedCommonJsDependencies": [
               "moment",
-              "file-saver"
+              "file-saver",
+              "GpSDK2D"
             ],
             "outputPath": "dist/here-I-am",
             "index": "src/index.html",
@@ -31,8 +32,7 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/moment/dist/moment.js",
-              "node_modules/file-saver/dist/FileSaver.js"
+              "node_modules/moment/dist/moment.js"
             ]
           },
           "configurations": {

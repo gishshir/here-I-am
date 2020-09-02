@@ -38,6 +38,7 @@ import { AmiGeolocationComponent } from './amis/ami-geolocation/ami-geolocation.
 import { GeolocationComponent } from './geolocation/geolocation.component';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { TrajetGeolocationComponent } from './trajets/trajet-geolocation/trajet-geolocation.component';
+import { GeoportailComponent } from './geoportail/geoportail.component';
 
 
 
@@ -71,7 +72,8 @@ import { TrajetGeolocationComponent } from './trajets/trajet-geolocation/trajet-
     AmiGeolocationComponent,
     GeolocationComponent,
     DialogGeolocationComponent,
-    TrajetGeolocationComponent
+    TrajetGeolocationComponent,
+    GeoportailComponent
   ],
   imports: [
     BrowserModule,

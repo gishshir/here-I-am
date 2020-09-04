@@ -5,6 +5,7 @@ import { AppPosition } from 'src/app/trajets/position.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
 import { ToolsService } from 'src/app/common/tools.service';
 import { PositionService } from 'src/app/geolocation/position.service';
+import { Geoportail } from 'src/app/geoportail/geoportail.type';
 
 @Component({
   selector: 'app-ami-geolocation',
@@ -67,7 +68,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
       this.positionService.createGpxfile(this._amiTrajet.id, {
 
-        onResponse: (f: string) => this.gpxfile = f,
+        onGetGeoportailInfo: (g: Geoportail) => this.gpxfile = g.gpxfile,
         onError: (e: Message) => console.log(e.msg)
       });
     }

@@ -1,6 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/Brussels');
+
 
 // cree le fichier gpx a partir d'une liste de positions d'un trajet
 // si existe et retourne le nom du fichier

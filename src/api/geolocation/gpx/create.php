@@ -3,7 +3,7 @@ require_once '../../config/config.php';
 
 
 // cree le fichier gpx 
-// et retourne le nom du fichier gpx (dans msg)
+// et retourne un objet GeoportailInfo
 if($_SERVER["REQUEST_METHOD"] == "POST")  {
 
     verifyUserAuthentifie();
@@ -18,7 +18,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST")  {
         $trajetid = $bodyobj->trajetid;
         $result = createGpxFileFromTrajetId($trajetid);
 
-        sendHttpResponseAndExit($result);
+        // creation d'une ligne dans la table geoportail 
+        // avec un token d'utilisation de 15 jours
+        if (!$result->is_error()) {
+
+            $gpxfile = $result->get_msg();
+            $resultAndEntity = createMapTokenFromTrajetId($trajetid,  $gpxfile);
+            
+        } else {
+            $resultAndEntity = buildResultAndEntityError($result->get_msg());
+        }
+
+        sendHttpEntityAndExit($resultAndEntity);
     
     } 
 }

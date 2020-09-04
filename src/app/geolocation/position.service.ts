@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../common/notification/notification.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { Geoportail } from '../geoportail/geoportail.type';
 
 
 import * as fileSaver from 'file-saver';
@@ -160,16 +161,16 @@ export class PositionService {
 
     let url = PHP_API_SERVER + "/geolocation/gpx/create.php";
 
-    return this.http.post<Message>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
+    return this.http.post<Geoportail>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 
   }
-  createGpxfile(trajetid: number, handler: StringResponseHandler): void {
+  createGpxfile(trajetid: number, handler: GeoportailHandler): void {
 
     this._callCreateGpxfile(trajetid).subscribe({
-      next: (resp: Message) => {
+      next: (geoportail: Geoportail) => {
         // le nom du fichier est dans le msg
-        handler.onResponse(resp.msg);
+        handler.onGetGeoportailInfo(geoportail);
       },
       error: (error: string) => {
         this.commonService._propageErrorToHandler(error, handler);
@@ -223,4 +224,8 @@ export class PositionService {
 export interface AppPositionHandler extends Handler {
 
   onGetPosition(position?: AppPosition): void;
+}
+
+export interface GeoportailHandler extends Handler {
+  onGetGeoportailInfo(geoportail: Geoportail): void;
 }

@@ -4,6 +4,7 @@ import { AppPosition } from '../position.type';
 import { Message } from 'src/app/common/message.type';
 import { ToolsService } from 'src/app/common/tools.service';
 import { PositionService } from 'src/app/geolocation/position.service';
+import { Geoportail } from 'src/app/geoportail/geoportail.type';
 
 @Component({
   selector: 'app-trajet-geolocation',
@@ -81,7 +82,7 @@ export class TrajetGeolocationComponent implements OnInit {
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
       this.positionService.createGpxfile(this._trajet.id, {
 
-        onResponse: (f: string) => this.gpxfile = f,
+        onGetGeoportailInfo: (g: Geoportail) => this.gpxfile = g.gpxfile,
         onError: (e: Message) => console.log(e.msg)
       });
     }

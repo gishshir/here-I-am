@@ -1,5 +1,61 @@
 <?php
 
+function findGeoportailInfo (string $token) : ResultAndEntity {
+
+    $resultAndEntity; $stmt;
+    $con = connectMaBase();
+
+    $req_getGeoportailByToken = "select id, trajetid, endtime, description, gpxfile
+    FROM geoportail WHERE token = ?";
+
+    try {
+
+        $stmt = _prepare ($con, $req_getGeoportailByToken);
+        
+        if ($stmt->bind_param("s", $token)) {
+
+            $stmt = _execute($stmt);
+
+            $trajet = null;
+            $stmt->bind_result ($resId, $resTrajetid, $resEndTime, $resDescription, $resGpxfile);
+                   
+            // fetch row ..............
+            if ($stmt->fetch()) {
+              $geoportail = _buildGeoportailInfo ($resId, $resTrajetid, $token, $resEndTime, $resDescription, $resGpxfile);
+              $resultAndEntity = buildResultAndEntity("find geoportail succès!!", $geoportail);
+
+            }  else {
+                $resultAndEntity = buildResultAndEntityError("Pas de ligne geoportail trouvée!");
+            }            
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $resultAndEntity = buildResultAndEntityError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $resultAndEntity;
+}
+
+function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endtime, string $description, string $gpxfile): GeoPortailInfo {
+
+    $geoportail = new GeoPortailInfo();
+    $geoportail->set_id($id);
+    $geoportail->set_trajetid($trajetid);
+    $geoportail->set_token($token);
+    $geoportail->set_endtime($endtime);
+    $geoportail->set_description($description);
+    $geoportail->set_gpxfile($gpxfile);
+
+    return $geoportail;
+}
+
 /**
  * Création d'un token d'une durée de 15mn 
  * dans la table geoportail 
@@ -38,14 +94,7 @@ function createMapTokenFromTrajetId(int $trajetid, string $gpxfile):ResultAndEnt
             $nbligneImpactees = $stmt->affected_rows ;
             if ($nbligneImpactees == 1) {
 
-                $geoportail = new GeoportailInfo();
-                $geoportail->set_id(-1);
-                $geoportail->set_trajetid($trajetid);
-                $geoportail->set_token($token);
-                $geoportail->set_endtime($endtime);
-                $geoportail->set_description($description);
-                $geoportail->set_gpxfile($gpxfile);
-
+                $geoportail = _buildGeoportailInfo(-1, $trajetid, $token, $endtime, $description, $gpxfile);
                 $resultAndEntity = buildResultAndEntity("Creation ligne geoportail reussie!",  $geoportail);
                 _commitTransaction($con);
             } else {

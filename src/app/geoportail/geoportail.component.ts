@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import * as Gp from '@ignf-geoportal/sdk-2d';
-
-console.log("Gp: " + Gp);
+// impossible pour l'instant d'utiliser l'API geoportail avec angular!
 
 @Component({
   selector: 'app-geoportail',

@@ -1,6 +1,10 @@
 <?php
 require_once '../../config/config.php';
 
+// appelé depuis exterieur de l'application
+// pour affichage Map geoportail
+// le token tient lieu d'identification
+
 // retourne l'info geoportail pour le token
 // verifie que le token est toujours valide
 if($_SERVER["REQUEST_METHOD"] == "GET")  {
@@ -8,20 +12,14 @@ if($_SERVER["REQUEST_METHOD"] == "GET")  {
     if (isset($_GET["token"])) {
         
         $token = xssPreventFromGet("token");
-        $resultAndEntity = findGeoportailInfo($token);
+        $result = verifyToken($token);
+        
+        if (!$result->is_error()) {
 
-        //  verifier validité du token
-        if (!$resultAndEntity->is_error()) {
+           $resultAndEntity = findGeoportailInfo($token);
+        }  else {
 
-            $endtime = $resultAndEntity->get_entity()->get_endtime();
-
-            $date = new DateTime();
-            $now = $date->getTimestamp();
-
-            if ($endtime < $now) {
-
-                $resultAndEntity = buildResultAndEntityError("le token n'est plus valide!");
-            }
+            $resultAndEntity = buildResultAndEntityError($result->get_msg());
         }
         sendHttpEntityAndExit($resultAndEntity);
     

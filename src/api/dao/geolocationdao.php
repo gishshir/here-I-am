@@ -3,36 +3,51 @@
 
 
 // cree le fichier gpx a partir d'une liste de positions d'un trajet
-// si existe et retourne le nom du fichier
+// si existe 
+// creation d'une ligne dans la table geoportail 
+// retourne un objet GeoportailInfo
 // sinon erreur
-function createGpxFileFromTrajetId(int $trajetid):Resultat{
+function createGpxFileFromTrajetId(int $trajetid):ResultAndEntity{
 
     $target_dir = DIR_GPX;
+    $resultAndEntity;
     $resultAndDatas = findListPositionForTrajet($trajetid);
 
     if (!$resultAndDatas->is_error()) {
 
-        $datas = $resultAndDatas->get_datas();
-        if (sizeof($datas) == 0) {
+        $listPositions = $resultAndDatas->get_datas();
+        if (sizeof($listPositions) == 0) {
 
             $result = buildResultatError("pas de positions pour ce trajet!");
         }
         else {
             $resultAndEntity = findTrajetById($trajetid);
+
             if (!$resultAndEntity->is_error() && $resultAndEntity->get_entity() != null) {
+
                 $trajet = $resultAndEntity->get_entity();
-                $path = createGpxFile ($trajet, $datas, $target_dir);  
-                $result = buildResultat($path); 
-            } else {
-                $result = buildResultatError($resultAndEntity->get_msg());
-            }
+                $path = createGpxFile ($trajet, $listPositions, $target_dir);  
+                $result = buildResultat($path);
+                
+                // creation d'une ligne dans la table geoportail 
+                // avec un token d'utilisation de 15 jours
+                if (!$result->is_error()) {
+
+                    $gpxfile = $result->get_msg();
+                    $resultAndEntity = createMapTokenFromTrajetId($trajetid,  $gpxfile, $listPositions);
+            
+                } else {
+                    $resultAndEntity = buildResultAndEntityError($result->get_msg());
+                }
+
+            } 
         }
         
     } else {
-        $result = buildResultatError($resultAndDatas->get_msg());
+        $resultAndEntity = buildResultAndEntityError($resultAndDatas->get_msg());
     }
 
-    return $result;
+    return $resultAndEntity;
 }
 
 function buildGpxfileName (int $trajetid): string {
@@ -137,6 +152,7 @@ function getXmlDateNow(): string {
  
  }
 
+// construction d'un tableau de Position pour un trajet
 function findListPositionForTrajet (int $trajetid): ResultAndDatas {
 
     $resultAndDatas; $stmt;

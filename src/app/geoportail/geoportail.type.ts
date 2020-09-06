@@ -8,5 +8,13 @@ export interface Geoportail {
     endtime: number;
     description: string;
     gpxfile: string;
+    // coordonnées du centre de la carte
+    center: Coord;
 
+}
+
+export interface Coord {
+
+    lat: number,
+    long: number
 }

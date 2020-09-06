@@ -2,25 +2,64 @@
 require_once '../../config/config.php';
 
 // download le fichier gpx
+// acces par token (de l'exterieur)
+// ou bien par authentification
 if($_SERVER["REQUEST_METHOD"] == "GET" )
  { 
+
+   $result; $gpxfile;
+
+   //-------------------------------------------------
+   // authentification par token limitée dans le temps
+   //-------------------------------------------------
+   if (isset($_GET["token"])) {
    
-    verifyUserAuthentifie();
+      $token = xssPreventFromGet("token");
+      $result = verifyToken($token);
+        
+      if ($result->is_error()) {
+         sendHttpResponseAndExit($result);
+      }
 
-    $result;
-    if (isset($_GET["gpx"])) {
+      // on recupere le nom du fichier
+      $resultAndEntity = findGeoportailInfo($token);
+      if (!$resultAndEntity->is_error()) {
 
-        $gpxfile = xssPreventFromGet("gpx");
-        if (empty($gpxfile)) {
-	
-            $result = buildResultatError("Le parametre gpx est absent de la requete!");
-        } 
-        //on fait appel à basename afin d’être sur que ce ne soit qu’un nom de fichier 
-        else if(basename($gpxfile) != $gpxfile) {
-            $result = buildResultatError("Le parametre file a un mauvais format!");
-        } 
-              
-         else {
+         $gpxfile = $resultAndEntity->get_entity()->get_gpxfile();
+      }
+      else {
+         sendHttpEntityAndExit($resultAndEntity);
+      }
+
+   } else {
+
+      //-------------------------------------------------
+      // authentification par session
+      //-------------------------------------------------
+      verifyUserAuthentifie();
+
+      // on recupère le nom du fichier dans la requete
+      if (isset($_GET["gpx"])) {
+
+         $gpxfile = xssPreventFromGet("gpx");
+         if (empty($gpxfile)) {
+    
+             $result = buildResultatError("Le parametre gpx est absent de la requete!");
+         } 
+         //on fait appel à basename afin d’être sur que ce ne soit qu’un nom de fichier 
+         else if(basename($gpxfile) != $gpxfile) {
+             $result = buildResultatError("Le parametre file a un mauvais format!");
+         } 
+      } else {
+         $result = buildResultatError("Le parametre gpx est absent de la requete!");
+      }
+      if (isset($result) && $result->is_error()) {
+         sendHttpResponseAndExit($result);
+      }
+   }
+
+    // le nom du fichier est connu
+    if ($gpxfile) {
 
       // Récupération du fichier passé en paramètre   
       $filename = DIR_GPX.$gpxfile;     
@@ -61,11 +100,11 @@ if($_SERVER["REQUEST_METHOD"] == "GET" )
           
           
       }
-         }
+         
 
-         if ($result->is_error()) {
-            sendHttpResponseAndExit($result);
-         }
+      if ($result->is_error()) {
+         sendHttpResponseAndExit($result);
+      }
 
     }
 

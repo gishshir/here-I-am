@@ -13,6 +13,7 @@ class GeoPortailInfo implements IEntity {
     private int $endtime;
     private string $description;
     private string $gpxfile;
+    private Position $center;
 
     function get_id (): int {
         return $this->id;
@@ -51,6 +52,12 @@ class GeoPortailInfo implements IEntity {
         return $this->gpxfile;
     }
 
+    function set_center (Position $center) {
+        $this->center = $center;
+    }
+    function get_center () : Position {
+        return $this->center;
+    }
     function toArray() : array {
         $info = array(
             "id"=>$this->id,
@@ -58,7 +65,8 @@ class GeoPortailInfo implements IEntity {
             "token"=>$this->token,
             "endtime"=>$this->endtime,
             "description"=>$this->description,
-            "gpxfile"=>$this->gpxfile
+            "gpxfile"=>$this->gpxfile,
+            "center"=> $this->center->toArray()
         );
         return $info;
     }

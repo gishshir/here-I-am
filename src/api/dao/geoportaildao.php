@@ -1,11 +1,55 @@
 <?php
 
+// on s'assure que le token existe dans la table geoportail et
+// qu'il est toujours valide
+function verifyToken (string $token) : Resultat {
+
+
+    $sql_countToken = "select count(*) as total FROM geoportail where token = ? and endtime > UNIX_TIMESTAMP()";
+
+    $con = connectMaBase();
+    $result; $stmt;
+
+    try {
+
+        $stmt = _prepare ($con, $sql_countToken);
+        
+        if ($stmt->bind_param("s", $token)) {
+
+            $stmt = _execute($stmt);
+
+            $success = false;
+            $stmt->bind_result ($resCount);
+                   
+            // fetch row .............
+            $stmt->fetch();
+
+            $success =  ((int)$resCount) > 0;
+            $result = $success?buildResultat("token valide!")
+            :buildResultatError("token inexistant ou invalide!");
+                        
+
+        } else {
+            throw new Exception( _sqlErrorMessageBind($stmt));
+        }
+
+    }
+    catch (Exception $e) {
+        $result = buildResultatError($e->getMessage());
+    }
+    finally {
+        _closeAll($stmt, $con);
+    }
+
+    return $result;
+}
+
 function findGeoportailInfo (string $token) : ResultAndEntity {
 
     $resultAndEntity; $stmt;
     $con = connectMaBase();
 
-    $req_getGeoportailByToken = "select id, trajetid, endtime, description, gpxfile
+    $req_getGeoportailByToken = "select id, trajetid, endtime, description, gpxfile, center_lat, center_long
     FROM geoportail WHERE token = ?";
 
     try {
@@ -17,11 +61,12 @@ function findGeoportailInfo (string $token) : ResultAndEntity {
             $stmt = _execute($stmt);
 
             $trajet = null;
-            $stmt->bind_result ($resId, $resTrajetid, $resEndTime, $resDescription, $resGpxfile);
+            $stmt->bind_result ($resId, $resTrajetid, $resEndTime, $resDescription, $resGpxfile, $resCenterLat, $resCenterLong);
                    
             // fetch row ..............
             if ($stmt->fetch()) {
-              $geoportail = _buildGeoportailInfo ($resId, $resTrajetid, $token, $resEndTime, $resDescription, $resGpxfile);
+              $centerPosition = _buildPosition(-1, $resTrajetid, $resCenterLong, $resCenterLat, -1);
+              $geoportail = _buildGeoportailInfo ($resId, $resTrajetid, $token, $resEndTime, $resDescription, $resGpxfile, $centerPosition);
               $resultAndEntity = buildResultAndEntity("find geoportail succès!!", $geoportail);
 
             }  else {
@@ -43,7 +88,8 @@ function findGeoportailInfo (string $token) : ResultAndEntity {
     return $resultAndEntity;
 }
 
-function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endtime, string $description, string $gpxfile): GeoPortailInfo {
+function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endtime, string $description, string $gpxfile,
+                         Position $center): GeoPortailInfo {
 
     $geoportail = new GeoPortailInfo();
     $geoportail->set_id($id);
@@ -52,6 +98,7 @@ function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endti
     $geoportail->set_endtime($endtime);
     $geoportail->set_description($description);
     $geoportail->set_gpxfile($gpxfile);
+    $geoportail->set_center($center);
 
     return $geoportail;
 }
@@ -62,15 +109,15 @@ function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endti
  * avec infos necessaires à l'affichage de la map geoportail
  * retour du token
  */
-function createMapTokenFromTrajetId(int $trajetid, string $gpxfile):ResultAndEntity{
+function createMapTokenFromTrajetId(int $trajetid, string $gpxfile, array $listPositions):ResultAndEntity{
 
     $resultAndEntity; $stmt;
    
     $con = connectMaBase();
     _beginTransaction($con);
 
-    $req_insertgeoportail = "insert INTO geoportail( token, trajetid, endtime, description, gpxfile)
-     VALUES (?, ?, ?, ?, ?)";
+    $req_insertgeoportail = "insert INTO geoportail( token, trajetid, endtime, description, gpxfile, center_lat, center_long)
+     VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     try {
 
@@ -83,8 +130,13 @@ function createMapTokenFromTrajetId(int $trajetid, string $gpxfile):ResultAndEnt
         $dateformat = formatDate($trajet->get_starttime());
         $description = "Trajet ".$trajetid." du ".$dateformat." [".$trajet->get_mean()."]";
 
+        $centerPosition = calculCoordPointCentral($listPositions);
+        $latitude = $centerPosition->get_latitude();
+        $longitude = $centerPosition->get_longitude();
+
         $stmt = _prepare ($con, $req_insertgeoportail);
-        if ($stmt->bind_param("siiss", $token, $trajetid, $endtime, $description, $gpxfile) ) {
+        if ($stmt->bind_param("siissss", $token, $trajetid, $endtime, $description, $gpxfile, 
+                            $latitude, $longitude) ) {
     
             $token = buildToken ($trajetid);
             $endtime = buildEndtime(15);
@@ -94,7 +146,7 @@ function createMapTokenFromTrajetId(int $trajetid, string $gpxfile):ResultAndEnt
             $nbligneImpactees = $stmt->affected_rows ;
             if ($nbligneImpactees == 1) {
 
-                $geoportail = _buildGeoportailInfo(-1, $trajetid, $token, $endtime, $description, $gpxfile);
+                $geoportail = _buildGeoportailInfo(-1, $trajetid, $token, $endtime, $description, $gpxfile, $centerPosition);
                 $resultAndEntity = buildResultAndEntity("Creation ligne geoportail reussie!",  $geoportail);
                 _commitTransaction($con);
             } else {
@@ -115,6 +167,33 @@ function createMapTokenFromTrajetId(int $trajetid, string $gpxfile):ResultAndEnt
 
     return $resultAndEntity;
 
+}
+
+function calculCoordPointCentral (array $listPositions) : Position {
+
+    $size = sizeof ($listPositions);
+    // premiere et dernier position
+    $firstPosition = $listPositions[0];
+    $lastPosition = $listPositions[$size - 1];
+
+    $firstLong = (float) $firstPosition->get_longitude();
+    $lastLong =  (float) $lastPosition->get_longitude();
+    $centerLong = strval(moyenne($firstLong, $lastLong));
+
+    $firstLat = (float) $firstPosition->get_latitude();
+    $lastLat = (float) $lastPosition->get_latitude();
+    $centerLat = strval(moyenne($firstLat, $lastLat));
+
+    $center = new Position();
+    $center->set_id(-1);
+    $center->set_longitude($centerLong);
+    $center->set_latitude ($centerLat);
+    $center->set_trajetid($firstPosition->get_trajetid());
+    $center->set_timestamp(-1);
+    return $center;
+}
+function moyenne (float $first, float $last): float {
+    return (float) (($first + $last)/2);
 }
 
 function formatDate (int $timestamp) : string {

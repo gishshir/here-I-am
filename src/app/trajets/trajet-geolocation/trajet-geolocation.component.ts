@@ -27,8 +27,11 @@ export class TrajetGeolocationComponent implements OnInit {
   @Output() eventMessage = new EventEmitter<Message>();
 
   appPosition: AppPosition;
-  urlToMaps: string;
-  gpxfile: string;
+  private urlToMaps: string;
+  private urlToGeoportail: string;
+  private gpxfile: string;
+
+  private token: string;
 
 
   constructor(private positionService: PositionService,
@@ -57,8 +60,13 @@ export class TrajetGeolocationComponent implements OnInit {
   }
 
   openMaps() {
-    this.tools.openNewWindow(this.urlToMaps);
+    if (this.urlToGeoportail) {
+      this.tools.openNewWindow(this.urlToGeoportail);
+    } else if (this.urlToMaps) {
+      this.tools.openNewWindow(this.urlToMaps);
+    }
   }
+
 
   /*
   * aucune position n'est enregistrée.
@@ -82,7 +90,11 @@ export class TrajetGeolocationComponent implements OnInit {
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
       this.positionService.createGpxfile(this._trajet.id, {
 
-        onGetGeoportailInfo: (g: Geoportail) => this.gpxfile = g.gpxfile,
+        onGetGeoportailInfo: (g: Geoportail) => {
+          this.gpxfile = g.gpxfile;
+          this.token = g.token;
+          this.urlToGeoportail = g.url;
+        },
         onError: (e: Message) => console.log(e.msg)
       });
     }

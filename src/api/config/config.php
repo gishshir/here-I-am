@@ -1,7 +1,5 @@
 <?php
 
-header("Access-Control-Allow-Origin: http://localhost:4200");
-
 date_default_timezone_set('Europe/Brussels');
 
 require 'header.php';
@@ -33,5 +31,6 @@ require DIR_DAO.'relationdao.php';
 require DIR_DAO.'trajetdao.php';
 require DIR_DAO.'geolocationdao.php';
 require DIR_DAO.'geoportaildao.php';
+
 
 ?>

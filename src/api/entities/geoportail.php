@@ -14,6 +14,8 @@ class GeoPortailInfo implements IEntity {
     private string $description;
     private string $gpxfile;
     private Position $center;
+    // url to geoportail
+    private string $url;
 
     function get_id (): int {
         return $this->id;
@@ -58,6 +60,13 @@ class GeoPortailInfo implements IEntity {
     function get_center () : Position {
         return $this->center;
     }
+
+    function set_url (string $url) {
+        $this->url = $url;
+    }
+    function get_url () : string {
+        return $this->url;
+    }
     function toArray() : array {
         $info = array(
             "id"=>$this->id,
@@ -66,7 +75,8 @@ class GeoPortailInfo implements IEntity {
             "endtime"=>$this->endtime,
             "description"=>$this->description,
             "gpxfile"=>$this->gpxfile,
-            "center"=> $this->center->toArray()
+            "center"=> $this->center->toArray(),
+            "url"=>$this->url
         );
         return $info;
     }

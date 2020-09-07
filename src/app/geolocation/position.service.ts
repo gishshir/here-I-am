@@ -8,6 +8,7 @@ import { NotificationService } from '../common/notification/notification.service
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { Geoportail } from '../geoportail/geoportail.type';
+import { Location } from '@angular/common';
 
 
 import * as fileSaver from 'file-saver';
@@ -20,8 +21,15 @@ import * as fileSaver from 'file-saver';
 })
 export class PositionService {
 
+  private remote: boolean = false;
+
   constructor(private notificationService: NotificationService, private http: HttpClient,
-    private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService) { }
+    private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService,
+    private location: Location) {
+
+    let hostname = location.path;
+    console.log("path: " + hostname);
+  }
 
 
   restoreListePositionsFromLocalStorage(trajetid: number): Array<AppPosition> {
@@ -180,6 +188,8 @@ export class PositionService {
   }
 
   //=============================================
+
+
   buildUrlToMaps(position: AppPosition): string {
 
     if (position) {

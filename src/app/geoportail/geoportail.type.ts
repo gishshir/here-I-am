@@ -10,6 +10,8 @@ export interface Geoportail {
     gpxfile: string;
     // coordonnées du centre de la carte
     center: Coord;
+    // geoportail url
+    url: string;
 
 }
 

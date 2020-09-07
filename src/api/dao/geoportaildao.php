@@ -44,6 +44,22 @@ function verifyToken (string $token) : Resultat {
     return $result;
 }
 
+function _buildGeoportailUrl(string $token) : string {
+
+    $url_base;
+    if (islocaldev()) {
+        $url_base = "geoportail-dev.localhost";
+    } 
+    else if (islocaldist()) {
+        $url_base = "geoportail-dev.localhost";
+    } 
+    else if (isremote()){
+        $url_base = "geoportail.tsadeoapp.info";
+    }
+
+    return $url_base."/index.php?token=".$token;
+}
+
 function findGeoportailInfo (string $token) : ResultAndEntity {
 
     $resultAndEntity; $stmt;
@@ -66,7 +82,8 @@ function findGeoportailInfo (string $token) : ResultAndEntity {
             // fetch row ..............
             if ($stmt->fetch()) {
               $centerPosition = _buildPosition(-1, $resTrajetid, $resCenterLong, $resCenterLat, -1);
-              $geoportail = _buildGeoportailInfo ($resId, $resTrajetid, $token, $resEndTime, $resDescription, $resGpxfile, $centerPosition);
+              $geoportail = _buildGeoportailInfo ($resId, $resTrajetid, $token, $resEndTime, $resDescription, 
+              $resGpxfile, $centerPosition);
               $resultAndEntity = buildResultAndEntity("find geoportail succès!!", $geoportail);
 
             }  else {
@@ -99,6 +116,7 @@ function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endti
     $geoportail->set_description($description);
     $geoportail->set_gpxfile($gpxfile);
     $geoportail->set_center($center);
+    $geoportail->set_url(_buildGeoportailUrl($token));
 
     return $geoportail;
 }

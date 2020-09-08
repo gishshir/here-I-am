@@ -2,7 +2,7 @@
 require 'constantes.php';
 
 // CROS autorises
-$array_origins = array ('http://geoportail-dev.localhost', 'http://geoportail-hereiam.localhost');
+$array_origins = array ('https://geoportail-dev.secure', 'https://geoportail.tsadeoapp.info');
 
 $header = apache_request_headers(); 
 if (isset($header['Origin'])){
@@ -24,18 +24,21 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 function isremote() : bool {
 
      $servername =  $_SERVER['SERVER_NAME'];
-     return strpos($servername, 'tsadeoapp') >= 0;
+     $pos =  strpos($servername, 'tsadeoapp');
+	 return $pos && $pos >= 0;
 }
 
 function islocaldist() : bool {
 
      $servername =  $_SERVER['SERVER_NAME'];
-     return strpos($servername, 'hereiam-dist.secure') >= 0;
+     $pos = strpos($servername, 'hereiam-dist.secure');
+	 return $pos && $pos >= 0;
 }
 function islocaldev() : bool {
 
      $servername =  $_SERVER['SERVER_NAME'];
      //echo "server name: ".$servername;
-     return strpos($servername, 'hereiam-api.secure') >= 0;
+	 $pos = strpos($servername, 'hereiam-api.secure'); 
+     return $pos && $pos >= 0;
 }
 ?>

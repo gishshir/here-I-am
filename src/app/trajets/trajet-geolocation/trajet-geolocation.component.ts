@@ -31,8 +31,6 @@ export class TrajetGeolocationComponent implements OnInit {
   private urlToGeoportail: string;
   private gpxfile: string;
 
-  private token: string;
-
 
   constructor(private positionService: PositionService,
     private tools: ToolsService) { }
@@ -92,7 +90,6 @@ export class TrajetGeolocationComponent implements OnInit {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.gpxfile = g.gpxfile;
-          this.token = g.token;
           this.urlToGeoportail = g.url;
         },
         onError: (e: Message) => console.log(e.msg)

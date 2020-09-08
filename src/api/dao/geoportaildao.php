@@ -48,16 +48,16 @@ function _buildGeoportailUrl(string $token) : string {
 
     $url_base;
     if (islocaldev()) {
-        $url_base = "geoportail-dev.localhost";
+        $url_base = "geoportail-dev.secure";
     } 
     else if (islocaldist()) {
-        $url_base = "geoportail-dev.localhost";
+        $url_base = "geoportail-dev.secure";
     } 
     else if (isremote()){
         $url_base = "geoportail.tsadeoapp.info";
     }
 
-    return $url_base."/index.php?token=".$token;
+    return "https://".$url_base."/index.php?token=".$token;
 }
 
 function findGeoportailInfo (string $token) : ResultAndEntity {

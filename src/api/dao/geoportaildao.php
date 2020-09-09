@@ -54,6 +54,8 @@ function _buildGeoportailUrl(string $token) : string {
     return "https://".$url_base."/index.php?token=".$token;
 }
 
+// recupère les infos stokées dans la table geoportail a partir du token
+// et retourne un objet GeoportailInfo avec les geoMarkers.
 function findGeoportailInfo (string $token) : ResultAndEntity {
 
     $resultAndEntity; $stmt;
@@ -78,6 +80,9 @@ function findGeoportailInfo (string $token) : ResultAndEntity {
               $centerPosition = _buildPosition(-1, $resTrajetid, $resCenterLong, $resCenterLat, -1);
               $geoportail = _buildGeoportailInfo ($resId, $resTrajetid, $token, $resEndTime, $resDescription, 
               $resGpxfile, $centerPosition);
+
+              // liste of GeoMarker
+              $geoportail->set_tabGeoMarkers(_buildGeoportailMarkers($resTrajetid));
               $resultAndEntity = buildResultAndEntity("find geoportail succès!!", $geoportail);
 
             }  else {
@@ -99,6 +104,44 @@ function findGeoportailInfo (string $token) : ResultAndEntity {
     return $resultAndEntity;
 }
 
+// construction d'une liste de GeoMarker à partir des positions d'un trajet
+function _buildGeoportailMarkers (int $trajetid) : array {
+    $geoportailMarkers = array();
+
+    $resultAndDatas = findListPositionForTrajet($trajetid);
+    if ($resultAndDatas->is_error()) {
+        return $geoportailMarkers;
+    }
+    $listPositions = $resultAndDatas->get_datas();
+    if (sizeof($listPositions) == 0) {
+        return $geoportailMarkers;
+    }
+
+    $i = 0;
+    $nb = sizeof($listPositions);
+    // pour chaque position --> GeoMarker
+    foreach ($listPositions as $position) {
+
+        $geoMarker = new GeoMarker();
+        $time = getTime($position->get_timestamp());
+
+        $prefix = "Position";
+        if($i == 0) {
+          $prefix = "Depart";
+        } else if ($i == $nb - 1) {
+          $prefix = "Arrivée";
+        }
+        $i++;
+
+        $geoMarker->set_content($prefix.": ".$position->get_id()." - ".$time);
+        $geoMarker->set_y($position->get_latitude());
+        $geoMarker->set_x($position->get_longitude());
+  
+        array_push($geoportailMarkers, $geoMarker);
+    }
+    return $geoportailMarkers;
+}
+
 function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endtime, string $description, string $gpxfile,
                          Position $center): GeoPortailInfo {
 
@@ -116,10 +159,10 @@ function _buildGeoportailInfo (int $id, int $trajetid, string $token, int $endti
 }
 
 /**
- * Création d'un token d'une durée de 15mn 
- * dans la table geoportail 
- * avec infos necessaires à l'affichage de la map geoportail
- * retour du token
+ * Création 'une ligne dans la table geoportail 
+ * avec un token d'une durée de 15mn 
+ * et infos necessaires à l'affichage de la map geoportail
+ * retour d'un objet GeoportailInfo SANS les geomarkers
  */
 function createMapTokenFromTrajetId(int $trajetid, string $gpxfile, array $listPositions):ResultAndEntity{
 

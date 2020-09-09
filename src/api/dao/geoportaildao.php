@@ -133,9 +133,12 @@ function _buildGeoportailMarkers (int $trajetid) : array {
         }
         $i++;
 
-        $geoMarker->set_content($prefix.": ".$position->get_id()." - ".$time);
-        $geoMarker->set_y($position->get_latitude());
-        $geoMarker->set_x($position->get_longitude());
+        $lat = $position->get_latitude();
+        $long = $position->get_longitude();
+
+        $geoMarker->set_content($prefix.": ".$time." (#".$position->get_id().")<br>[".$lat." - ".$long."]");
+        $geoMarker->set_y($lat);
+        $geoMarker->set_x($long);
   
         array_push($geoportailMarkers, $geoMarker);
     }
@@ -182,8 +185,9 @@ function createMapTokenFromTrajetId(int $trajetid, string $gpxfile, array $listP
             throw new Exception($resultAndEntity->get_msg());
         }
         $trajet = $resultAndEntity->get_entity();
-        $dateformat = formatDate($trajet->get_starttime());
-        $description = "Trajet ".$trajetid." du ".$dateformat." [".$trajet->get_mean()."]";
+        $dfStartDate = formatDate($trajet->get_starttime());
+        $dfEndTime = getTime($trajet->get_endtime());
+        $description = "[".$trajet->get_mean()."] Trajet du ".$dfStartDate." à ".$dfEndTime." (#".$trajetid.")";
 
         $centerPosition = calculCoordPointCentral($listPositions);
         $latitude = $centerPosition->get_latitude();

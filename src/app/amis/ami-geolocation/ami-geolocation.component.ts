@@ -23,8 +23,10 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   @Output() eventMessage = new EventEmitter<Message>();
 
   appPosition: AppPosition;
-  urlToMaps: string;
+  private urlToMaps: string;
+  private urlToGeoportail: string;
   gpxfile: string;
+
   titre: string = "Position de mon ami(e)";
 
   private _amiTrajet: Trajet;
@@ -42,7 +44,11 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
   openMaps() {
-    this.tools.openNewWindow(this.urlToMaps);
+    if (this.urlToGeoportail) {
+      this.tools.openNewWindow(this.urlToGeoportail);
+    } else if (this.urlToMaps) {
+      this.tools.openNewWindow(this.urlToMaps);
+    }
   }
 
   displayDate(): string {
@@ -68,7 +74,10 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
       this.positionService.createGpxfile(this._amiTrajet.id, {
 
-        onGetGeoportailInfo: (g: Geoportail) => this.gpxfile = g.gpxfile,
+        onGetGeoportailInfo: (g: Geoportail) => {
+          this.gpxfile = g.gpxfile;
+          this.urlToGeoportail = g.url;
+        },
         onError: (e: Message) => console.log(e.msg)
       });
     }

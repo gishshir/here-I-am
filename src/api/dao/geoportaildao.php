@@ -46,14 +46,8 @@ function verifyToken (string $token) : Resultat {
 
 function _buildGeoportailUrl(string $token) : string {
 
-    $url_base;
-    if (islocaldev()) {
-        $url_base = "geoportail-dev.secure";
-    } 
-    else if (islocaldist()) {
-        $url_base = "geoportail-dev.secure";
-    } 
-    else if (isremote()){
+    $url_base = "geoportail-dev.secure";
+    if (isremote()){
         $url_base = "geoportail.tsadeoapp.info";
     }
 

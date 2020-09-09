@@ -26,9 +26,6 @@ export class PositionService {
   constructor(private notificationService: NotificationService, private http: HttpClient,
     private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService,
     private location: Location) {
-
-    let hostname = location.path;
-    console.log("path: " + hostname);
   }
 
 

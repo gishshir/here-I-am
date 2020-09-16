@@ -40,7 +40,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-/gpx_files
+gpx_files/
 
 # System Files
 .DS_Store

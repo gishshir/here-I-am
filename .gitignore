@@ -41,6 +41,7 @@ yarn-error.log
 testem.log
 /typings
 gpx_files/
+analyse/
 
 # System Files
 .DS_Store

@@ -16,11 +16,8 @@ export const HTTP_HEADER_URL = new HttpHeaders({
 
 export const PHP_API_SERVER = environment.apiUrl;
 
-// sur dist ou bien en remote
-//export const PHP_API_SERVER = "./api";
-
-// en DEV depuis localhost:4200
-//export const PHP_API_SERVER = "https://hereiam-api.secure";
+// pour test
+export const TOMCAT_API_SERVER = "https://localhost:444/";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppPosition } from '../trajets/position.type';
 import { Observable } from 'rxjs';
-import { PHP_API_SERVER, MessageHandler, CommonService, Handler, HTTP_HEADER_URL, StringResponseHandler } from '../common/common.service';
+import { PHP_API_SERVER, MessageHandler, CommonService, Handler, HTTP_HEADER_URL, StringResponseHandler, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../common/notification/notification.service';
@@ -164,10 +164,13 @@ export class PositionService {
   // ===========================================================
   private _callCreateGpxfile(trajetid: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/gpx/create.php";
+    let url = TOMCAT_API_SERVER + "gpx/" + trajetid;
+    //PHP_API_SERVER + "/geolocation/gpx/create.php";
 
-    return this.http.post<Geoportail>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
+    return this.http.post<Geoportail>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
+    /*this.http.post<Geoportail>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));*/
 
   }
   createGpxfile(trajetid: number, handler: GeoportailHandler): void {

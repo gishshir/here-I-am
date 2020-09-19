@@ -78,11 +78,11 @@ export class PositionService {
   // ===========================================================
   private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/create.php";
+    let url = TOMCAT_API_SERVER + "/geolocation"
+    //PHP_API_SERVER + "/geolocation/create.php";
 
     return this.http.post<Message>(url, newPosition, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
-
   }
   insererNouvellePosition(currentPosition: AppPosition, handler: MessageHandler): void {
 
@@ -94,7 +94,8 @@ export class PositionService {
   // ===========================================================
   private _callInsertTrajetListePositions(listPositions: Array<AppPosition>): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/create.php";
+    let url = TOMCAT_API_SERVER + "/geolocations";
+    //PHP_API_SERVER + "/geolocation/create.php";
 
     return this.http.post<Message>(url, listPositions, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -110,15 +111,16 @@ export class PositionService {
   // ===========================================================
   private _callFindTrajetLastPosition(trajetid: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/read_one.php";
+    let url = TOMCAT_API_SERVER + "/geolocation/" + trajetid;
+    //PHP_API_SERVER + "/geolocation/read_one.php";
 
-    let options = {
+    /*let options = {
       headers: HTTP_HEADER_URL,
       params: new HttpParams().set("trajetid", trajetid + "")
 
-    };
+    };*/
     // attention si pas de Position alors {"retour": false}
-    return this.http.get<AppPosition>(url, options)
+    return this.http.get<AppPosition>(url)
       .pipe(catchError(this.commonService.handleError));
 
   }
@@ -136,11 +138,12 @@ export class PositionService {
   // ===========================================================
   private _callDownloadGpxfile(gpxfile: string): Observable<string> {
 
-    let url = PHP_API_SERVER + "/geolocation/gpx/read.php";
+    let url = TOMCAT_API_SERVER + "/gpx/" + gpxfile;
+    //PHP_API_SERVER + "/geolocation/gpx/read.php";
     let options = {
       headers: HTTP_HEADER_URL,
       reportProgress: true,
-      params: new HttpParams().set("gpx", gpxfile),
+      /*params: new HttpParams().set("gpx", gpxfile),*/
       responseType: 'text' as const
     };
     return this.http.get(url, options)

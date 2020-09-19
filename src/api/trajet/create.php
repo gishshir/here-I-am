@@ -1,7 +1,7 @@
 <?php
 require_once '../config/config.php';
 
-// liste des trajets de l'utilisateur couran
+// creation d'un trajet pour l'utilisateur courant
 if($_SERVER["REQUEST_METHOD"] == "POST")  {
 
     verifyUserAuthentifie();

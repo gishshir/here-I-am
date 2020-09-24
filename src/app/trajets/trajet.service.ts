@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
-import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
+import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { NotificationService } from '../common/notification/notification.service';
 
@@ -95,7 +95,8 @@ export class TrajetService {
   // ============================================
   private _callDernierTrajet(): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/read_one.php";
+    let url = TOMCAT_API_SERVER + "/trajet";
+    //PHP_API_SERVER + "/trajet/read_one.php";
 
     // attention si pas de trajet alors {"retour": false}
     return this.http.get<Trajet>(url)
@@ -103,15 +104,15 @@ export class TrajetService {
   }
   chercherDernierTrajet(handler: TrajetHandler): void {
 
-    /* this._callDernierTrajet().subscribe(
-       // next (boolean ou trajet)
-       (data: Trajet) => {
-         handler.onGetTrajet(data);
-       },
-       // error
-       (error: string) => this.commonService._propageErrorToHandler(error, handler)
- 
-     );*/
+    this._callDernierTrajet().subscribe(
+      // next (boolean ou trajet)
+      (data: Trajet) => {
+        handler.onGetTrajet(data);
+      },
+      // error
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+
+    );
   }
   // determine si le dernier trajet est dans un etat particulier
   compareEtatDernierTrajet(etat: TrajetState): Observable<boolean> {

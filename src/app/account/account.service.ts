@@ -152,7 +152,8 @@ export class AccountService {
 
   private _callUserLogged(): Observable<any> {
 
-    let url = PHP_API_SERVER + "/login/read.php";
+    let url = TOMCAT_API_SERVER + "/user";
+    //PHP_API_SERVER + "/login/read.php";
 
     return this.http.get<User>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -163,9 +164,8 @@ export class AccountService {
   // ou bien retour de la variable isLoggedIn si définie
   isUserLoggedIn(forceControl: boolean): Observable<boolean> {
 
-    return of(true);
     // soit on connait la reponse
-    /*if (!forceControl && this.userLoggedIn) {
+    if (!forceControl && this.userLoggedIn) {
       console.log("isLoggedIn: " + this.userLoggedIn.login);
       this.notificationService.changeUser(this.userLoggedIn.pseudo);
       return of(true);
@@ -187,7 +187,7 @@ export class AccountService {
         this.userLoggedIn = null;
         return of(false);
       })
-    );*/
+    );
 
   }
 
@@ -211,7 +211,6 @@ export class AccountService {
     this._callLogin(user).subscribe(
       // next
       (auth: AuthenticationDto) => {
-        console.log("authenticationDto: " + auth.jwtoken);
         this.userLoggedIn = auth.utilisateurDto;
         this.jwtoken = auth.jwtoken;
         // lance un message pour l'ensemble de l'application

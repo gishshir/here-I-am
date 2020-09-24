@@ -34,11 +34,11 @@ export class TrajetService {
   }
   findTrajetById(trajetid: number, handler: TrajetHandler): void {
 
-    this._callFindTrajetById(trajetid).subscribe(
+    /*this._callFindTrajetById(trajetid).subscribe(
 
       (t: Trajet) => handler.onGetTrajet(t),
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
-    );
+    );*/
   }
 
   // ============================================
@@ -82,7 +82,7 @@ export class TrajetService {
   }
   chercherAmiDernierTrajet(idrelation: number, handler: TrajetHandler): void {
 
-    this._callAmiDernierTrajet(idrelation).subscribe(
+    /*this._callAmiDernierTrajet(idrelation).subscribe(
       // next (boolean ou trajet)
       (data: Trajet) => {
         handler.onGetTrajet(data);
@@ -90,7 +90,7 @@ export class TrajetService {
       // error
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
-    );
+    );*/
   }
   // ============================================
   private _callDernierTrajet(): Observable<any> {
@@ -103,15 +103,15 @@ export class TrajetService {
   }
   chercherDernierTrajet(handler: TrajetHandler): void {
 
-    this._callDernierTrajet().subscribe(
-      // next (boolean ou trajet)
-      (data: Trajet) => {
-        handler.onGetTrajet(data);
-      },
-      // error
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
-
-    );
+    /* this._callDernierTrajet().subscribe(
+       // next (boolean ou trajet)
+       (data: Trajet) => {
+         handler.onGetTrajet(data);
+       },
+       // error
+       (error: string) => this.commonService._propageErrorToHandler(error, handler)
+ 
+     );*/
   }
   // determine si le dernier trajet est dans un etat particulier
   compareEtatDernierTrajet(etat: TrajetState): Observable<boolean> {

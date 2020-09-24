@@ -27,21 +27,24 @@ const SESSION_CLOSED: string = "SESSION_CLOSED";
 })
 export class CommonService {
 
+
+
   httpOptionsHeaderJson = {
     headers: HTTP_HEADER_JSON
   };
+
 
   constructor(private notificationService: NotificationService) { }
 
 
   /*
- * HttpErrorResponse
- * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
- * .headers: [header...]
- * .message: "Http failure.... 400"
- * .status: 400
- * .url: "http://..../update.php" par ex
- */
+  * HttpErrorResponse
+  * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
+  * .headers: [header...]
+  * .message: "Http failure.... 400"
+  * .status: 400
+  * .url: "http://..../update.php" par ex
+  */
   handleError(httpError: HttpErrorResponse): Observable<never> {
 
     let message = 'Erreur technique! consulter la sortie console';

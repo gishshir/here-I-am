@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL } from '../common/common.service';
+import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Trajet } from '../trajets/trajet.type';
 import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
-import { User } from './user.type';
+import { AuthenticationDto, CredentialsDto, User } from './user.type';
 import { AccountInfo } from './accountinfo.type';
 import { Router } from '@angular/router';
 import { NotificationService } from '../common/notification/notification.service';
@@ -16,9 +16,14 @@ import { NotificationService } from '../common/notification/notification.service
 })
 export class AccountService {
 
+  private jwtoken: string = null;
+  getJWT(): string {
+    return this.jwtoken;
+  }
   private userLoggedIn: User;
   // store the URL so we can redirect after logging in
   redirectUrl: string;
+
 
   constructor(private logger: LoggerService, private http: HttpClient, private router: Router,
     private commonService: CommonService, private notificationService: NotificationService) { }
@@ -117,7 +122,8 @@ export class AccountService {
   // ============================================
   private _callLogout(): Observable<any> {
 
-    let url = PHP_API_SERVER + "/login/delete.php";
+    let url = TOMCAT_API_SERVER + "/logout"
+    //PHP_API_SERVER + "/login/delete.php";
 
     return this.http.delete<Message>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -134,6 +140,7 @@ export class AccountService {
         console.log("loggout next..");
         this.notificationService.changeUser(null);
         this.userLoggedIn = null;
+        this.jwtoken = null;
         handler.onMessage(m);
       },
       error: (e: Message) => handler.onError(e)
@@ -156,8 +163,9 @@ export class AccountService {
   // ou bien retour de la variable isLoggedIn si définie
   isUserLoggedIn(forceControl: boolean): Observable<boolean> {
 
+    return of(true);
     // soit on connait la reponse
-    if (!forceControl && this.userLoggedIn) {
+    /*if (!forceControl && this.userLoggedIn) {
       console.log("isLoggedIn: " + this.userLoggedIn.login);
       this.notificationService.changeUser(this.userLoggedIn.pseudo);
       return of(true);
@@ -179,33 +187,36 @@ export class AccountService {
         this.userLoggedIn = null;
         return of(false);
       })
-    );
+    );*/
 
   }
 
   // ============================================
 
   // ============================================
-  private _callLogin(userToLogin: User): Observable<any> {
+  private _callLogin(userToLogin: CredentialsDto): Observable<any> {
 
-    let url = PHP_API_SERVER + "/login/update.php";
+    let url = TOMCAT_API_SERVER + "/login";
+    //PHP_API_SERVER + "/login/update.php";
 
-    return this.http.put<User>(url, userToLogin, this.commonService.httpOptionsHeaderJson)
+    return this.http.put<AuthenticationDto>(url, userToLogin, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
 
   login(login: string, password: string, handler: UserHandler): void {
     this.logger.log("login " + login);
 
-    let user = this.buildUser(login, password, null);
+    let user = this.buildCredentials(login, password);
 
     this._callLogin(user).subscribe(
       // next
-      (user: User) => {
-        this.userLoggedIn = user;
+      (auth: AuthenticationDto) => {
+        console.log("authenticationDto: " + auth.jwtoken);
+        this.userLoggedIn = auth.utilisateurDto;
+        this.jwtoken = auth.jwtoken;
         // lance un message pour l'ensemble de l'application
-        this.notificationService.changeUser(user.pseudo);
-        handler.onGetUser(user);
+        this.notificationService.changeUser(this.userLoggedIn.pseudo);
+        handler.onGetUser(this.userLoggedIn);
       }
       ,
       // error
@@ -231,8 +242,17 @@ export class AccountService {
       password: password,
       pseudo: pseudo
     };
-
   }
+
+  buildCredentials(login: string, password: string): CredentialsDto {
+
+    return {
+      login: login,
+      password: password
+    };
+  }
+
+
 }
 
 export interface UserHandler extends Handler {

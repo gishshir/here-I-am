@@ -96,12 +96,11 @@ export class AmiService {
   // =============================================
   private _callGetRelationPointVueAmi(idrelation: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/notification_par_ami//read.php";
+    let url = TOMCAT_API_SERVER + "/ami/relation/" + idrelation;
+    //PHP_API_SERVER + "/relation/notification_par_ami//read.php";
 
     let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("idrelation", idrelation + "")
-
+      headers: HTTP_HEADER_URL
     };
     return this.http.get<AmiRelation>(url, options)
       .pipe(catchError(this.commonService.handleError));

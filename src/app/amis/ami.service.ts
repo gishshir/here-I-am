@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 
 import { AmiInfo, AmiPersonne, AmiRelation } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
-import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
+import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message, BoolResponse } from '../common/message.type';
 import { AmisFilter } from './amis.pipe';
 import { RelationState } from './relation/relationinfo.type';
@@ -149,7 +149,8 @@ export class AmiService {
 
     this.logger.log("getListeAmis()");
 
-    let url = PHP_API_SERVER + "/ami/read.php";
+    let url = TOMCAT_API_SERVER + "/amis"
+    //PHP_API_SERVER + "/ami/read.php";
 
     return this.http.get<AmiInfo[]>(url)
       .pipe(catchError(this.commonService.handleError));

@@ -61,8 +61,8 @@ export class CreateAccountComponent implements OnInit {
   onSubmit() {
     console.log("onSubmit() : " + this.createAccountFormGroup.value);
 
-    let user: User = this.accountService.buildUser(this.loginControl.value, this.password1Control.value, this.pseudoControl.value);
-    let email: string = this.emailControl.value;
+    /*let user: User = null; //this.accountService.buildUser(this.loginControl.value, this.password1Control.value, this.pseudoControl.value);
+    let email: string = ""; //this.emailControl.value;
     this.accountService.creerCompte(user, email, {
 
       onGetAccountInfo: (a: AccountInfo) => {
@@ -71,7 +71,7 @@ export class CreateAccountComponent implements OnInit {
         this.dialogContinuer(user);
       },
       onError: (e: Message) => this.response = e
-    });
+    });*/
 
   }
 

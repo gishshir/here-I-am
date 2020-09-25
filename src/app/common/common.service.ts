@@ -67,7 +67,8 @@ export class CommonService {
         message = SESSION_CLOSED;
       }
       // message metier depuis api
-      if (httpError.status == 400 && httpError.error.msg) {
+      if ((httpError.status == 400 || httpError.status == 404)
+        && httpError.error.msg) {
         message = httpError.error.msg;
       }
     }

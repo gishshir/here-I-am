@@ -69,12 +69,11 @@ export class TrajetService {
   // ============================================
   private _callAmiDernierTrajet(idrelation: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/read_one.php";
+    let url = TOMCAT_API_SERVER + "/trajet/ami/" + idrelation;
+    //PHP_API_SERVER + "/trajet/read_one.php";
 
     let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("idrelation", idrelation + "")
-
+      headers: HTTP_HEADER_URL
     };
     // attention si pas de trajet alors {"retour": false}
     return this.http.get<Trajet>(url, options)
@@ -82,7 +81,7 @@ export class TrajetService {
   }
   chercherAmiDernierTrajet(idrelation: number, handler: TrajetHandler): void {
 
-    /*this._callAmiDernierTrajet(idrelation).subscribe(
+    this._callAmiDernierTrajet(idrelation).subscribe(
       // next (boolean ou trajet)
       (data: Trajet) => {
         handler.onGetTrajet(data);
@@ -90,7 +89,7 @@ export class TrajetService {
       // error
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
-    );*/
+    );
   }
   // ============================================
   private _callDernierTrajet(): Observable<any> {

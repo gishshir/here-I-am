@@ -36,7 +36,7 @@ export class AccountService {
     let userToCreate = {
 
       login: user.login,
-      password: user.password,
+      //password: user.password,
       pseudo: user.pseudo,
       email: email
     };
@@ -233,15 +233,7 @@ export class AccountService {
     }
   }
 
-  buildUser(login: string, password: string, pseudo: string): User {
 
-    return {
-      id: -1,
-      login: login,
-      password: password,
-      pseudo: pseudo
-    };
-  }
 
   buildCredentials(login: string, password: string): CredentialsDto {
 

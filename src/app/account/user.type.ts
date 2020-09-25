@@ -1,8 +1,8 @@
 export interface User {
 
-    id: number;
+    //id: number;
     login: string;
-    password: string;
+    //password: string;
     pseudo: string;
 }
 

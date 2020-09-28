@@ -180,9 +180,10 @@ export class AmiService {
   // =============================================
 
   // =====================================================
-  private _callUpdate(amiToUpdate: object): Observable<any> {
+  private _callSuivreAmi(amiToUpdate: object): Observable<any> {
 
-    let url = PHP_API_SERVER + "/ami/update.php";
+    let url = TOMCAT_API_SERVER + "/ami/relation/suivre";
+    //PHP_API_SERVER + "/ami/update.php";
 
     return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
@@ -192,14 +193,24 @@ export class AmiService {
       );
   }
   updateSuivreAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateAmi() " + amiToUpdate.pseudo + " suivre: " + amiToUpdate.suivre);
-    this._callUpdate({ idrelation: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
+    this.logger.log("updateSuivreAmi() " + amiToUpdate.pseudo + " suivre: " + amiToUpdate.suivre);
+    this._callSuivreAmi({ relationid: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
   }
+  private _callNotifierAmi(amiToUpdate: object): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/ami/relation/notifier";
+    //PHP_API_SERVER + "/ami/update.php";
+
+    return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
+      .pipe(
+        catchError(this.commonService.handleError)
+      );
+  }
   updateNotifierAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateAmi() " + amiToUpdate.pseudo + " notifier: " + amiToUpdate.notifier);
-    this._callUpdate({ idrelation: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
+    this.logger.log("updateNotifierAmi() " + amiToUpdate.pseudo + " notifier: " + amiToUpdate.notifier);
+    this._callNotifierAmi({ relationid: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
   }

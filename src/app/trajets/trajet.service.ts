@@ -44,7 +44,8 @@ export class TrajetService {
   // ============================================
   private _callListeTrajets(): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/read.php";
+    let url = TOMCAT_API_SERVER + "/trajets"
+    //PHP_API_SERVER + "/trajet/read.php";
 
     return this.http.get<Trajet[]>(url)
       .pipe(catchError(this.commonService.handleError));

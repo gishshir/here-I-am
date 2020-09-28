@@ -182,7 +182,7 @@ export class AmiService {
   // =====================================================
   private _callSuivreAmi(amiToUpdate: object): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/ami/relation/suivre";
+    let url = TOMCAT_API_SERVER + "/relation/suivre";
     //PHP_API_SERVER + "/ami/update.php";
 
     return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
@@ -200,7 +200,7 @@ export class AmiService {
   }
   private _callNotifierAmi(amiToUpdate: object): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/ami/relation/notifier";
+    let url = TOMCAT_API_SERVER + "/relation/notifier";
     //PHP_API_SERVER + "/ami/update.php";
 
     return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)

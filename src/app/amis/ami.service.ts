@@ -67,7 +67,8 @@ export class AmiService {
 
     this.logger.log("callListePersonneNonAmis()");
 
-    let url = PHP_API_SERVER + "/personne/read.php";
+    let url = TOMCAT_API_SERVER + "/nonamis"
+    //PHP_API_SERVER + "/personne/read.php";
 
     return this.http.get<AmiPersonne[]>(url)
       .pipe(catchError(this.commonService.handleError));

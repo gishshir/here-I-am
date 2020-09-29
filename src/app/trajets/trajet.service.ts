@@ -126,9 +126,10 @@ export class TrajetService {
 
 
   // ===========================================================
-  private _callCreateTrajet(newTrajet: Trajet): Observable<any> {
+  private _callCreateTrajet(newTrajet: any): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/create.php";
+    let url = TOMCAT_API_SERVER + "/trajet";
+    //PHP_API_SERVER + "/trajet/create.php";
 
     return this.http.post<Trajet>(url, newTrajet, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -136,16 +137,12 @@ export class TrajetService {
   }
   demarrerNouveauTrajet(mean: TrajetMeans, handler: TrajetHandler): void {
 
-    let trajet: Trajet = {
-
-      id: -1,
-      starttime: new Date().getTime(),
-      endtime: null,
-      etat: TrajetState.started,
+    let newTrajet: any = {
+      starttime: new Date().getTime() / 1000,
       mean: mean
     };
 
-    this._callCreateTrajet(trajet).subscribe(
+    this._callCreateTrajet(newTrajet).subscribe(
       // next
       (data: Trajet) => handler.onGetTrajet(data)
       ,

@@ -43,7 +43,8 @@ function deleteRelation (int $id) : Resultat {
 /*
 * Creation d'une nouvelle relation
 * et creation de l'invitation
-*/function createRelationAndInvitation ( int $idperson) :Resultat {
+*/
+function createRelationAndInvitation ( int $idperson) :Resultat {
 
     $result;
 

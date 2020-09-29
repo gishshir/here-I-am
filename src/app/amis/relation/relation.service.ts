@@ -43,15 +43,16 @@ export class RelationService {
   // ===========================================================
 
   //==============================================================
-  private _callCreateInvitation(relationToCreate: object): Observable<any> {
+  private _callCreateInvitation(idperson: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/create.php";
-    return this.http.post<Message>(url, relationToCreate, this.commonService.httpOptionsHeaderJson)
+    let url = TOMCAT_API_SERVER + "/relation/invitation/" + idperson;
+    //PHP_API_SERVER + "/relation/create.php";
+    return this.http.post<Message>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
   createInvitation(idperson: number, handler: MessageHandler): void {
 
-    this._callCreateInvitation({ idperson: idperson, action: RelationAction.invitation })
+    this._callCreateInvitation(idperson)
       .subscribe(this.commonService._createMessageObserver(handler));
   }
   //==============================================================

@@ -123,14 +123,16 @@ export class AmiService {
   private _callAmiByIdPerson(idperson: number): Observable<any> {
 
     this.logger.log("getAmiInfo()");
-    let url = PHP_API_SERVER + "/ami/read_one.php";
+    let url = TOMCAT_API_SERVER + "/ami/" + idperson;
 
-    let options = {
+    //PHP_API_SERVER + "/ami/read_one.php";
+
+    /*let options = {
       headers: HTTP_HEADER_URL,
       params: new HttpParams().set("idperson", idperson + "")
 
-    };
-    return this.http.get<AmiInfo>(url, options);
+    };*/
+    return this.http.get<AmiInfo>(url, this.commonService.httpOptionsHeaderJson);
 
   }
 

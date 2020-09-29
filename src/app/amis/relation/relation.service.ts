@@ -61,14 +61,15 @@ export class RelationService {
   //==============================================================
   private _callActionUpdate(relationToUpdate: object): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/update.php";
+    let url = TOMCAT_API_SERVER + "/relation/action";
+    //PHP_API_SERVER + "/relation/update.php";
 
     return this.http.put<Message>(url, relationToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
-  updateActionRelation(idrelation: number, action: string, handler: MessageHandler): any {
+  updateActionRelation(relationid: number, action: string, handler: MessageHandler): any {
     this.logger.log("updateRelation() : " + action);
-    this._callActionUpdate({ idrelation: idrelation, action: action }).subscribe(
+    this._callActionUpdate({ relationid: relationid, action: action }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
   }

@@ -56,11 +56,11 @@ function _createUtilisateur (mysqli $con, Utilisateur $user) :ResultAndEntity {
 
     $resultAndEntity; $stmt;
    
-    $req_createAccount = "insert INTO utilisateur(login, password, pseudo) VALUES (?, ?, ?)";
+    $req_createUser = "insert INTO utilisateur(login, password, pseudo) VALUES (?, ?, ?)";
 
     try {
 
-        $stmt = _prepare ($con, $req_createAccount);
+        $stmt = _prepare ($con, $req_createUser);
         if ($stmt->bind_param("sss", $login, $password, $pseudo) ) {
 
             $login = $user->get_login();

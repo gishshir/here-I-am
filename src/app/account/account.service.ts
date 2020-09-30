@@ -3,7 +3,6 @@ import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
-import { Trajet } from '../trajets/trajet.type';
 import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
 import { AuthenticationDto, CredentialsDto, User } from './user.type';
@@ -29,15 +28,16 @@ export class AccountService {
     private commonService: CommonService, private notificationService: NotificationService) { }
 
   // ============================================
-  _callCreateAccount(user: User, email: string): Observable<any> {
+  _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
 
-    let url = PHP_API_SERVER + "/account/create.php";
+    let url = TOMCAT_API_SERVER + "/account"
+    //PHP_API_SERVER + "/account/create.php";
 
-    let userToCreate = {
+    let userToCreate: any = {
 
-      login: user.login,
-      //password: user.password,
-      pseudo: user.pseudo,
+      login: credentials.login,
+      password: credentials.password,
+      pseudo: pseudo,
       email: email
     };
 
@@ -45,9 +45,9 @@ export class AccountService {
       .pipe(catchError(this.commonService.handleError));
 
   }
-  creerCompte(user: User, email: string, handler: AccountInfoHandler): void {
+  creerCompte(credentials: CredentialsDto, pseudo: string, email: string, handler: AccountInfoHandler): void {
 
-    this._callCreateAccount(user, email).subscribe(
+    this._callCreateAccount(credentials, pseudo, email).subscribe(
       // next
       (data: AccountInfo) => handler.onGetAccountInfo(data)
       ,
@@ -243,8 +243,15 @@ export class AccountService {
     };
   }
 
-
+  buildUser(login: string, pseudo: string): User {
+    return {
+      login: login,
+      pseudo: pseudo
+    }
+  }
 }
+
+
 
 export interface UserHandler extends Handler {
 

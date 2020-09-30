@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, ValidatorFn, ValidationErrors, AsyncValidator, AbstractControl } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { Message } from 'src/app/common/message.type';
-import { User } from '../user.type';
+import { CredentialsDto, User } from '../user.type';
 import { Observable, of } from 'rxjs';
 import { map, catchError, delay } from 'rxjs/operators';
 import { AccountInfo } from '../accountinfo.type';
@@ -61,17 +61,19 @@ export class CreateAccountComponent implements OnInit {
   onSubmit() {
     console.log("onSubmit() : " + this.createAccountFormGroup.value);
 
-    /*let user: User = null; //this.accountService.buildUser(this.loginControl.value, this.password1Control.value, this.pseudoControl.value);
-    let email: string = ""; //this.emailControl.value;
-    this.accountService.creerCompte(user, email, {
+    let credentials: CredentialsDto = this.accountService.buildCredentials(this.loginControl.value, this.password1Control.value);
+    let email: string = this.emailControl.value;
+    let pseudo: string = this.pseudoControl.value;
+    this.accountService.creerCompte(credentials, pseudo, email, {
 
       onGetAccountInfo: (a: AccountInfo) => {
         this.response = { msg: "Le compte a été créé avec succès!", error: false };
         delay(1000);
+        let user: User = this.accountService.buildUser(credentials.login, pseudo);
         this.dialogContinuer(user);
       },
       onError: (e: Message) => this.response = e
-    });*/
+    });
 
   }
 

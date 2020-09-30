@@ -179,9 +179,20 @@ export class TrajetService {
 
 
   // ===========================================================
-  private _callUpdateTrajet(trajetToUpdate: Trajet): Observable<any> {
+  private _callUpdateTrajetStatus(trajetToUpdate: any): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/update.php";
+    let url = TOMCAT_API_SERVER + "/trajet/etat"
+    // PHP_API_SERVER + "/trajet/update.php";
+
+    return this.http.put<Message>(url, trajetToUpdate, this.commonService.httpOptionsHeaderJson)
+      .pipe(
+        catchError(this.commonService.handleError)
+      );
+  }
+  private _callUpdateTrajetMean(trajetToUpdate: any): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/trajet/mean"
+    // PHP_API_SERVER + "/trajet/update.php";
 
     return this.http.put<Message>(url, trajetToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
@@ -189,9 +200,16 @@ export class TrajetService {
       );
   }
 
-  updateTrajet(trajetToUpdate: Trajet, handler: TrajetHandler): void {
+  changerStatusTrajet(trajetId: number, newState: TrajetState, handler: TrajetHandler): void {
 
-    this._callUpdateTrajet(trajetToUpdate).subscribe(
+
+    let trajetToUpdate: any = {
+
+      trajetid: trajetId,
+      etat: newState
+    }
+
+    this._callUpdateTrajetStatus(trajetToUpdate).subscribe(
       // next
       (data: Trajet) => handler.onGetTrajet(data)
       ,
@@ -199,34 +217,23 @@ export class TrajetService {
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
     );
-
-  }
-  changerStatusTrajet(trajetId: number, newState: TrajetState, handler: TrajetHandler): void {
-
-
-    let trajetToUpdate: Trajet = {
-
-      id: trajetId,
-      etat: newState,
-      starttime: -1,
-      endtime: -1,
-      mean: null
-    }
-
-    this.updateTrajet(trajetToUpdate, handler);
   }
   changerMeanTrajet(trajetId: number, newMean: TrajetMeans, handler: TrajetHandler): void {
 
-    let trajetToUpdate: Trajet = {
+    let trajetToUpdate: any = {
 
-      id: trajetId,
-      etat: null,
-      starttime: -1,
-      endtime: -1,
+      trajetid: trajetId,
       mean: newMean
     }
 
-    this.updateTrajet(trajetToUpdate, handler);
+    this._callUpdateTrajetMean(trajetToUpdate).subscribe(
+      // next
+      (data: Trajet) => handler.onGetTrajet(data)
+      ,
+      // error
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+
+    );
   }
   // ===========================================================
 

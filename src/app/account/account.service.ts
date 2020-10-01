@@ -114,7 +114,37 @@ export class AccountService {
       pipe(map(bresp => bresp.retour));
   }
   verifyPseudo(pseudo: string, handler: BoolResponseHandler): void {
-    this._callVerifyLogin(pseudo).pipe(catchError(this.commonService.handleError)).subscribe({
+    this._callVerifyPseudo(pseudo).pipe(catchError(this.commonService.handleError)).subscribe({
+
+      //next
+      next: (data: BoolResponse) => handler.onResponse(data.retour),
+      error: (e: Message) => handler.onError(e)
+    });
+  }
+  // ============================================
+  // vérifie si il existe en Bdd un user avec cet email
+  // ============================================
+  private _callVerifyEmail(email: string): Observable<any> {
+
+    //pseudo = this.sanitizer.sanitize(SecurityContext.HTML, pseudo);
+    let url = TOMCAT_API_SERVER + "/account/verify/email/" + email;
+    // PHP_API_SERVER + "/account/verify/read.php";
+
+    /*let options = {
+      headers: HTTP_HEADER_URL,
+      params: new HttpParams().set("pseudo", pseudo)
+
+    };*/
+    return this.http.get<BoolResponse>(url);
+
+  }
+  isEmailTaken(email: string): Observable<boolean> {
+
+    return this._callVerifyEmail(email).
+      pipe(map(bresp => bresp.retour));
+  }
+  verifyEmail(email: string, handler: BoolResponseHandler): void {
+    this._callVerifyEmail(email).pipe(catchError(this.commonService.handleError)).subscribe({
 
       //next
       next: (data: BoolResponse) => handler.onResponse(data.retour),

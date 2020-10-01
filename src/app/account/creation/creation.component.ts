@@ -29,7 +29,7 @@ export class CreateAccountComponent implements OnInit {
       password1Control: ['', [Validators.required, Validators.minLength(4)]],
       password2Control: ['', [Validators.required, Validators.minLength(4)]],
       pseudoControl: ['', [Validators.required, Validators.minLength(6)], [new UniquePseudoValidator(this.accountService)]],
-      emailControl: ['', [Validators.required, Validators.email]]
+      emailControl: ['', [Validators.required, Validators.email], [new UniqueEmailValidator(this.accountService)]]
     },
     {
       validator: MustMatch('password1Control', 'password2Control')
@@ -150,6 +150,20 @@ export class UniquePseudoValidator implements AsyncValidator {
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.accountService.isPseudoTaken(ctrl.value).pipe(
       map(isTaken => (isTaken ? { uniquePseudo: true } : null)),
+      catchError(() => of(null))
+    );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class UniqueEmailValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isEmailTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniqueEmail: true } : null)),
       catchError(() => of(null))
     );
   }

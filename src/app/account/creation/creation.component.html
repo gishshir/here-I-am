@@ -53,6 +53,7 @@
             <mat-error *ngIf="emailControl.invalid">
                 <div *ngIf="emailControl.errors.required">L'adresse mail est obligatoire!</div>
                 <div *ngIf="emailControl.errors.email">email invalid!</div>
+                <div *ngIf="emailControl.errors.uniqueEmail">L'adresse mail existe déjà!</div>
             </mat-error>
         </mat-form-field>
 

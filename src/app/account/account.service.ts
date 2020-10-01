@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SecurityContext } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -9,6 +9,7 @@ import { AuthenticationDto, CredentialsDto, User } from './user.type';
 import { AccountInfo } from './accountinfo.type';
 import { Router } from '@angular/router';
 import { NotificationService } from '../common/notification/notification.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class AccountService {
 
 
   constructor(private logger: LoggerService, private http: HttpClient, private router: Router,
+    private sanitizer: DomSanitizer,
     private commonService: CommonService, private notificationService: NotificationService) { }
 
   // ============================================
@@ -64,14 +66,15 @@ export class AccountService {
   // ============================================
   _callVerifyLogin(login: string): Observable<any> {
 
-    let url = PHP_API_SERVER + "/account/verify/read.php";
+    let url = TOMCAT_API_SERVER + "/account/verify/login/" + login;
+    //PHP_API_SERVER + "/account/verify/read.php";
 
-    let options = {
+    /*let options = {
       headers: HTTP_HEADER_URL,
       params: new HttpParams().set("login", login)
 
-    };
-    return this.http.get<BoolResponse>(url, options);
+    };*/
+    return this.http.get<BoolResponse>(url);
 
   }
   isLoginTaken(login: string): Observable<boolean> {
@@ -93,14 +96,16 @@ export class AccountService {
   // ============================================
   private _callVerifyPseudo(pseudo: string): Observable<any> {
 
-    let url = PHP_API_SERVER + "/account/verify/read.php";
+    pseudo = this.sanitizer.sanitize(SecurityContext.HTML, pseudo);
+    let url = TOMCAT_API_SERVER + "/account/verify/pseudo/" + pseudo;
+    // PHP_API_SERVER + "/account/verify/read.php";
 
-    let options = {
+    /*let options = {
       headers: HTTP_HEADER_URL,
       params: new HttpParams().set("pseudo", pseudo)
 
-    };
-    return this.http.get<BoolResponse>(url, options);
+    };*/
+    return this.http.get<BoolResponse>(url);
 
   }
   isPseudoTaken(pseudo: string): Observable<boolean> {

@@ -67,8 +67,7 @@ export class AmiService {
 
     this.logger.log("callListePersonneNonAmis()");
 
-    let url = TOMCAT_API_SERVER + "/nonamis"
-    //PHP_API_SERVER + "/personne/read.php";
+    let url = TOMCAT_API_SERVER + "/nonamis";
 
     return this.http.get<AmiPersonne[]>(url)
       .pipe(catchError(this.commonService.handleError));
@@ -98,7 +97,6 @@ export class AmiService {
   private _callGetRelationPointVueAmi(idrelation: number): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/ami/relation/" + idrelation;
-    //PHP_API_SERVER + "/relation/notification_par_ami//read.php";
 
     let options = {
       headers: HTTP_HEADER_URL
@@ -125,13 +123,6 @@ export class AmiService {
     this.logger.log("getAmiInfo()");
     let url = TOMCAT_API_SERVER + "/ami/" + idperson;
 
-    //PHP_API_SERVER + "/ami/read_one.php";
-
-    /*let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("idperson", idperson + "")
-
-    };*/
     return this.http.get<AmiInfo>(url, this.commonService.httpOptionsHeaderJson);
 
   }
@@ -152,7 +143,6 @@ export class AmiService {
     this.logger.log("getListeAmis()");
 
     let url = TOMCAT_API_SERVER + "/amis"
-    //PHP_API_SERVER + "/ami/read.php";
 
     return this.http.get<AmiInfo[]>(url)
       .pipe(catchError(this.commonService.handleError));
@@ -186,7 +176,6 @@ export class AmiService {
   private _callSuivreAmi(amiToUpdate: object): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/relation/suivre";
-    //PHP_API_SERVER + "/ami/update.php";
 
     return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
@@ -204,7 +193,6 @@ export class AmiService {
   private _callNotifierAmi(amiToUpdate: object): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/relation/notifier";
-    //PHP_API_SERVER + "/ami/update.php";
 
     return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(

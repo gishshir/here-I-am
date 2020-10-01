@@ -20,12 +20,6 @@ export class RelationService {
   private _callDeleteRelation(id: number): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/relation/" + id;
-    //PHP_API_SERVER + "/relation/delete.php";
-
-    /*let options = {
-      // params: new HttpParams().set("id", "" + id)
-      body: { "id": "" + id }
-    };*/
 
     return this.http.request<Message>('delete', url)
       .pipe(
@@ -45,7 +39,7 @@ export class RelationService {
   private _callCreateInvitation(idperson: number): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/relation/invitation/" + idperson;
-    //PHP_API_SERVER + "/relation/create.php";
+
     return this.http.post<Message>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
@@ -61,7 +55,6 @@ export class RelationService {
   private _callActionUpdate(relationToUpdate: object): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/relation/action";
-    //PHP_API_SERVER + "/relation/update.php";
 
     return this.http.put<Message>(url, relationToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -78,12 +71,7 @@ export class RelationService {
   private _callRelationInfo(idrelation: number): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/relation/" + idrelation;
-    //PHP_API_SERVER + "/relation/read.php";
-    /*let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("id", idrelation + "")
 
-    };*/
     return this.http.get<RelationInfo>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 

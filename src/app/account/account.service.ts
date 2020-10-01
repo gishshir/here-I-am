@@ -33,7 +33,6 @@ export class AccountService {
   _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/account"
-    //PHP_API_SERVER + "/account/create.php";
 
     let userToCreate: any = {
 
@@ -67,13 +66,6 @@ export class AccountService {
   _callVerifyLogin(login: string): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/account/verify/login/" + login;
-    //PHP_API_SERVER + "/account/verify/read.php";
-
-    /*let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("login", login)
-
-    };*/
     return this.http.get<BoolResponse>(url);
 
   }
@@ -98,13 +90,7 @@ export class AccountService {
 
     pseudo = this.sanitizer.sanitize(SecurityContext.HTML, pseudo);
     let url = TOMCAT_API_SERVER + "/account/verify/pseudo/" + pseudo;
-    // PHP_API_SERVER + "/account/verify/read.php";
 
-    /*let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("pseudo", pseudo)
-
-    };*/
     return this.http.get<BoolResponse>(url);
 
   }
@@ -128,13 +114,6 @@ export class AccountService {
 
     //pseudo = this.sanitizer.sanitize(SecurityContext.HTML, pseudo);
     let url = TOMCAT_API_SERVER + "/account/verify/email/" + email;
-    // PHP_API_SERVER + "/account/verify/read.php";
-
-    /*let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("pseudo", pseudo)
-
-    };*/
     return this.http.get<BoolResponse>(url);
 
   }
@@ -158,7 +137,6 @@ export class AccountService {
   private _callLogout(): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/logout"
-    //PHP_API_SERVER + "/login/delete.php";
 
     return this.http.delete<Message>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -188,7 +166,6 @@ export class AccountService {
   private _callUserLogged(): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/user";
-    //PHP_API_SERVER + "/login/read.php";
 
     return this.http.get<User>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -232,7 +209,6 @@ export class AccountService {
   private _callLogin(userToLogin: CredentialsDto): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/login";
-    //PHP_API_SERVER + "/login/update.php";
 
     return this.http.put<AuthenticationDto>(url, userToLogin, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));

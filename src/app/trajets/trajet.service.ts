@@ -17,14 +17,28 @@ export class TrajetService {
   constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService,
     private notificationService: NotificationService) { }
 
+  private _callFindTrajetById(trajetid: number): Observable<any> {
 
+    let url = TOMCAT_API_SERVER + "/trajet/" + trajetid;
+
+    // attention si pas de trajet alors {"retour": false}
+    return this.http.get<Trajet>(url)
+      .pipe(catchError(this.commonService.handleError));
+  }
+  findTrajetById(trajetid: number, handler: TrajetHandler): void {
+
+    this._callFindTrajetById(trajetid).subscribe(
+
+      (t: Trajet) => handler.onGetTrajet(t),
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+    );
+  }
 
 
   // ============================================
   private _callListeTrajets(): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajets"
-    //PHP_API_SERVER + "/trajet/read.php";
 
     return this.http.get<Trajet[]>(url)
       .pipe(catchError(this.commonService.handleError));
@@ -50,7 +64,6 @@ export class TrajetService {
   private _callAmiDernierTrajet(idrelation: number): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet/ami/" + idrelation;
-    //PHP_API_SERVER + "/trajet/read_one.php";
 
     let options = {
       headers: HTTP_HEADER_URL
@@ -75,7 +88,6 @@ export class TrajetService {
   private _callDernierTrajet(): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet";
-    //PHP_API_SERVER + "/trajet/read_one.php";
 
     // attention si pas de trajet alors {"retour": false}
     return this.http.get<Trajet>(url)
@@ -108,7 +120,6 @@ export class TrajetService {
   private _callCreateTrajet(newTrajet: any): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet";
-    //PHP_API_SERVER + "/trajet/create.php";
 
     return this.http.post<Trajet>(url, newTrajet, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -137,11 +148,6 @@ export class TrajetService {
   private _callDeleteTrajet(id: number): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet/" + id;
-    //PHP_API_SERVER + "/trajet/delete.php";
-
-    /*let options = {
-      body: { "id": "" + id }
-    };*/
 
     return this.http.request<Message>('delete', url)
       .pipe(
@@ -162,7 +168,6 @@ export class TrajetService {
   private _callUpdateTrajetStatus(trajetToUpdate: any): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet/etat"
-    // PHP_API_SERVER + "/trajet/update.php";
 
     return this.http.put<Message>(url, trajetToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
@@ -172,7 +177,6 @@ export class TrajetService {
   private _callUpdateTrajetMean(trajetToUpdate: any): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet/mean"
-    // PHP_API_SERVER + "/trajet/update.php";
 
     return this.http.put<Message>(url, trajetToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(

@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../../common/logger.service';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CommonService, PHP_API_SERVER, Handler, HTTP_HEADER_URL, MessageHandler, TOMCAT_API_SERVER } from 'src/app/common/common.service';
-import { RelationInfo, RelationAction } from './relationinfo.type';
+import { CommonService, Handler, MessageHandler, TOMCAT_API_SERVER } from 'src/app/common/common.service';
+import { RelationInfo } from './relationinfo.type';
 import { Message } from 'src/app/common/message.type';
-import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'

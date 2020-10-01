@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppPosition } from '../trajets/position.type';
 import { Observable } from 'rxjs';
-import { PHP_API_SERVER, MessageHandler, CommonService, Handler, HTTP_HEADER_URL, StringResponseHandler, TOMCAT_API_SERVER } from '../common/common.service';
+import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../common/notification/notification.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { Geoportail } from '../geoportail/geoportail.type';
 import { Location } from '@angular/common';

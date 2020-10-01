@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AmiInfo, AmiPersonne, AmiRelation } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
-import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
-import { Message, BoolResponse } from '../common/message.type';
+import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
+import { Message } from '../common/message.type';
 import { AmisFilter } from './amis.pipe';
 import { RelationState } from './relation/relationinfo.type';
 

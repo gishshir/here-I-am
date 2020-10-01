@@ -1,11 +1,11 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
-import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
+import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { NotificationService } from '../common/notification/notification.service';
 
@@ -18,28 +18,7 @@ export class TrajetService {
     private notificationService: NotificationService) { }
 
 
-  //=============================================
-  private _callFindTrajetById(trajetid: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/read_one.php";
-
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("id", trajetid + "")
-
-    };
-    // attention si pas de trajet alors {"retour": false}
-    return this.http.get<Trajet>(url, options)
-      .pipe(catchError(this.commonService.handleError));
-  }
-  findTrajetById(trajetid: number, handler: TrajetHandler): void {
-
-    /*this._callFindTrajetById(trajetid).subscribe(
-
-      (t: Trajet) => handler.onGetTrajet(t),
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
-    );*/
-  }
 
   // ============================================
   private _callListeTrajets(): Observable<any> {
@@ -157,13 +136,14 @@ export class TrajetService {
   // ===========================================================
   private _callDeleteTrajet(id: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/trajet/delete.php";
+    let url = TOMCAT_API_SERVER + "/trajet/" + id;
+    //PHP_API_SERVER + "/trajet/delete.php";
 
-    let options = {
+    /*let options = {
       body: { "id": "" + id }
-    };
+    };*/
 
-    return this.http.request<Message>('delete', url, options)
+    return this.http.request<Message>('delete', url)
       .pipe(
         catchError(this.commonService.handleError)
       );

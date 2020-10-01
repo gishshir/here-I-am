@@ -2,7 +2,7 @@ import { Injectable, SecurityContext } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
+import { CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
 import { AuthenticationDto, CredentialsDto, User } from './user.type';

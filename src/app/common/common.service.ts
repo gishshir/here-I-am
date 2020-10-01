@@ -14,7 +14,7 @@ export const HTTP_HEADER_URL = new HttpHeaders({
 });
 
 
-export const PHP_API_SERVER = environment.apiUrl;
+//export const PHP_API_SERVER = environment.apiUrl;
 
 // pour test
 export const TOMCAT_API_SERVER = "https://localhost:444/";
@@ -67,7 +67,7 @@ export class CommonService {
         message = SESSION_CLOSED;
       }
       // message metier depuis api
-      if ((httpError.status == 400 || httpError.status == 404)
+      if ((httpError.status >= 400 && httpError.status < 500)
         && httpError.error.msg) {
         message = httpError.error.msg;
       }

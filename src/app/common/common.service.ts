@@ -15,9 +15,13 @@ export const HTTP_HEADER_URL = new HttpHeaders({
 
 
 //export const PHP_API_SERVER = environment.apiUrl;
+export const TOMCAT_API_SERVER = environment.apiUrl;
 
-// pour test
-export const TOMCAT_API_SERVER = "https://localhost:444/";
+// pour test avec tomcat localhost SSL
+//"https://hereiam-tomcat.secure:8443/";
+
+// eclipse tomcat embeded
+//"https://localhost:444/";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 

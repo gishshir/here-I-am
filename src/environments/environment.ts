@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   database: "locale",
-  apiUrl: "https://hereiam-api.secure"
+  apiUrl: "https://localhost:444/"
 };
 
 /*

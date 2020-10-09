@@ -145,15 +145,19 @@ export class AccountService {
   logout(handler: MessageHandler): void {
     this.logger.log("logout");
 
-    this.notificationService.informClosedSession(true);
+
     this._callLogout().subscribe({
 
       next: (m: Message) => {
         // lance un message pour l'ensemble de l'application
         console.log("loggout next..");
-        this.notificationService.changeUser(null);
+
         this.userLoggedIn = null;
         this.jwtoken = null;
+
+        this.notificationService.changeUser(null);
+        this.notificationService.informClosedSession(true);
+
         handler.onMessage(m);
       },
       error: (e: Message) => handler.onError(e)
@@ -175,6 +179,8 @@ export class AccountService {
   // appel au serveur pour savoir si l'utilisateur a ou pas une session ouverte.
   // ou bien retour de la variable isLoggedIn si définie
   isUserLoggedIn(forceControl: boolean): Observable<boolean> {
+
+    console.log("isUserLoggedIn()...");
 
     // soit on connait la reponse
     if (!forceControl && this.userLoggedIn) {
@@ -235,8 +241,9 @@ export class AccountService {
   }
   // ============================================
   redirectAfterLogin() {
+    console.log("redirectAfterLogin() --> " + this.redirectUrl);
+
     if (this.redirectUrl) {
-      console.log("redirectAfterLogin() --> " + this.redirectUrl);
       this.router.navigate([this.redirectUrl]);
       this.redirectUrl = null;
     } else {

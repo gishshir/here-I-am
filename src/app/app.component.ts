@@ -73,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // reception d'un evenement de message
   onMessage(response: Message) {
     this.response = response;
-    this.route.navigate(['/go-accueil']);
+    //this.route.navigate(['/go-accueil']);
   }
 
   private mettreAJourBanniere(pseudo?: string) {

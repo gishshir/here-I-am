@@ -156,17 +156,19 @@ export class PositionService {
     )
   }
   // ===========================================================
-  private _callCreateGpxfile(trajetid: number): Observable<any> {
+  private _callCreateGpxfile(trajetid: number, ami: boolean,): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/gpx/" + trajetid;
+    let uri = ami ? "/ami/gpx/" : "/gpx/";
+    let url = TOMCAT_API_SERVER + uri + trajetid;
 
     return this.http.post<Geoportail>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 
   }
-  createGpxfile(trajetid: number, handler: GeoportailHandler): void {
 
-    this._callCreateGpxfile(trajetid).subscribe({
+  createGpxfile(trajetid: number, ami: boolean, handler: GeoportailHandler): void {
+
+    this._callCreateGpxfile(trajetid, ami).subscribe({
       next: (geoportail: Geoportail) => {
         // le nom du fichier est dans le msg
         handler.onGetGeoportailInfo(geoportail);

@@ -86,7 +86,7 @@ export class TrajetGeolocationComponent implements OnInit {
   createGpxFile() {
     this.gpxfile = null;
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
-      this.positionService.createGpxfile(this._trajet.id, {
+      this.positionService.createGpxfile(this._trajet.id, false, {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.gpxfile = g.gpxfile;

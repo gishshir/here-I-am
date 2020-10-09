@@ -72,7 +72,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   createGpxFile() {
     this.gpxfile = null;
     if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
-      this.positionService.createGpxfile(this._amiTrajet.id, {
+      this.positionService.createGpxfile(this._amiTrajet.id, true, {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.gpxfile = g.gpxfile;

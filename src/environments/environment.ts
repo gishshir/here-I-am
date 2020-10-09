@@ -6,6 +6,8 @@ export const environment = {
   production: false,
   database: "locale",
   apiUrl: "https://localhost:444/"
+  //"https://localhost:444/"
+  //"https://hereiam-tomcat.secure:8443"
 };
 
 /*

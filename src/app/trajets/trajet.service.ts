@@ -7,27 +7,27 @@ import { catchError, map } from 'rxjs/operators';
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
-import { NotificationService } from '../common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrajetService {
 
-  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService,
-    private notificationService: NotificationService) { }
+  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) { }
 
-  private _callFindTrajetById(trajetid: number): Observable<any> {
+  // chercher un trajet par son id, soit pour l'utilisateur courant soit pour un ami.
+  private _callFindTrajetById(trajetid: number, ami: boolean): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/trajet/" + trajetid;
+    let uri = ami ? "ami/" : "";
+    let url = TOMCAT_API_SERVER + "/trajet/" + uri + trajetid;
 
     // attention si pas de trajet alors {"retour": false}
     return this.http.get<Trajet>(url)
       .pipe(catchError(this.commonService.handleError));
   }
-  findTrajetById(trajetid: number, handler: TrajetHandler): void {
+  findTrajetById(trajetid: number, ami: boolean, handler: TrajetHandler): void {
 
-    this._callFindTrajetById(trajetid).subscribe(
+    this._callFindTrajetById(trajetid, ami).subscribe(
 
       (t: Trajet) => handler.onGetTrajet(t),
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
@@ -63,7 +63,7 @@ export class TrajetService {
   // ============================================
   private _callAmiDernierTrajet(idrelation: number): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/trajet/ami/" + idrelation;
+    let url = TOMCAT_API_SERVER + "/last/trajet/ami/" + idrelation;
 
     let options = {
       headers: HTTP_HEADER_URL

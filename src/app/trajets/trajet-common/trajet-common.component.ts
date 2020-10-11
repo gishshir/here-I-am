@@ -17,6 +17,7 @@ import { NotificationService } from 'src/app/common/notification/notification.se
 })
 export class TrajetCommonComponent implements OnInit, OnDestroy {
 
+  @Input() ami: boolean;
   @Input() trajet: Trajet;
   @Input() timerOn: boolean = false;
 
@@ -35,7 +36,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
   private refreshTrajet() {
 
     if (this.trajetService) {
-      this.trajetService.findTrajetById(this.trajet.id, {
+      this.trajetService.findTrajetById(this.trajet.id, this.ami, {
 
         onGetTrajet: (t: Trajet) => {
 

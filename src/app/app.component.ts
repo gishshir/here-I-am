@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AccountService } from './account/account.service';
 import { NotificationService } from './common/notification/notification.service';
 import { Trajet, TrajetState } from './trajets/trajet.type';
-import { GeolocationService } from './geolocation/geolocation.service';
+import { GeolocationService, GeolocationState } from './geolocation/geolocation.service';
 import { TrajetService } from './trajets/trajet.service';
 import { AppPosition } from './trajets/position.type';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -23,7 +23,31 @@ export class AppComponent implements OnInit, OnDestroy {
   loggedIn: boolean = false;
   response: Message;
   networkUsage: boolean = false;
-  geolocationUsage: boolean = false;
+  private _geolocationUsage: GeolocationState = GeolocationState.stopped;
+
+  getGeolocationIconTitle() {
+    return "geolocation " + this._geolocationUsage;
+  }
+  isGeolocationActive(): boolean {
+    return (this._geolocationUsage == GeolocationState.started) ||
+      (this._geolocationUsage == GeolocationState.succes);
+  }
+  getGeolocationColor(): string {
+
+    let color: string = null;
+    switch (this._geolocationUsage) {
+
+      case GeolocationState.started:
+      case GeolocationState.succes: color = "accent"; break;
+
+      case GeolocationState.stopped:
+      case GeolocationState.pending: color = "basic"; break;
+
+      case GeolocationState.error: color = "warn"; break;
+    }
+    return color;
+  }
+
 
   constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private route: Router, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router, private dialog: MatDialog) {
@@ -42,7 +66,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // abonnement à l'activation de la recherche de position
     this.notificationService.geolocation$.subscribe(
-      (activate: boolean) => this.geolocationUsage = activate);
+      (state: GeolocationState) => this._geolocationUsage = state);
+
+    // abonnement aux messages
+    this.notificationService.emitGeoMessage$.subscribe(
+      (m: Message) => this.response = m);
 
   }
   ngOnDestroy(): void {
@@ -89,7 +117,7 @@ export class AppComponent implements OnInit, OnDestroy {
     let titreDial: string;
 
     // au cas où .. on cherche une position
-    if (!this.geolocationUsage) {
+    if (this._geolocationUsage == GeolocationState.stopped) {
       let forcePosition: boolean = this.geolocationService.forceCurrentPosition();
       titreDial = forcePosition ? "Ma position actuelle" : "Dernière position connue";
     } else {

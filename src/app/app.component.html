@@ -10,9 +10,8 @@
 
   <!--geolocation -->
   <a fxFlex="initial" title="géo-localisation" (click)="showDialogGeolocation()" style="cursor: pointer;">
-    <mat-icon class="material-icons md-24"
-      title="{{geolocationUsage?'Géolocalisation active':'Géolocalisation inactive'}}"
-      color="{{geolocationUsage?'accent':'basic'}}">location_on</mat-icon>
+    <mat-icon class="material-icons md-24" title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">
+      location_on</mat-icon>
   </a>
 
   <!--usage du reseau -->

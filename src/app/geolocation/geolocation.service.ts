@@ -5,6 +5,15 @@ import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { AppPosition } from '../trajets/position.type';
 import { PositionService } from './position.service';
 
+export enum GeolocationState {
+
+  started = "started",
+  stopped = "stopped",
+  pending = "pending",
+  succes = "succes",
+  error = "error"
+}
+
 /*
 * Service gerant la localisation du trajet en cours
 * en utilisant l'API navigator geolocation si disponible
@@ -24,6 +33,8 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private frequenceRafraichissement: number = 30000;
   private facteurMoyenTransport: number = 1;
+
+  private geoMessage: Message;
 
 
   private currentPosition: AppPosition;
@@ -140,7 +151,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (this.geolocation && this.timerid < 0) {
       console.log("startWatch(): toutes les " + (frequence / 1000) + " s");
 
-      this.notificationService.activateGeolocation(true);
+      this.notificationService.activateGeolocation(GeolocationState.started);
       this.findCurrentPosition();
 
       //rafraichir position toutes les 30s 
@@ -170,6 +181,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
   private findCurrentPosition(): void {
 
+    this.notificationService.activateGeolocation(GeolocationState.pending);
     navigator.geolocation.getCurrentPosition(
       (position: Position) => this.geo_success(position),
       (error: PositionError) => this.geo_error(error),
@@ -180,7 +192,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.timerid >= 0) {
 
-      this.notificationService.activateGeolocation(false);
+      this.notificationService.activateGeolocation(GeolocationState.stopped);
       this.notificationService.useNetwork(false);
       console.log("clearWatch()");
       clearInterval(this.timerid);
@@ -190,6 +202,9 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
 
   private geo_success(position: Position): void {
+
+    this.geoMessage = null;
+    this.notificationService.activateGeolocation(GeolocationState.succes);
 
     // ne pas soliciter trop le reseau
     let timestampSec = Math.floor(position.timestamp / 1000);
@@ -228,9 +243,29 @@ export class GeolocationService implements OnInit, OnDestroy {
 
 
   }
+  getGeoMessage(): Message {
+    return this.geoMessage;
+  }
   private geo_error(error: PositionError) {
 
     console.log("Position inconnue! (" + error.code + " - " + error.message + ")");
+    this.notificationService.activateGeolocation(GeolocationState.error);
+
+    let message = null;
+    switch (error.code) {
+
+      case 1: message = "La géolocalisation n'est pas activée sur votre appareil!"; break;
+      case 2: message = "La position ne peut être déterminée à cause d'une erreur technique!"; break;
+      case 3: message = "La position prend trop de temps à être déterminée!"; break;
+    }
+    if (message) {
+      this.geoMessage = {
+        error: true,
+        msg: message
+      }
+      this.notificationService.emitGeoMessage(this.geoMessage);
+    }
+
   }
 
   // stockage en mémoire et dans le LocalStorage

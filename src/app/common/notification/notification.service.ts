@@ -55,6 +55,17 @@ export class NotificationService {
   }
   //--------------------------------------------------
 
+  //--------------------------------------------------
+  //Observable boolean source
+  private invalidTokenSource = new Subject<boolean>();
+  // observable boolean streams
+  invalidToken$ = this.invalidTokenSource.asObservable();
+
+  informInvalidToken(value: boolean) {
+    console.log("NotificationService#informInvalidToken() " + value);
+    this.invalidTokenSource.next(value);
+  }
+  //--------------------------------------------------
 
   //---------------------------------------------------------------
   // notification d'un changement dans le trajet de mon ami en cours

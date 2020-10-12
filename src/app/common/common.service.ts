@@ -24,6 +24,7 @@ export const TOMCAT_API_SERVER = environment.apiUrl;
 //"https://localhost:444/";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
+const TOKEN_TOO_OLD: string = "TOKEN_TOO_OLD";
 
 
 @Injectable({
@@ -38,7 +39,12 @@ export class CommonService {
   };
 
 
-  constructor(private notificationService: NotificationService) { }
+  constructor(private notificationService: NotificationService) {
+
+    if (this.notificationService == undefined) {
+      console.error("notification service undefined!");
+    }
+  }
 
 
   /*
@@ -67,11 +73,17 @@ export class CommonService {
         `body was: ${body}`);
 
       // session fermée - utilisateur non authentifié
+      // code 401 Unauthorized : voir si on peut renouveller le token
       if (httpError.status == 401 && httpError.error.msg) {
-        message = SESSION_CLOSED;
+        if (httpError.error.msg == "Token to be renewed!") {
+          message = TOKEN_TOO_OLD;
+        } else {
+          message = SESSION_CLOSED;
+        }
       }
+
       // message metier depuis api
-      if ((httpError.status >= 400 && httpError.status < 500)
+      else if ((httpError.status >= 400 && httpError.status < 500)
         && httpError.error.msg) {
         message = httpError.error.msg;
       }
@@ -84,6 +96,10 @@ export class CommonService {
 
     if (error === SESSION_CLOSED) {
       this.notificationService.informClosedSession(true);
+    } else if (error === TOKEN_TOO_OLD) {
+      console.log("reconnexion automatique...");
+      this.notificationService.informInvalidToken(true);
+      return;
     }
     if (handler) {
       let errorMsg = {

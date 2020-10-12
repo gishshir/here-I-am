@@ -63,7 +63,7 @@ export class TrajetService {
   // ============================================
   private _callAmiDernierTrajet(idrelation: number): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/last/trajet/ami/" + idrelation;
+    let url = TOMCAT_API_SERVER + "/last/trajet/relation/" + idrelation;
 
     let options = {
       headers: HTTP_HEADER_URL

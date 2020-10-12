@@ -21,6 +21,8 @@ export class AccountService {
     return this.jwtoken;
   }
   private userLoggedIn: User;
+  // on stocke les credentials pour le renouvellement du token
+  private credentials: CredentialsDto;
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
@@ -153,6 +155,7 @@ export class AccountService {
         console.log("loggout next..");
 
         this.userLoggedIn = null;
+        this.credentials = null;
         this.jwtoken = null;
 
         this.notificationService.changeUser(null);
@@ -211,6 +214,25 @@ export class AccountService {
 
   // ============================================
 
+  // renouvellement du token automatique 
+  // (TODO A TESTER)
+  private _subscribeRenewToken(): void {
+
+    this.notificationService.invalidToken$.subscribe(
+
+      (t: boolean) => {
+
+        console.log("reconnect after invalid token...");
+        if (this.credentials != null) {
+
+          this.login(this.credentials.login, this.credentials.password, null);
+          console.log("....reconnect after invalid token DONE");
+        }
+      }
+    );
+
+  }
+
   // ============================================
   private _callLogin(userToLogin: CredentialsDto): Observable<any> {
 
@@ -223,16 +245,23 @@ export class AccountService {
   login(login: string, password: string, handler: UserHandler): void {
     this.logger.log("login " + login);
 
-    let user = this.buildCredentials(login, password);
+    let credentials = this.buildCredentials(login, password);
 
-    this._callLogin(user).subscribe(
+    this._callLogin(credentials).subscribe(
       // next
       (auth: AuthenticationDto) => {
+        this.credentials = credentials;
         this.userLoggedIn = auth.utilisateurDto;
         this.jwtoken = auth.jwtoken;
-        // lance un message pour l'ensemble de l'application
-        this.notificationService.changeUser(this.userLoggedIn.pseudo);
-        handler.onGetUser(this.userLoggedIn);
+
+        if (handler != null) {
+          // lance un message pour l'ensemble de l'application
+          this.notificationService.changeUser(this.userLoggedIn.pseudo);
+          handler.onGetUser(this.userLoggedIn);
+
+          this._subscribeRenewToken();
+          this.notificationService.informInvalidToken(false);
+        }
       }
       ,
       // error

@@ -13,6 +13,7 @@ export enum GeolocationState {
   succes = "succes",
   error = "error"
 }
+const TIMEOUT: number = 29000;
 
 /*
 * Service gerant la localisation du trajet en cours
@@ -41,11 +42,15 @@ export class GeolocationService implements OnInit, OnDestroy {
   // stockage en mémoire de la  liste des positions
   private listPositions: Array<AppPosition>;
 
-  private geo_options = {
-    enableHighAccuracy: true,
-    maximumAge: 20000,
-    timeout: 29000
-  };
+  private currentTimeout: number = TIMEOUT;
+  private geoOptions = this.buildGeoOptions();
+  private buildGeoOptions(): any {
+    return {
+      enableHighAccuracy: true,
+      maximumAge: 20000,
+      timeout: this.currentTimeout
+    };
+  }
 
   constructor(private notificationService: NotificationService,
     private positionService: PositionService) {
@@ -185,7 +190,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     navigator.geolocation.getCurrentPosition(
       (position: Position) => this.geo_success(position),
       (error: PositionError) => this.geo_error(error),
-      this.geo_options);
+      this.geoOptions);
   }
 
   private clearWatch() {
@@ -205,6 +210,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     this.geoMessage = null;
     this.notificationService.activateGeolocation(GeolocationState.succes);
+    this.decrementsTimeout();
 
     // ne pas soliciter trop le reseau
     let timestampSec = Math.floor(position.timestamp / 1000);
@@ -246,6 +252,25 @@ export class GeolocationService implements OnInit, OnDestroy {
   getGeoMessage(): Message {
     return this.geoMessage;
   }
+  private incrementsTimeout(): void {
+
+    let max = TIMEOUT * 4;
+    if (this.currentTimeout < max) {
+      this.currentTimeout += TIMEOUT;
+      this.geoOptions = this.buildGeoOptions();
+      this.restart(this.frequenceRafraichissement);
+    }
+
+  }
+  private decrementsTimeout(): void {
+
+    if (this.currentTimeout > TIMEOUT) {
+      this.currentTimeout -= TIMEOUT;
+      this.geoOptions = this.buildGeoOptions();
+      this.restart(this.frequenceRafraichissement);
+    }
+  }
+
   private geo_error(error: PositionError) {
 
     console.log("Position inconnue! (" + error.code + " - " + error.message + ")");
@@ -256,7 +281,11 @@ export class GeolocationService implements OnInit, OnDestroy {
 
       case 1: message = "La géolocalisation n'est pas activée sur votre appareil!"; break;
       case 2: message = "La position ne peut être déterminée à cause d'une erreur technique!"; break;
-      case 3: message = "La position prend trop de temps à être déterminée!"; break;
+      case 3: {
+        message = "La position prend trop de temps à être déterminée!";
+        this.incrementsTimeout();
+        break;
+      }
     }
     if (message) {
       this.geoMessage = {

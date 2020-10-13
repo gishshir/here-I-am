@@ -4,6 +4,7 @@ import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
 import { Message } from '../../common/message.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
+import { NetworkState } from 'src/app/common/common.service';
 
 
 /**
@@ -58,7 +59,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
   private startTimer() {
 
     console.log("start timer");
-    this.notificationService.useNetwork(true);
+    this.notificationService.useNetwork(NetworkState.started);
     this.timerid = window.setInterval(() => {
 
       this.refreshTrajet();
@@ -69,7 +70,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
 
     if (this.timerid >= 0) {
       console.log("stop timer");
-      this.notificationService.useNetwork(false);
+      this.notificationService.useNetwork(NetworkState.stopped);
       clearInterval(this.timerid);
       this.timerid = -1;
     }

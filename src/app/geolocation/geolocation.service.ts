@@ -4,6 +4,7 @@ import { Message } from '../common/message.type';
 import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { AppPosition } from '../trajets/position.type';
 import { PositionService } from './position.service';
+import { NetworkState } from '../common/common.service';
 
 export enum GeolocationState {
 
@@ -203,7 +204,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (this.timerid >= 0) {
 
       this.activateGeolocation(GeolocationState.stopped);
-      this.notificationService.useNetwork(false);
+      this.notificationService.useNetwork(NetworkState.stopped);
       console.log("clearWatch()");
       clearInterval(this.timerid);
       this.timerid = -1;
@@ -240,14 +241,15 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.trajetid > 0) {
       console.log("appel du service insererNouvellePosition()...");
+      this.notificationService.useNetwork(NetworkState.pending);
       this.positionService.insererNouvellePosition(this.currentPosition, {
         onMessage: (m: Message) => {
           console.log(m.msg);
-          this.notificationService.useNetwork(true);
+          this.notificationService.useNetwork(NetworkState.success);
         },
         onError: (e: Message) => {
           console.log(e.msg);
-          this.notificationService.useNetwork(false);
+          this.notificationService.useNetwork(NetworkState.error);
         }
       });
     }

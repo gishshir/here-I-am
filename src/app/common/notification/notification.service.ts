@@ -4,6 +4,7 @@ import { Trajet } from 'src/app/trajets/trajet.type';
 import { AppPosition } from 'src/app/trajets/position.type';
 import { Message } from '../message.type';
 import { GeolocationState } from 'src/app/geolocation/geolocation.service';
+import { NetworkState } from '../common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +20,15 @@ export class NotificationService {
   }
 
   //--------------------------------------------------
-  // Observable boolean source
-  private networkUsageSource = new Subject<boolean>();
-  // observable boolean streams
+  // Observable NetworkState source
+  private networkUsageSource = new Subject<NetworkState>();
+  // observable NetworkState streams
   networkUsage$ = this.networkUsageSource.asObservable();
 
   // services message commands
-  useNetwork(usage: boolean) {
-    console.log("NotificationService#useNetwork() " + usage);
-    this.networkUsageSource.next(usage);
+  useNetwork(state: NetworkState) {
+    console.log("NotificationService#useNetwork() " + state);
+    this.networkUsageSource.next(state);
   }
   //--------------------------------------------------
 

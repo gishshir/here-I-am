@@ -13,6 +13,14 @@ export const HTTP_HEADER_URL = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
 });
 
+export enum NetworkState {
+
+  started = "started",
+  stopped = "stopped",
+  pending = "pending",
+  success = "success",
+  error = "error"
+}
 
 //export const PHP_API_SERVER = environment.apiUrl;
 export const TOMCAT_API_SERVER = environment.apiUrl;

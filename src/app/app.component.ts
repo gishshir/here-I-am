@@ -11,6 +11,7 @@ import { TrajetService } from './trajets/trajet.service';
 import { AppPosition } from './trajets/position.type';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
+import { NetworkState } from './common/common.service';
 
 @Component({
   selector: 'app-root',
@@ -22,20 +23,42 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'Où sont mes amis ?';
   loggedIn: boolean = false;
   response: Message;
-  networkUsage: boolean = false;
-  private _geolocationUsage: GeolocationState = GeolocationState.stopped;
+
+  // Network state
+  private _networkState: NetworkState = NetworkState.stopped;
+  getNetworkIconTitle() {
+    return "network " + this._networkState;
+  }
+  getNetworkColor(): string {
+
+    let color: string = null;
+    switch (this._networkState) {
+
+      case NetworkState.started:
+      case NetworkState.success: color = "accent"; break;
+
+      case NetworkState.stopped:
+      case NetworkState.pending: color = "basic"; break;
+
+      case NetworkState.error: color = "warn"; break;
+    }
+    return color;
+  }
+
+  // geolocation state
+  private _geolocationState: GeolocationState = GeolocationState.stopped;
 
   getGeolocationIconTitle() {
-    return "geolocation " + this._geolocationUsage;
+    return "geolocation " + this._geolocationState;
   }
   isGeolocationActive(): boolean {
-    return (this._geolocationUsage == GeolocationState.started) ||
-      (this._geolocationUsage == GeolocationState.succes);
+    return (this._geolocationState == GeolocationState.started) ||
+      (this._geolocationState == GeolocationState.succes);
   }
   getGeolocationColor(): string {
 
     let color: string = null;
-    switch (this._geolocationUsage) {
+    switch (this._geolocationState) {
 
       case GeolocationState.started:
       case GeolocationState.succes: color = "accent"; break;
@@ -62,11 +85,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // abonnement à l'usage intensif du réseau
     this.notificationService.networkUsage$.subscribe(
-      (usage: boolean) => this.networkUsage = usage);
+      (state: NetworkState) => this._networkState = state);
 
     // abonnement à l'activation de la recherche de position
     this.notificationService.geolocation$.subscribe(
-      (state: GeolocationState) => this._geolocationUsage = state);
+      (state: GeolocationState) => this._geolocationState = state);
 
     // abonnement aux messages
     this.notificationService.emitGeoMessage$.subscribe(
@@ -117,8 +140,8 @@ export class AppComponent implements OnInit, OnDestroy {
     let titreDial: string;
 
     // au cas où .. on cherche une position
-    // TODO revoir la condition
-    if (this._geolocationUsage == GeolocationState.stopped) {
+    if (this._geolocationState == GeolocationState.stopped ||
+      this._geolocationState == GeolocationState.error) {
       let forcePosition: boolean = this.geolocationService.forceCurrentPosition();
       titreDial = forcePosition ? "Ma position actuelle" : "Dernière position connue";
     } else {

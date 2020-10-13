@@ -16,9 +16,8 @@
 
   <!--usage du reseau -->
   <div fxFlex="initial" title="Usage du réseau">
-    <mat-icon class="material-icons md-24"
-      title="{{networkUsage?'Utilisation intense réseau':'Utilisation faible du réseau'}}"
-      color="{{networkUsage?'accent':'basic'}}">network_check</mat-icon>
+    <mat-icon class="material-icons md-24" title="{{getNetworkIconTitle()}}" color="{{getNetworkColor()}}">network_check
+    </mat-icon>
   </div>
 
   <!--logout-->

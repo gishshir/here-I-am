@@ -5,6 +5,7 @@ import { Message } from 'src/app/common/message.type';
 import { ToolsService } from 'src/app/common/tools.service';
 import { PositionService } from 'src/app/geolocation/position.service';
 import { Geoportail } from 'src/app/geoportail/geoportail.type';
+import { AppStorageService } from '../storage.service';
 
 @Component({
   selector: 'app-trajet-geolocation',
@@ -32,7 +33,7 @@ export class TrajetGeolocationComponent implements OnInit {
   private gpxfile: string;
 
 
-  constructor(private positionService: PositionService,
+  constructor(private positionService: PositionService, private localStorage: AppStorageService,
     private tools: ToolsService) { }
 
   ngOnInit(): void {
@@ -75,7 +76,7 @@ export class TrajetGeolocationComponent implements OnInit {
   */
   verifierSiListPositionExisteInLocalStorage() {
 
-    let listPositions = this.positionService.restoreListePositionsFromLocalStorage(this.trajet.id);
+    let listPositions = this.localStorage.restoreListePositions(this.trajet.id);
     if (listPositions && listPositions.length > 0) {
 
       // on les envoie sur le serveur distant

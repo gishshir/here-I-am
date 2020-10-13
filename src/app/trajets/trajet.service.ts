@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -8,6 +8,7 @@ import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { ToolsService } from '../common/tools.service';
+import { AppStorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ import { ToolsService } from '../common/tools.service';
 export class TrajetService {
 
   constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService,
-    private toolsService: ToolsService) { }
+    private toolsService: ToolsService, private localStorage: AppStorageService) { }
 
   // chercher un trajet par son id, soit pour l'utilisateur courant soit pour un ami.
   private _callFindTrajetById(trajetid: number, ami: boolean): Observable<any> {
@@ -119,7 +120,7 @@ export class TrajetService {
 
 
   // ===========================================================
-  private _callCreateTrajet(newTrajet: any): Observable<any> {
+  private _callCreateTrajet(newTrajet: Trajet): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/trajet";
 
@@ -129,17 +130,26 @@ export class TrajetService {
   }
   demarrerNouveauTrajet(mean: TrajetMeans, handler: TrajetHandler): void {
 
-    let newTrajet: any = {
+    let newTrajet: Trajet = {
+      id: -999,
       starttime: this.toolsService.getNowTimestampEnSec(),
-      mean: mean
+      endtime: -1,
+      mean: mean,
+      etat: TrajetState.started
     };
 
     this._callCreateTrajet(newTrajet).subscribe(
       // next
-      (data: Trajet) => handler.onGetTrajet(data)
+      (trajet: Trajet) => {
+        this.localStorage.saveTrajet(trajet);
+        handler.onGetTrajet(trajet);
+      }
       ,
       // error
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+      (error: string) => {
+        this.localStorage.saveTrajet(newTrajet);
+        this.commonService._propageErrorToHandler(error, handler);
+      }
 
     );
 
@@ -198,10 +208,23 @@ export class TrajetService {
 
     this._callUpdateTrajetStatus(trajetToUpdate).subscribe(
       // next
-      (data: Trajet) => handler.onGetTrajet(data)
+      (trajet: Trajet) => {
+        this.localStorage.saveTrajet(trajet);
+        if (newState == TrajetState.ended) {
+          this.localStorage.clearLocalStorageTrajet(trajetId);
+        }
+        handler.onGetTrajet(trajet);
+      }
       ,
       // error
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+      (error: string) => {
+        let trajetLocal: Trajet = this.localStorage.restoreTrajet(trajetId);
+        if (trajetLocal) {
+          trajetLocal.etat = newState;
+          this.localStorage.saveTrajet(trajetLocal);
+        }
+        this.commonService._propageErrorToHandler(error, handler);
+      }
 
     );
   }

@@ -5,6 +5,7 @@ import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { AppPosition } from '../trajets/position.type';
 import { PositionService } from './position.service';
 import { NetworkState } from '../common/common.service';
+import { AppStorageService } from '../trajets/storage.service';
 
 export enum GeolocationState {
 
@@ -55,7 +56,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
 
   constructor(private notificationService: NotificationService,
-    private positionService: PositionService) {
+    private positionService: PositionService, private localStorage: AppStorageService) {
     if ("geolocation" in navigator) {
 
       console.log("geolocation active dans le navigateur!");
@@ -88,7 +89,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private clearWatchAndSave(): void {
     this.clearWatch();
-    this.positionService.saveListPositionsToLocalStorage(this.trajetid, this.listPositions);
+    this.localStorage.saveListPositions(this.trajetid, this.listPositions);
   }
 
   getCurrentPosition(): AppPosition {
@@ -104,7 +105,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (trajet && trajet.etat != TrajetState.ended) {
       if (newtrajet) {
-        this.listPositions = this.positionService.restoreListePositionsFromLocalStorage(this.trajetid);
+        this.listPositions = this.localStorage.restoreListePositions(this.trajetid);
       }
       // on ralentit la mesure de position si on est en pause
       // on ralentit également selon le moyen de transport
@@ -310,7 +311,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (appPosition && appPosition.trajetid > 0) {
 
       this.listPositions.push(appPosition);
-      this.positionService.saveListPositionsToLocalStorage(this.trajetid, this.listPositions);
+      this.localStorage.saveListPositions(this.trajetid, this.listPositions);
     }
 
   }

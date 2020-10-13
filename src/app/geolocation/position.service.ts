@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppPosition } from '../trajets/position.type';
+import { AppStorageService } from '../trajets/storage.service';
 import { Observable } from 'rxjs';
 import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../common/notification/notification.service';
 import { HttpClient } from '@angular/common/http';
-import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { Geoportail } from '../geoportail/geoportail.type';
 import { Location } from '@angular/common';
 
@@ -21,42 +21,11 @@ import * as fileSaver from 'file-saver';
 })
 export class PositionService {
 
-  private remote: boolean = false;
 
-  constructor(private notificationService: NotificationService, private http: HttpClient,
-    private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService,
-    private location: Location) {
+  constructor(private http: HttpClient,
+    private commonService: CommonService, private localStorage: AppStorageService) {
   }
 
-
-  restoreListePositionsFromLocalStorage(trajetid: number): Array<AppPosition> {
-
-    console.log("restoreListePositionsFromLocalStorage...");
-
-    let listPositions = new Array<AppPosition>();
-    if (trajetid > 0) {
-      let key: string = this.buildLocalStorageKey(trajetid);
-      if (this.storage.has(key)) {
-        // on récupère les valeurs stockées sur ce même trajet
-        listPositions = JSON.parse(this.storage.get(key));
-
-        listPositions.forEach(p => console.log("position: [trajetid:" + p.timestamp + " - tmst: " + p.timestamp));
-      } else {
-        console.log(".. pas de positions stockées!")
-
-      }
-    }
-    return listPositions;
-  }
-  saveListPositionsToLocalStorage(trajetid: number, listPositions: Array<AppPosition>): void {
-
-    if (trajetid > 0 && listPositions && listPositions.length > 0) {
-      let key: string = this.buildLocalStorageKey(trajetid);
-      let values = JSON.stringify(listPositions);
-      console.log("saveListPositionsToLocalStorage(): " + values);
-      this.storage.set(key, values);
-    }
-  }
 
   insererListePositionAndClearLocalStorage(trajetid: number, listPositions: Array<AppPosition>): void {
 
@@ -65,14 +34,10 @@ export class PositionService {
         onError: (e: Message) => console.log(e.msg),
         onMessage: (m: Message) => {
           console.log(m.msg);
-          this.storage.remove(this.buildLocalStorageKey(trajetid));
+          this.localStorage.clearLocalStorageListPositions(trajetid);
         }
       });
     }
-  }
-
-  private buildLocalStorageKey(trajetid: number): string {
-    return "TRAJET#" + trajetid;
   }
 
   // ===========================================================

@@ -7,13 +7,15 @@ import { catchError, map } from 'rxjs/operators';
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
 import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
+import { ToolsService } from '../common/tools.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrajetService {
 
-  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService) { }
+  constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService,
+    private toolsService: ToolsService) { }
 
   // chercher un trajet par son id, soit pour l'utilisateur courant soit pour un ami.
   private _callFindTrajetById(trajetid: number, ami: boolean): Observable<any> {
@@ -128,7 +130,7 @@ export class TrajetService {
   demarrerNouveauTrajet(mean: TrajetMeans, handler: TrajetHandler): void {
 
     let newTrajet: any = {
-      starttime: new Date().getTime() / 1000,
+      starttime: this.toolsService.getNowTimestampEnSec(),
       mean: mean
     };
 
@@ -190,7 +192,8 @@ export class TrajetService {
     let trajetToUpdate: any = {
 
       trajetid: trajetId,
-      etat: newState
+      etat: newState,
+      timestamp: this.toolsService.getNowTimestampEnSec()
     }
 
     this._callUpdateTrajetStatus(trajetToUpdate).subscribe(

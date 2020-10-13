@@ -35,6 +35,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   private frequenceRafraichissement: number = 30000;
   private facteurMoyenTransport: number = 1;
 
+  private geoState: GeolocationState = GeolocationState.stopped;
   private geoMessage: Message;
 
 
@@ -156,7 +157,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (this.geolocation && this.timerid < 0) {
       console.log("startWatch(): toutes les " + (frequence / 1000) + " s");
 
-      this.notificationService.activateGeolocation(GeolocationState.started);
+      this.activateGeolocation(GeolocationState.started);
       this.findCurrentPosition();
 
       //rafraichir position toutes les 30s 
@@ -172,21 +173,25 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   /**
    * force la recherche d'une position 
-   * si le timer de la geolocation n'est pas en route.
+   * si le status de geolocation est différent de succes
    */
   forceCurrentPosition(): boolean {
 
     console.log("force current position...");
-    if (this.timerid == -1) {
+    if (this.geoState != GeolocationState.succes) {
       this.findCurrentPosition();
       return true;
     }
 
     return false;
   }
+  private activateGeolocation(state: GeolocationState): void {
+    this.geoState = state;
+    this.notificationService.activateGeolocation(state);
+  }
   private findCurrentPosition(): void {
 
-    this.notificationService.activateGeolocation(GeolocationState.pending);
+    this.activateGeolocation(GeolocationState.pending);
     navigator.geolocation.getCurrentPosition(
       (position: Position) => this.geo_success(position),
       (error: PositionError) => this.geo_error(error),
@@ -197,7 +202,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.timerid >= 0) {
 
-      this.notificationService.activateGeolocation(GeolocationState.stopped);
+      this.activateGeolocation(GeolocationState.stopped);
       this.notificationService.useNetwork(false);
       console.log("clearWatch()");
       clearInterval(this.timerid);
@@ -209,7 +214,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   private geo_success(position: Position): void {
 
     this.geoMessage = null;
-    this.notificationService.activateGeolocation(GeolocationState.succes);
+    this.activateGeolocation(GeolocationState.succes);
     this.decrementsTimeout();
 
     // ne pas soliciter trop le reseau
@@ -274,7 +279,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   private geo_error(error: PositionError) {
 
     console.log("Position inconnue! (" + error.code + " - " + error.message + ")");
-    this.notificationService.activateGeolocation(GeolocationState.error);
+    this.activateGeolocation(GeolocationState.error);
 
     let message = null;
     switch (error.code) {

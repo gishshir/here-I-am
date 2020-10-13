@@ -117,6 +117,7 @@ export class AppComponent implements OnInit, OnDestroy {
     let titreDial: string;
 
     // au cas où .. on cherche une position
+    // TODO revoir la condition
     if (this._geolocationUsage == GeolocationState.stopped) {
       let forcePosition: boolean = this.geolocationService.forceCurrentPosition();
       titreDial = forcePosition ? "Ma position actuelle" : "Dernière position connue";

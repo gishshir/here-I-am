@@ -1,51 +1,59 @@
 import { Inject, Injectable } from '@angular/core';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { AccountService } from '../account/account.service';
 import { AppPosition } from './position.type';
 import { Trajet } from './trajet.type';
 
+// Attention prendre en compte plusieurs utilisateurs différents sur une meme machine...
 @Injectable({
   providedIn: 'root'
 })
 export class AppStorageService {
 
-  constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
+  constructor(@Inject(LOCAL_STORAGE) private storage: StorageService,
+    private accountService: AccountService) { }
 
-  restoreListePositions(trajetid: number): Array<AppPosition> {
+  restoreCurrentPositions(): Array<AppPosition> {
 
-    console.log("restoreListePositions...");
+    let key: string = this.buildLocalStorageKeyForPositions();
+    console.log("[key:" + key + "] restoreListePositions...");
 
     let listPositions = new Array<AppPosition>();
-    if (trajetid > 0) {
-      let key: string = this.buildLocalStorageKeyForPositions(trajetid);
-      if (this.storage.has(key)) {
-        // on récupère les valeurs stockées sur ce même trajet
-        listPositions = JSON.parse(this.storage.get(key));
 
-        listPositions.forEach(p => console.log("position: [trajetid:" + p.timestamp + " - tmst: " + p.timestamp));
-      } else {
-        console.log(".. pas de positions stockées!")
 
-      }
+    if (this.storage.has(key)) {
+      // on récupère les valeurs stockées sur ce même trajet
+      listPositions = JSON.parse(this.storage.get(key));
+
+      listPositions.forEach(p => console.log("position: [trajetid:" + p.trajetid + " - tmst: " + p.timestamp));
+    } else {
+      console.log(".. pas de positions stockées!")
+
     }
+
     return listPositions;
   }
-  saveListPositions(trajetid: number, listPositions: Array<AppPosition>): void {
+  saveCurrentPositions(listPositions: Array<AppPosition>): void {
 
-    if (trajetid > 0 && listPositions && listPositions.length > 0) {
-      let key: string = this.buildLocalStorageKeyForPositions(trajetid);
+    if (listPositions && listPositions.length > 0) {
+      let key: string = this.buildLocalStorageKeyForPositions();
       let values = JSON.stringify(listPositions);
-      console.log("saveListPositions(): " + values);
+      console.log("[key:" + key + "] saveListPositions(): " + values);
       this.storage.set(key, values);
     }
   }
 
-  restoreTrajet(trajetid: number): Trajet {
+  restoreCurrentTrajet(): Trajet {
 
-    let key: string = this.buildLocalStorageKeyForTrajet(trajetid);
+    let key: string = this.buildLocalStorageKeyForTrajet();
+    console.log("[key:" + key + "] restoreCurrentTrajet...");
     let trajet: Trajet = null;
+
     if (this.storage.has(key)) {
       // on récupère les valeurs stockées sur ce même trajet
-      trajet = JSON.parse(this.storage.get(key));
+      let value = this.storage.get(key);
+      console.log("[key:" + key + "] Récupération trajet courant: " + value);
+      trajet = JSON.parse(value);
 
     } else {
       console.log(".. pas de trajet stocké!");
@@ -53,28 +61,39 @@ export class AppStorageService {
     return trajet;
   }
 
-  saveTrajet(trajet: Trajet): void {
+  saveCurrentTrajet(trajet: Trajet): void {
+    let key: string = this.buildLocalStorageKeyForTrajet();
+    console.log("[key:" + key + "] sauvegarde du trajet en cours... " + trajet.id);
 
-    console.log("sauvegarde du trajet: " + trajet.id);
-    let key: string = this.buildLocalStorageKeyForTrajet(trajet.id);
     let values = JSON.stringify(trajet);
     console.log("saveTrajet(): " + values);
     this.storage.set(key, values);
   }
 
-  clearLocalStorageListPositions(trajetid: number): void {
-    console.log("effacement des positions du trajet: " + trajetid);
-    this.storage.remove(this.buildLocalStorageKeyForPositions(trajetid));
+  clearLocalStorageListPositions(): void {
+    let key = this.buildLocalStorageKeyForPositions();
+    console.log("[key:" + key + "] effacement des positions du trajet courant ");
+    this.storage.remove(key);
   }
-  clearLocalStorageTrajet(trajetid: number): void {
-    console.log("effacement du trajet: " + trajetid);
-    this.storage.remove(this.buildLocalStorageKeyForTrajet(trajetid));
+  clearLocalStorageTrajet(): void {
+    let key = this.buildLocalStorageKeyForTrajet();
+    console.log("[key:" + key + "] effacement du trajet courant");
+    this.storage.remove(key);
   }
 
-  private buildLocalStorageKeyForPositions(trajetid: number): string {
-    return "POSITIONS#" + trajetid;
+  private buildKeyCurrentUser(): string {
+
+    let currentUser = this.accountService.getCurrentUser();
+    if (currentUser) {
+      return "USER#" + currentUser.login;
+    }
+    return "USER#xx";
   }
-  private buildLocalStorageKeyForTrajet(trajetid: number): string {
-    return "TRAJET#" + trajetid;
+
+  private buildLocalStorageKeyForPositions(): string {
+    return this.buildKeyCurrentUser() + "#POS#";
+  }
+  private buildLocalStorageKeyForTrajet(): string {
+    return this.buildKeyCurrentUser() + "#TRAJET#";
   }
 }

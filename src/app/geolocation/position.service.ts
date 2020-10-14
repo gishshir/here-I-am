@@ -27,14 +27,14 @@ export class PositionService {
   }
 
 
-  insererListePositionAndClearLocalStorage(trajetid: number, listPositions: Array<AppPosition>): void {
+  insererListePositionAndClearLocalStorage(listPositions: Array<AppPosition>): void {
 
     if (listPositions && listPositions.length > 0) {
       this.insererListePositions(listPositions, {
         onError: (e: Message) => console.log(e.msg),
         onMessage: (m: Message) => {
           console.log(m.msg);
-          this.localStorage.clearLocalStorageListPositions(trajetid);
+          this.localStorage.clearLocalStorageListPositions();
         }
       });
     }
@@ -147,6 +147,23 @@ export class PositionService {
 
   //=============================================
 
+  /*
+ * aucune position n'est enregistrée.
+ * Verifier le local storage contient ces informations
+ * Si c'est le cas elles sont envoyées au serveur et le local storage est nettoyé.
+ * C'est une fonction de récupération dans le cas où l'envoi normal a échoué pour
+ * un problème réseau.
+ */
+  verifierSiListPositionExisteInLocalStorage() {
+
+    let listPositions = this.localStorage.restoreCurrentPositions();
+    if (listPositions && listPositions.length > 0) {
+
+      // on les envoie sur le serveur distant
+      this.insererListePositionAndClearLocalStorage(listPositions);
+    }
+  }
+  //=============================================
 
   buildUrlToMaps(position: AppPosition): string {
 

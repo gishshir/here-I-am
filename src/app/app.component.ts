@@ -101,10 +101,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     console.log("App onInit()...");
-    this.trajetService.chercherDernierTrajet({
-      onGetTrajet: (t: Trajet) => this.notificationService.changeMonTrajet(t),
-      onError: (e: Message) => console.log(e.msg)
-    });
   }
 
   logout() {

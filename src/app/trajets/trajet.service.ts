@@ -98,15 +98,49 @@ export class TrajetService {
   }
   chercherDernierTrajet(handler: TrajetHandler): void {
 
+    // Dans tous les cas, on regarde si on n'a pas un trajet dans le local storage
+    let trajetLocal = this.localStorage.restoreCurrentTrajet();
+
     this._callDernierTrajet().subscribe(
       // next (boolean ou trajet)
-      (data: Trajet) => {
-        handler.onGetTrajet(data);
+      (trajet: Trajet) => {
+        this._analyseDifferenceTrajetLocalRemote(trajetLocal, trajet, handler);
       },
       // error
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
-
+      (error: string) => {
+        if (trajetLocal) {
+          console.log("onGetTrajet LOCAL !!");
+          handler.onGetTrajet(trajetLocal);
+        } else {
+          this.commonService._propageErrorToHandler(error, handler);
+        }
+      }
     );
+  }
+  // si on constate des différences entre le trajet stocké en local et celui de la bdd,
+  // il faut déterminer lequel est le plus fiable 
+  //et mettre à jour le local storage ou la bdd si nécessaire
+  private _analyseDifferenceTrajetLocalRemote(trajetLocal: Trajet, trajetRemote: Trajet, handler: TrajetHandler): void {
+
+    // trajets différents ou trajet Bdd terminé
+    if (trajetLocal == null || trajetLocal.id != trajetRemote.id || trajetRemote.etat == TrajetState.ended) {
+      // on remplace le trajet local qui n'est pas forcément à jour
+      this.localStorage.saveCurrentTrajet(trajetRemote);
+      handler.onGetTrajet(trajetRemote);
+    }
+
+    // trajets de status différent: c'est le trajet local qui va etre privilégié
+    else if (trajetLocal.etat != trajetRemote.etat) {
+      console.log("Trajet LOCAL ecrase trajet REMOTE !!");
+      // on enregistre le dernier etat en BDD 
+      this.changerStatusTrajet(trajetLocal.id, trajetLocal.etat, handler);
+
+    }
+    // pas de différence
+    else {
+      handler.onGetTrajet(trajetRemote);
+    }
+
   }
   // determine si le dernier trajet est dans un etat particulier
   compareEtatDernierTrajet(etat: TrajetState): Observable<boolean> {
@@ -141,13 +175,13 @@ export class TrajetService {
     this._callCreateTrajet(newTrajet).subscribe(
       // next
       (trajet: Trajet) => {
-        this.localStorage.saveTrajet(trajet);
+        this.localStorage.saveCurrentTrajet(trajet);
         handler.onGetTrajet(trajet);
       }
       ,
       // error
       (error: string) => {
-        this.localStorage.saveTrajet(newTrajet);
+        this.localStorage.saveCurrentTrajet(newTrajet);
         this.commonService._propageErrorToHandler(error, handler);
       }
 
@@ -198,32 +232,37 @@ export class TrajetService {
 
   changerStatusTrajet(trajetId: number, newState: TrajetState, handler: TrajetHandler): void {
 
-
+    let timestamp = this.toolsService.getNowTimestampEnSec();
     let trajetToUpdate: any = {
 
       trajetid: trajetId,
       etat: newState,
-      timestamp: this.toolsService.getNowTimestampEnSec()
+      timestamp: timestamp
     }
 
     this._callUpdateTrajetStatus(trajetToUpdate).subscribe(
       // next
       (trajet: Trajet) => {
-        this.localStorage.saveTrajet(trajet);
+        this.localStorage.saveCurrentTrajet(trajet);
         if (newState == TrajetState.ended) {
-          this.localStorage.clearLocalStorageTrajet(trajetId);
+          this.localStorage.clearLocalStorageTrajet();
         }
         handler.onGetTrajet(trajet);
       }
       ,
       // error
       (error: string) => {
-        let trajetLocal: Trajet = this.localStorage.restoreTrajet(trajetId);
+        let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
         if (trajetLocal) {
           trajetLocal.etat = newState;
-          this.localStorage.saveTrajet(trajetLocal);
+          if (newState == TrajetState.ended) {
+            trajetLocal.endtime = timestamp;
+          }
+          this.localStorage.saveCurrentTrajet(trajetLocal);
+          handler.onGetTrajet(trajetLocal);
+        } else {
+          this.commonService._propageErrorToHandler(error, handler);
         }
-        this.commonService._propageErrorToHandler(error, handler);
       }
 
     );

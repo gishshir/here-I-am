@@ -89,7 +89,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private clearWatchAndSave(): void {
     this.clearWatch();
-    this.localStorage.saveListPositions(this.trajetid, this.listPositions);
+    this.localStorage.saveCurrentPositions(this.listPositions);
   }
 
   getCurrentPosition(): AppPosition {
@@ -105,7 +105,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (trajet && trajet.etat != TrajetState.ended) {
       if (newtrajet) {
-        this.listPositions = this.localStorage.restoreListePositions(this.trajetid);
+        this.listPositions = this.localStorage.restoreCurrentPositions();
       }
       // on ralentit la mesure de position si on est en pause
       // on ralentit également selon le moyen de transport
@@ -117,7 +117,7 @@ export class GeolocationService implements OnInit, OnDestroy {
       this.clearWatchAndSave();
 
       // sauvegarde sur le serveur de la liste complète
-      this.positionService.insererListePositionAndClearLocalStorage(this.trajetid, this.listPositions);
+      this.positionService.insererListePositionAndClearLocalStorage(this.listPositions);
 
     }
   }
@@ -311,7 +311,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (appPosition && appPosition.trajetid > 0) {
 
       this.listPositions.push(appPosition);
-      this.localStorage.saveListPositions(this.trajetid, this.listPositions);
+      this.localStorage.saveCurrentPositions(this.listPositions);
     }
 
   }

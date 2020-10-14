@@ -92,7 +92,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log("trajet en cours: " + this.trajetService);
+    console.log("trajet en cours: " + this.trajet.id);
     if (this.timerOn) {
       this.startTimer();
     }

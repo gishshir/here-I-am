@@ -31,6 +31,10 @@ export class AccountService {
     private sanitizer: DomSanitizer,
     private commonService: CommonService, private notificationService: NotificationService) { }
 
+  getCurrentUser(): User {
+    return this.userLoggedIn;
+  }
+
   // ============================================
   _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
 
@@ -215,7 +219,6 @@ export class AccountService {
   // ============================================
 
   // renouvellement du token automatique 
-  // (TODO A TESTER)
   private _subscribeRenewToken(): void {
 
     this.notificationService.invalidToken$.subscribe(

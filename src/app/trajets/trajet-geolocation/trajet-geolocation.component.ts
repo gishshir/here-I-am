@@ -51,7 +51,7 @@ export class TrajetGeolocationComponent implements OnInit {
             this.createGpxFile();
           } else {
             // pas de positions. S'assurer que c'est normal...
-            this.verifierSiListPositionExisteInLocalStorage();
+            this.positionService.verifierSiListPositionExisteInLocalStorage();
           }
         }
       });
@@ -67,22 +67,7 @@ export class TrajetGeolocationComponent implements OnInit {
   }
 
 
-  /*
-  * aucune position n'est enregistrée.
-  * Verifier le local storage contient ces informations
-  * Si c'est le cas elles sont envoyées au serveur et le local storage est nettoyé.
-  * C'est une fonction de récupération dans le cas où l'envoi normal a échoué pour
-  * un problème réseau.
-  */
-  verifierSiListPositionExisteInLocalStorage() {
 
-    let listPositions = this.localStorage.restoreListePositions(this.trajet.id);
-    if (listPositions && listPositions.length > 0) {
-
-      // on les envoie sur le serveur distant
-      this.positionService.insererListePositionAndClearLocalStorage(this.trajet.id, listPositions);
-    }
-  }
 
   createGpxFile() {
     this.gpxfile = null;

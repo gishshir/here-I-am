@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Trajet, TrajetState, TrajetMeans } from './trajet.type';
-import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
+import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER, BoolResponseHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { ToolsService } from '../common/tools.service';
 import { AppStorageService } from './storage.service';
+import { NotificationService } from '../common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,21 @@ import { AppStorageService } from './storage.service';
 export class TrajetService {
 
   constructor(private logger: LoggerService, private http: HttpClient, private commonService: CommonService,
-    private toolsService: ToolsService, private localStorage: AppStorageService) { }
+    private toolsService: ToolsService, private localStorage: AppStorageService,
+    private notificationService: NotificationService) {
+
+    // abonnement au changement d'utilisateur
+    this.notificationService.changeUser$.subscribe(
+      (pseudo?: string) => {
+        if (pseudo) {
+          console.log("pseudo: " + pseudo);
+          this.sauvegarderTrajetsArchives();
+        }
+      }
+    );
+
+
+  }
 
   // chercher un trajet par son id, soit pour l'utilisateur courant soit pour un ami.
   private _callFindTrajetById(trajetid: number, ami: boolean): Observable<any> {
@@ -122,31 +137,77 @@ export class TrajetService {
   //et mettre à jour le local storage ou la bdd si nécessaire
   private _analyseDifferenceTrajetLocalRemote(trajetLocal: Trajet, trajetRemote: Trajet, handler: TrajetHandler): void {
 
-    // trajets différents ou trajet Bdd terminé
-    if (trajetLocal == null || trajetLocal.id != trajetRemote.id || trajetRemote.etat == TrajetState.ended) {
-      // on remplace le trajet local qui n'est pas forcément à jour
-      this.localStorage.saveCurrentTrajet(trajetRemote);
-      handler.onGetTrajet(trajetRemote);
+    let trajet = null;
+
+    // pas de trajet local
+    if (trajetLocal == null) {
+      //this.localStorage.saveCurrentTrajet(trajetRemote);
+      trajet = trajetRemote;
+      //handler.onGetTrajet(trajetRemote);
+    }
+    // ===============================
+    // trajet différents
+    // ===============================
+    // on garde celui qui a le starttime le plus récent
+    else if (trajetLocal.id != trajetRemote.id) {
+
+      trajet = (trajetLocal.starttime > trajetRemote.starttime) ? trajetLocal : trajetRemote;
     }
 
-    // trajets de status différent: c'est le trajet local qui va etre privilégié
-    else if (trajetLocal.etat != trajetRemote.etat) {
-      console.log("Trajet LOCAL ecrase trajet REMOTE !!");
-      // on enregistre le dernier etat en BDD 
-      this.changerStatusTrajet(trajetLocal.id, trajetLocal.etat, handler);
+    // ===============================
+    // trajet identiques
+    // ===============================
 
+    // trajet remote terminé
+    else if (trajetRemote.etat == TrajetState.ended) {
+      trajet = trajetRemote;
+    }
+
+    //  status différent: c'est le trajet local qui va etre privilégié
+    else if (trajetLocal.etat != trajetRemote.etat) {
+      // on enregistre le dernier etat en BDD 
+      this.changerStatusTrajet(trajetLocal, trajetLocal.etat, handler);
+      trajet = null; // pas de propagation
+    }
+    //  moyen de transport différent: c'est le trajet local qui va etre privilégié
+    else if (trajetLocal.mean != trajetRemote.mean) {
+      // on enregistre le dernier mean en BDD 
+      this.changerMeanTrajet(trajetLocal.id, trajetLocal.mean, handler);
+      trajet = null; // pas de propagation
     }
     // pas de différence
     else {
-      handler.onGetTrajet(trajetRemote);
+      trajet = trajetRemote;
+    }
+
+    if (trajet == trajetRemote) {
+      console.log("Trajet REMOTE ecrase trajet LOCAL !!");
+      this.localStorage.saveCurrentTrajet(trajetRemote);
+    } else {
+      console.log("Trajet LOCAL ecrase trajet REMOTE !!");
+    }
+    if (trajet != null) {
+      // propagation vers le handler
+      handler.onGetTrajet(trajet);
     }
 
   }
   // determine si le dernier trajet est dans un etat particulier
   compareEtatDernierTrajet(etat: TrajetState): Observable<boolean> {
 
-    return this._callDernierTrajet().pipe(
-      map((t?: any) => ((t && t.retour == false) || (t && t.id && t.etat == etat))));
+    // fonction de transformation des values du stream 
+    let responsMap = map((t?: any) => ((t && t.retour == false) || (t && t.id && t.etat == etat)));
+
+    // Dans tous les cas, on regarde si on n'a pas un trajet dans le local storage
+    let trajetLocal = this.localStorage.restoreCurrentTrajet();
+
+    let errorFunction = (e: any) => {
+      let localResp: boolean = trajetLocal == null || trajetLocal.etat == TrajetState.ended;
+      return of(localResp)
+    };
+
+    return this._callDernierTrajet().pipe(responsMap,
+      catchError(errorFunction));
   }
 
   // ===========================================================
@@ -163,6 +224,13 @@ export class TrajetService {
 
   }
   demarrerNouveauTrajet(mean: TrajetMeans, handler: TrajetHandler): void {
+
+    // Dans tous les cas, on regarde si on n'a pas un trajet dans le local storage
+    let trajetLocal = this.localStorage.restoreCurrentTrajet();
+    // si existe on l'archive pour ne pas l'écraser
+    if (trajetLocal) {
+      this.localStorage.archiveTrajet(trajetLocal);
+    }
 
     let newTrajet: Trajet = {
       id: -999,
@@ -182,7 +250,26 @@ export class TrajetService {
       // error
       (error: string) => {
         this.localStorage.saveCurrentTrajet(newTrajet);
-        this.commonService._propageErrorToHandler(error, handler);
+        handler.onGetTrajet(newTrajet);
+      }
+
+    );
+  }
+
+
+  saveTrajet(trajetToSave: Trajet, handler: TrajetHandler): void {
+
+    this._callCreateTrajet(trajetToSave).subscribe(
+      // next
+      (trajet: Trajet) => {
+        this.localStorage.saveCurrentTrajet(trajet);
+        handler.onGetTrajet(trajet);
+      }
+      ,
+      // error
+      (error: string) => {
+        this.localStorage.saveCurrentTrajet(trajetToSave);
+        handler.onGetTrajet(trajetToSave);
       }
 
     );
@@ -230,42 +317,55 @@ export class TrajetService {
       );
   }
 
-  changerStatusTrajet(trajetId: number, newState: TrajetState, handler: TrajetHandler): void {
+  changerStatusTrajet(trajet: Trajet, newState: TrajetState, handler: TrajetHandler): void {
 
     let timestamp = this.toolsService.getNowTimestampEnSec();
-    let trajetToUpdate: any = {
 
-      trajetid: trajetId,
-      etat: newState,
-      timestamp: timestamp
+    // creation d'un trajet uniquement local
+    if (trajet.id < 0) {
+
+      trajet.etat = newState;
+      if (newState == TrajetState.ended) {
+        trajet.endtime = timestamp;
+      }
+      this.saveTrajet(trajet, handler);
     }
+    // update status (cas nominal)
+    else {
 
-    this._callUpdateTrajetStatus(trajetToUpdate).subscribe(
-      // next
-      (trajet: Trajet) => {
-        this.localStorage.saveCurrentTrajet(trajet);
-        if (newState == TrajetState.ended) {
-          this.localStorage.clearLocalStorageTrajet();
-        }
-        handler.onGetTrajet(trajet);
+      let trajetToUpdate: any = {
+
+        trajetid: trajet.id,
+        etat: newState,
+        timestamp: timestamp
       }
-      ,
-      // error
-      (error: string) => {
-        let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
-        if (trajetLocal) {
-          trajetLocal.etat = newState;
+      this._callUpdateTrajetStatus(trajetToUpdate).subscribe(
+        // next
+        (trajet: Trajet) => {
+          this.localStorage.saveCurrentTrajet(trajet);
           if (newState == TrajetState.ended) {
-            trajetLocal.endtime = timestamp;
+            this.localStorage.clearLocalStorageTrajet();
           }
-          this.localStorage.saveCurrentTrajet(trajetLocal);
-          handler.onGetTrajet(trajetLocal);
-        } else {
-          this.commonService._propageErrorToHandler(error, handler);
+          handler.onGetTrajet(trajet);
         }
-      }
+        ,
+        // error
+        (error: string) => {
+          let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
+          if (trajetLocal) {
+            trajetLocal.etat = newState;
+            if (newState == TrajetState.ended) {
+              trajetLocal.endtime = timestamp;
+            }
+            this.localStorage.saveCurrentTrajet(trajetLocal);
+            handler.onGetTrajet(trajetLocal);
+          } else {
+            this.commonService._propageErrorToHandler(error, handler);
+          }
+        }
 
-    );
+      );
+    }
   }
   changerMeanTrajet(trajetId: number, newMean: TrajetMeans, handler: TrajetHandler): void {
 
@@ -277,17 +377,57 @@ export class TrajetService {
 
     this._callUpdateTrajetMean(trajetToUpdate).subscribe(
       // next
-      (data: Trajet) => handler.onGetTrajet(data)
+      (trajet: Trajet) => {
+        this.localStorage.saveCurrentTrajet(trajet);
+        handler.onGetTrajet(trajet);
+      }
       ,
       // error
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+      (error: string) => {
+        let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
+        if (trajetLocal) {
+          trajetLocal.mean = newMean;
+          this.localStorage.saveCurrentTrajet(trajetLocal);
+          handler.onGetTrajet(trajetLocal);
+        } else {
+          this.commonService._propageErrorToHandler(error, handler);
+        }
+      }
 
     );
   }
   // ===========================================================
+  private _callSaveTrajetArchives(listTrajets: Array<Trajet>): Observable<boolean> {
 
+    let url = TOMCAT_API_SERVER + "/trajets";
+
+    return this.http.post<boolean>(url, listTrajets, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+
+  sauvegarderTrajetsArchives(): void {
+
+    console.log("sauvergarderTrajetsArchives()....");
+    let trajetArchives: Array<Trajet> = this.localStorage.restoreListTrajetArchives();
+    if (trajetArchives.length == 0) {
+      return;
+    }
+
+    this._callSaveTrajetArchives(trajetArchives).subscribe(
+
+      (result: boolean) => {
+        console.log("Les trajets archivés ont été sauvegardés en BDD!");
+        this.localStorage.clearLocalStorageTrajetsArchives();
+      },
+
+      (e: Message) => console.log("Echec de la sauvegarde des trajets archivés.")
+
+    );
+
+  }
+  // ===========================================================
 }
-
 
 export interface TrajetsHandler extends Handler {
 

@@ -38,7 +38,7 @@ export class AppStorageService {
     if (listPositions && listPositions.length > 0) {
       let key: string = this.buildLocalStorageKeyForPositions();
       let values = JSON.stringify(listPositions);
-      console.log("[key:" + key + "] saveListPositions(): " + values);
+      console.log("[key:" + key + "] saveCurrentPositions(): " + values);
       this.storage.set(key, values);
     }
   }
@@ -70,6 +70,32 @@ export class AppStorageService {
     this.storage.set(key, values);
   }
 
+  archiveTrajet(trajetToArchive: Trajet): void {
+    let key: string = this.buildLocalStorageKeyForListTrajets();
+
+    console.log("[key:" + key + "] archivage d'un trajet non enregistré en BDD... " + trajetToArchive.id);
+    let list: Array<Trajet> = this.restoreListTrajetArchives();
+    list.push(trajetToArchive);
+
+    let listJson = JSON.stringify(list);
+    console.log("archiveTrajet(): " + listJson);
+    this.storage.set(key, listJson);
+  }
+  restoreListTrajetArchives(): Array<Trajet> {
+
+    let key = this.buildLocalStorageKeyForListTrajets();
+    if (this.storage.has(key)) {
+
+      let listJson = this.storage.get(key);
+      let list: Array<Trajet> = JSON.parse(listJson);
+      console.log("restoreListTrajetArchives(): " + listJson);
+      return list;
+
+    } else {
+      return new Array<Trajet>();
+    }
+  }
+
   clearLocalStorageListPositions(): void {
     let key = this.buildLocalStorageKeyForPositions();
     console.log("[key:" + key + "] effacement des positions du trajet courant ");
@@ -78,6 +104,11 @@ export class AppStorageService {
   clearLocalStorageTrajet(): void {
     let key = this.buildLocalStorageKeyForTrajet();
     console.log("[key:" + key + "] effacement du trajet courant");
+    this.storage.remove(key);
+  }
+  clearLocalStorageTrajetsArchives(): void {
+    let key = this.buildLocalStorageKeyForListTrajets();
+    console.log("[key:" + key + "] effacement de la liste des trajets archives");
     this.storage.remove(key);
   }
 
@@ -95,5 +126,9 @@ export class AppStorageService {
   }
   private buildLocalStorageKeyForTrajet(): string {
     return this.buildKeyCurrentUser() + "#TRAJET#";
+  }
+
+  private buildLocalStorageKeyForListTrajets(): string {
+    return this.buildKeyCurrentUser() + "#LIST_TRAJET#";
   }
 }

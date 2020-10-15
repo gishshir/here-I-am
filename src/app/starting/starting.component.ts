@@ -69,7 +69,7 @@ export class StartingComponent implements OnInit {
 
   arreterTrajet(): void {
 
-    this.trajetService.changerStatusTrajet(this.nouveauTrajet.id, TrajetState.ended, {
+    this.trajetService.changerStatusTrajet(this.nouveauTrajet, TrajetState.ended, {
 
       onGetTrajet: (t: Trajet) => {
         this.nouveauTrajet = t;

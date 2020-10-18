@@ -5,10 +5,8 @@ import { Observable } from 'rxjs';
 import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { catchError } from 'rxjs/operators';
-import { NotificationService } from '../common/notification/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { Geoportail } from '../geoportail/geoportail.type';
-import { Location } from '@angular/common';
 
 
 import * as fileSaver from 'file-saver';
@@ -27,8 +25,9 @@ export class PositionService {
   }
 
 
-  insererListePositionAndClearLocalStorage(listPositions: Array<AppPosition>): void {
+  insererListePositionAndClearLocalStorage(): void {
 
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
     if (listPositions && listPositions.length > 0) {
       this.insererListePositions(listPositions, {
         onError: (e: Message) => console.log(e.msg),
@@ -160,9 +159,60 @@ export class PositionService {
     if (listPositions && listPositions.length > 0) {
 
       // on les envoie sur le serveur distant
-      this.insererListePositionAndClearLocalStorage(listPositions);
+      this.insererListePositionAndClearLocalStorage();
     }
   }
+
+  // mets à jour le trajet id dans la liste des positions
+  // après sauvegarde réussie d'un trajet
+  updateListPositionsInLocalStorage(trajetidOld: number, trajetidBdd: number) {
+
+    console.log("changer le trajetid des positions sauvegardées de " + trajetidOld + " vers " + trajetidBdd);
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+    if (listPositions && listPositions.length > 0) {
+
+      listPositions.filter(p => p.trajetid == trajetidOld).forEach(
+
+        (p: AppPosition) => {
+          console.log("correctif " + p.timestamp);
+          p.trajetid = trajetidBdd;
+        }
+      );
+
+      this.localStorage.storeCurrentPositions(listPositions);
+
+    }
+  }
+
+  // construit la liste des positions en fonction de l'id du trajet
+  buildListPositionsInLocalStorageForTrajet(trajetid: number): Array<AppPosition> {
+
+    console.log("buildListPositionsInLocalStorageForTrajet()");
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+
+    let listPositionsForTrajet = new Array<AppPosition>();
+
+    if (listPositions && listPositions.length > 0) {
+      listPositionsForTrajet = listPositions.filter(p => p.trajetid == trajetid);
+    }
+
+    return listPositionsForTrajet;
+  }
+
+  clearListPositionsInLocalStorageForTrajet(trajetid: number): void {
+
+    console.log("clearListPositionsInLocalStorageForTrajet()");
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+
+    let listPositionsHorsTrajet = new Array<AppPosition>();
+
+    if (listPositions && listPositions.length > 0) {
+      listPositionsHorsTrajet = listPositions.filter(p => p.trajetid != trajetid);
+    }
+
+    this.localStorage.storeCurrentPositions(listPositionsHorsTrajet);
+  }
+
   //=============================================
 
   buildUrlToMaps(position: AppPosition): string {

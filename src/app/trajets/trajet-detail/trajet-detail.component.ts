@@ -43,6 +43,7 @@ export class TrajetDetailComponent implements OnInit {
 
       onGetTrajet: (t: Trajet) => {
         this.trajetDetail = t;
+        console.log("changement état réussi!");
         this.eventMessage.emit({ msg: "changement état réussi!", error: false });
         this.notificationService.changeMonTrajet(this.trajetDetail);
       },

@@ -1,3 +1,4 @@
+import { AppPosition } from './position.type';
 
 export interface Trajet {
 
@@ -8,6 +9,12 @@ export interface Trajet {
     endtime: number;
     etat: TrajetState;
     mean: TrajetMeans;
+}
+
+export interface TrajetEtPositions {
+
+    trajet: Trajet;
+    positions: Array<AppPosition>
 }
 
 export enum TrajetMeans {

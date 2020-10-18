@@ -43,7 +43,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private currentPosition: AppPosition;
   // stockage en mémoire de la  liste des positions
-  private listPositions: Array<AppPosition>;
+  //private listPositions: Array<AppPosition>;
 
   private currentTimeout: number = TIMEOUT;
   private geoOptions = this.buildGeoOptions();
@@ -70,7 +70,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
       // abonnement a un logout
       this.notificationService.closedSession$.subscribe(
-        (v: boolean) => this.clearWatchAndSave()
+        (v: boolean) => this.clearWatchAndStorePositions()
       )
 
     } else {
@@ -84,19 +84,20 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
   @HostListener('window:beforeunload')
   ngOnDestroy(): void {
-    this.clearWatchAndSave();
+    this.clearWatchAndStorePositions();
   }
 
-  private clearWatchAndSave(): void {
+  private clearWatchAndStorePositions(): void {
     this.clearWatch();
-    this.localStorage.saveCurrentPositions(this.listPositions);
+    //this.localStorage.storeCurrentPositions(this.listPositions);
   }
 
   getCurrentPosition(): AppPosition {
     return this.currentPosition;
   }
 
-
+  // nouveau trajet ou
+  // changement etat ou moyen de transport
   private onChangeMonTrajet(trajet: Trajet) {
     console.log("GeolocationService#onChangeTrajet");
 
@@ -105,7 +106,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (trajet && trajet.etat != TrajetState.ended) {
       if (newtrajet) {
-        this.listPositions = this.localStorage.restoreCurrentPositions();
+        //this.listPositions = this.localStorage.restoreCurrentPositions();
       }
       // on ralentit la mesure de position si on est en pause
       // on ralentit également selon le moyen de transport
@@ -114,10 +115,12 @@ export class GeolocationService implements OnInit, OnDestroy {
     } else {
 
       // trajet ended
-      this.clearWatchAndSave();
+      this.clearWatchAndStorePositions();
 
-      // sauvegarde sur le serveur de la liste complète
-      this.positionService.insererListePositionAndClearLocalStorage(this.listPositions);
+      if (this.trajetid > 0) {
+        // sauvegarde sur le serveur de la liste complète
+        this.positionService.insererListePositionAndClearLocalStorage();
+      }
 
     }
   }
@@ -223,12 +226,6 @@ export class GeolocationService implements OnInit, OnDestroy {
     let timestampSec = Math.floor(position.timestamp / 1000);
     console.log("geo_success - TS (sec): " + timestampSec);
 
-
-    if (this.currentPosition &&
-      (timestampSec - this.currentPosition.timestamp < 30)) {
-      return;
-    }
-
     this.currentPosition = {
 
       trajetid: this.trajetid,
@@ -308,10 +305,11 @@ export class GeolocationService implements OnInit, OnDestroy {
   // stockage en mémoire et dans le LocalStorage
   private storePosition(appPosition: AppPosition): void {
 
-    if (appPosition && appPosition.trajetid > 0) {
+    if (appPosition) {
 
-      this.listPositions.push(appPosition);
-      this.localStorage.saveCurrentPositions(this.listPositions);
+      let listPositions = this.localStorage.restoreCurrentPositions();
+      listPositions.push(appPosition);
+      this.localStorage.storeCurrentPositions(listPositions);
     }
 
   }

@@ -143,7 +143,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
     console.log("findAmiTrajetPosition()");
     this.notificationService.useNetwork(NetworkState.pending);
-    this.positionService.findTrajetLastPosition(this._amiTrajet.id, {
+    this.positionService.findAmiTrajetLastPosition(this._amiTrajet.id, {
 
       onGetPosition: (p: AppPosition) => {
         this.appPosition = p;

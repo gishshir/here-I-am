@@ -73,7 +73,7 @@ export class PositionService {
   // ===========================================================
   private _callFindTrajetLastPosition(trajetid: number): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/geolocation/" + trajetid;
+    let url = TOMCAT_API_SERVER + "/last/geolocation/" + trajetid;
 
     // attention si pas de Position alors {"retour": false}
     return this.http.get<AppPosition>(url)
@@ -83,6 +83,27 @@ export class PositionService {
   findTrajetLastPosition(trajetid: number, handler: AppPositionHandler): void {
 
     this._callFindTrajetLastPosition(trajetid).subscribe(
+
+      (p: any) => {
+        p = (p && p.retour == false) ? null : p;
+        handler.onGetPosition(p);
+      },
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+    );
+  }
+  // ===========================================================
+  private _callFindAmiTrajetLastPosition(trajetid: number): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/last/geolocation/ami/" + trajetid;
+
+    // attention si pas de Position alors {"retour": false}
+    return this.http.get<AppPosition>(url)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+  findAmiTrajetLastPosition(trajetid: number, handler: AppPositionHandler): void {
+
+    this._callFindAmiTrajetLastPosition(trajetid).subscribe(
 
       (p: any) => {
         p = (p && p.retour == false) ? null : p;

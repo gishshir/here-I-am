@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AmiInfo, AmiPersonne, AmiRelation } from './amiinfo.type';
 import { Ami, AmiState } from './ami.type';
-import { CommonService, PHP_API_SERVER, Handler, MessageHandler, HTTP_HEADER_URL } from '../common/common.service';
-import { Message, BoolResponse } from '../common/message.type';
+import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
+import { Message } from '../common/message.type';
 import { AmisFilter } from './amis.pipe';
 import { RelationState } from './relation/relationinfo.type';
 
@@ -67,7 +67,7 @@ export class AmiService {
 
     this.logger.log("callListePersonneNonAmis()");
 
-    let url = PHP_API_SERVER + "/personne/read.php";
+    let url = TOMCAT_API_SERVER + "/nonamis";
 
     return this.http.get<AmiPersonne[]>(url)
       .pipe(catchError(this.commonService.handleError));
@@ -96,12 +96,10 @@ export class AmiService {
   // =============================================
   private _callGetRelationPointVueAmi(idrelation: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/notification_par_ami//read.php";
+    let url = TOMCAT_API_SERVER + "/ami/relation/" + idrelation;
 
     let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("idrelation", idrelation + "")
-
+      headers: HTTP_HEADER_URL
     };
     return this.http.get<AmiRelation>(url, options)
       .pipe(catchError(this.commonService.handleError));
@@ -123,14 +121,9 @@ export class AmiService {
   private _callAmiByIdPerson(idperson: number): Observable<any> {
 
     this.logger.log("getAmiInfo()");
-    let url = PHP_API_SERVER + "/ami/read_one.php";
+    let url = TOMCAT_API_SERVER + "/ami/" + idperson;
 
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("idperson", idperson + "")
-
-    };
-    return this.http.get<AmiInfo>(url, options);
+    return this.http.get<AmiInfo>(url, this.commonService.httpOptionsHeaderJson);
 
   }
 
@@ -149,7 +142,7 @@ export class AmiService {
 
     this.logger.log("getListeAmis()");
 
-    let url = PHP_API_SERVER + "/ami/read.php";
+    let url = TOMCAT_API_SERVER + "/amis"
 
     return this.http.get<AmiInfo[]>(url)
       .pipe(catchError(this.commonService.handleError));
@@ -180,9 +173,9 @@ export class AmiService {
   // =============================================
 
   // =====================================================
-  private _callUpdate(amiToUpdate: object): Observable<any> {
+  private _callSuivreAmi(amiToUpdate: object): Observable<any> {
 
-    let url = PHP_API_SERVER + "/ami/update.php";
+    let url = TOMCAT_API_SERVER + "/relation/suivre";
 
     return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(
@@ -192,14 +185,23 @@ export class AmiService {
       );
   }
   updateSuivreAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateAmi() " + amiToUpdate.pseudo + " suivre: " + amiToUpdate.suivre);
-    this._callUpdate({ idrelation: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
+    this.logger.log("updateSuivreAmi() " + amiToUpdate.pseudo + " suivre: " + amiToUpdate.suivre);
+    this._callSuivreAmi({ relationid: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
   }
+  private _callNotifierAmi(amiToUpdate: object): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/relation/notifier";
+
+    return this.http.put<Message>(url, amiToUpdate, this.commonService.httpOptionsHeaderJson)
+      .pipe(
+        catchError(this.commonService.handleError)
+      );
+  }
   updateNotifierAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateAmi() " + amiToUpdate.pseudo + " notifier: " + amiToUpdate.notifier);
-    this._callUpdate({ idrelation: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
+    this.logger.log("updateNotifierAmi() " + amiToUpdate.pseudo + " notifier: " + amiToUpdate.notifier);
+    this._callNotifierAmi({ relationid: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
   }

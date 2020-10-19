@@ -1,38 +1,50 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SecurityContext } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { PHP_API_SERVER, CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL } from '../common/common.service';
-import { Trajet } from '../trajets/trajet.type';
+import { CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
-import { User } from './user.type';
+import { AuthenticationDto, CredentialsDto, User } from './user.type';
 import { AccountInfo } from './accountinfo.type';
 import { Router } from '@angular/router';
 import { NotificationService } from '../common/notification/notification.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
+  private jwtoken: string = null;
+  getJWT(): string {
+    return this.jwtoken;
+  }
   private userLoggedIn: User;
+  // on stocke les credentials pour le renouvellement du token
+  private credentials: CredentialsDto;
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
+
   constructor(private logger: LoggerService, private http: HttpClient, private router: Router,
+    private sanitizer: DomSanitizer,
     private commonService: CommonService, private notificationService: NotificationService) { }
 
+  getCurrentUser(): User {
+    return this.userLoggedIn;
+  }
+
   // ============================================
-  _callCreateAccount(user: User, email: string): Observable<any> {
+  _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
 
-    let url = PHP_API_SERVER + "/account/create.php";
+    let url = TOMCAT_API_SERVER + "/account"
 
-    let userToCreate = {
+    let userToCreate: any = {
 
-      login: user.login,
-      password: user.password,
-      pseudo: user.pseudo,
+      login: credentials.login,
+      password: credentials.password,
+      pseudo: pseudo,
       email: email
     };
 
@@ -40,9 +52,9 @@ export class AccountService {
       .pipe(catchError(this.commonService.handleError));
 
   }
-  creerCompte(user: User, email: string, handler: AccountInfoHandler): void {
+  creerCompte(credentials: CredentialsDto, pseudo: string, email: string, handler: AccountInfoHandler): void {
 
-    this._callCreateAccount(user, email).subscribe(
+    this._callCreateAccount(credentials, pseudo, email).subscribe(
       // next
       (data: AccountInfo) => handler.onGetAccountInfo(data)
       ,
@@ -59,14 +71,8 @@ export class AccountService {
   // ============================================
   _callVerifyLogin(login: string): Observable<any> {
 
-    let url = PHP_API_SERVER + "/account/verify/read.php";
-
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("login", login)
-
-    };
-    return this.http.get<BoolResponse>(url, options);
+    let url = TOMCAT_API_SERVER + "/account/verify/login/" + login;
+    return this.http.get<BoolResponse>(url);
 
   }
   isLoginTaken(login: string): Observable<boolean> {
@@ -88,14 +94,10 @@ export class AccountService {
   // ============================================
   private _callVerifyPseudo(pseudo: string): Observable<any> {
 
-    let url = PHP_API_SERVER + "/account/verify/read.php";
+    pseudo = this.sanitizer.sanitize(SecurityContext.HTML, pseudo);
+    let url = TOMCAT_API_SERVER + "/account/verify/pseudo/" + pseudo;
 
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("pseudo", pseudo)
-
-    };
-    return this.http.get<BoolResponse>(url, options);
+    return this.http.get<BoolResponse>(url);
 
   }
   isPseudoTaken(pseudo: string): Observable<boolean> {
@@ -104,7 +106,30 @@ export class AccountService {
       pipe(map(bresp => bresp.retour));
   }
   verifyPseudo(pseudo: string, handler: BoolResponseHandler): void {
-    this._callVerifyLogin(pseudo).pipe(catchError(this.commonService.handleError)).subscribe({
+    this._callVerifyPseudo(pseudo).pipe(catchError(this.commonService.handleError)).subscribe({
+
+      //next
+      next: (data: BoolResponse) => handler.onResponse(data.retour),
+      error: (e: Message) => handler.onError(e)
+    });
+  }
+  // ============================================
+  // vérifie si il existe en Bdd un user avec cet email
+  // ============================================
+  private _callVerifyEmail(email: string): Observable<any> {
+
+    //pseudo = this.sanitizer.sanitize(SecurityContext.HTML, pseudo);
+    let url = TOMCAT_API_SERVER + "/account/verify/email/" + email;
+    return this.http.get<BoolResponse>(url);
+
+  }
+  isEmailTaken(email: string): Observable<boolean> {
+
+    return this._callVerifyEmail(email).
+      pipe(map(bresp => bresp.retour));
+  }
+  verifyEmail(email: string, handler: BoolResponseHandler): void {
+    this._callVerifyEmail(email).pipe(catchError(this.commonService.handleError)).subscribe({
 
       //next
       next: (data: BoolResponse) => handler.onResponse(data.retour),
@@ -117,7 +142,7 @@ export class AccountService {
   // ============================================
   private _callLogout(): Observable<any> {
 
-    let url = PHP_API_SERVER + "/login/delete.php";
+    let url = TOMCAT_API_SERVER + "/logout"
 
     return this.http.delete<Message>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -126,14 +151,20 @@ export class AccountService {
   logout(handler: MessageHandler): void {
     this.logger.log("logout");
 
-    this.notificationService.informClosedSession(true);
+
     this._callLogout().subscribe({
 
       next: (m: Message) => {
         // lance un message pour l'ensemble de l'application
         console.log("loggout next..");
-        this.notificationService.changeUser(null);
+
         this.userLoggedIn = null;
+        this.credentials = null;
+        this.jwtoken = null;
+
+        this.notificationService.changeUser(null);
+        this.notificationService.informClosedSession(true);
+
         handler.onMessage(m);
       },
       error: (e: Message) => handler.onError(e)
@@ -145,7 +176,7 @@ export class AccountService {
 
   private _callUserLogged(): Observable<any> {
 
-    let url = PHP_API_SERVER + "/login/read.php";
+    let url = TOMCAT_API_SERVER + "/user";
 
     return this.http.get<User>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -155,6 +186,8 @@ export class AccountService {
   // appel au serveur pour savoir si l'utilisateur a ou pas une session ouverte.
   // ou bien retour de la variable isLoggedIn si définie
   isUserLoggedIn(forceControl: boolean): Observable<boolean> {
+
+    console.log("isUserLoggedIn()...");
 
     // soit on connait la reponse
     if (!forceControl && this.userLoggedIn) {
@@ -185,37 +218,64 @@ export class AccountService {
 
   // ============================================
 
+  // renouvellement du token automatique 
+  private _subscribeRenewToken(): void {
+
+    this.notificationService.invalidToken$.subscribe(
+
+      (t: boolean) => {
+
+        console.log("reconnect after invalid token...");
+        if (this.credentials != null) {
+
+          this.login(this.credentials.login, this.credentials.password, null);
+          console.log("....reconnect after invalid token DONE");
+        }
+      }
+    );
+
+  }
+
   // ============================================
-  private _callLogin(userToLogin: User): Observable<any> {
+  private _callLogin(userToLogin: CredentialsDto): Observable<any> {
 
-    let url = PHP_API_SERVER + "/login/update.php";
+    let url = TOMCAT_API_SERVER + "/login";
 
-    return this.http.put<User>(url, userToLogin, this.commonService.httpOptionsHeaderJson)
+    return this.http.put<AuthenticationDto>(url, userToLogin, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
 
   login(login: string, password: string, handler: UserHandler): void {
     this.logger.log("login " + login);
 
-    let user = this.buildUser(login, password, null);
+    let credentials = this.buildCredentials(login, password);
 
-    this._callLogin(user).subscribe(
+    this._callLogin(credentials).subscribe(
       // next
-      (user: User) => {
-        this.userLoggedIn = user;
-        // lance un message pour l'ensemble de l'application
-        this.notificationService.changeUser(user.pseudo);
-        handler.onGetUser(user);
+      (auth: AuthenticationDto) => {
+        this.credentials = credentials;
+        this.userLoggedIn = auth.utilisateurDto;
+        this.jwtoken = auth.jwtoken;
+
+        if (handler != null) {
+          // lance un message pour l'ensemble de l'application
+          this.notificationService.changeUser(this.userLoggedIn.pseudo);
+          handler.onGetUser(this.userLoggedIn);
+
+          this._subscribeRenewToken();
+          this.notificationService.informInvalidToken(false);
+        }
       }
       ,
       // error
-      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+      (error: string) => handler.onError({ error: true, msg: "login ou mot de passe incorrect!" })
     )
   }
   // ============================================
   redirectAfterLogin() {
+    console.log("redirectAfterLogin() --> " + this.redirectUrl);
+
     if (this.redirectUrl) {
-      console.log("redirectAfterLogin() --> " + this.redirectUrl);
       this.router.navigate([this.redirectUrl]);
       this.redirectUrl = null;
     } else {
@@ -223,17 +283,25 @@ export class AccountService {
     }
   }
 
-  buildUser(login: string, password: string, pseudo: string): User {
+
+
+  buildCredentials(login: string, password: string): CredentialsDto {
 
     return {
-      id: -1,
       login: login,
-      password: password,
-      pseudo: pseudo
+      password: password
     };
+  }
 
+  buildUser(login: string, pseudo: string): User {
+    return {
+      login: login,
+      pseudo: pseudo
+    }
   }
 }
+
+
 
 export interface UserHandler extends Handler {
 

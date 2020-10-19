@@ -6,6 +6,7 @@ import { NotificationService } from 'src/app/common/notification/notification.se
 import { ToolsService } from 'src/app/common/tools.service';
 import { PositionService } from 'src/app/geolocation/position.service';
 import { Geoportail } from 'src/app/geoportail/geoportail.type';
+import { NetworkState } from 'src/app/common/common.service';
 
 @Component({
   selector: 'app-ami-geolocation',
@@ -72,7 +73,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   createGpxFile() {
     this.gpxfile = null;
     if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
-      this.positionService.createGpxfile(this._amiTrajet.id, {
+      this.positionService.createGpxfile(this._amiTrajet.id, true, {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.gpxfile = g.gpxfile;
@@ -94,7 +95,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   private startTimer() {
     if (this.timerid == -1) {
       console.log("startTimer()");
-      this.notificationService.useNetwork(true);
+      this.notificationService.useNetwork(NetworkState.started);
 
       // rafraichir position toutes les 30s 
       this.timerid = window.setInterval(() => {
@@ -106,7 +107,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   }
   private stopTimer() {
     console.log("stopTimer()");
-    this.notificationService.useNetwork(false);
+    this.notificationService.useNetwork(NetworkState.stopped);
     if (this.timerid >= 0) {
       clearInterval(this.timerid);
       this.timerid = -1;
@@ -141,13 +142,18 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   private findAmiTrajetPosition(): void {
 
     console.log("findAmiTrajetPosition()");
-    this.positionService.findTrajetLastPosition(this._amiTrajet.id, {
+    this.notificationService.useNetwork(NetworkState.pending);
+    this.positionService.findAmiTrajetLastPosition(this._amiTrajet.id, {
 
       onGetPosition: (p: AppPosition) => {
         this.appPosition = p;
         this.urlToMaps = this.positionService.buildUrlToMaps(p);
+        this.notificationService.useNetwork(NetworkState.success);
       },
-      onError: (e: Message) => console.log(e.msg)
+      onError: (e: Message) => {
+        console.log(e.msg);
+        this.notificationService.useNetwork(NetworkState.error);
+      }
     });
 
 

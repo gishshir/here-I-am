@@ -18,6 +18,8 @@ export class GeolocationComponent implements OnInit, OnDestroy {
   @Input() titre: string = "Ma position actuelle";
   appPosition: AppPosition;
 
+  geoMessage: Message;
+
   // url pour voir la localisation sur google maps
   urlToMaps: string;
 
@@ -36,11 +38,17 @@ export class GeolocationComponent implements OnInit, OnDestroy {
         this.setPosition(p);
       }
     )
+
+    // abonnement aux evenements de geolocalisation
+    this.notificationService.emitGeoMessage$.subscribe(
+      (m: Message) => this.geoMessage = m
+    );
   }
 
 
   private setPosition(p: AppPosition): void {
     this.appPosition = p;
+    this.geoMessage = this.geolocationService.getGeoMessage();
     this.urlToMaps = this.positionService.buildUrlToMaps(p);
   }
 

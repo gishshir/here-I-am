@@ -1,7 +1,17 @@
 export interface User {
 
-    id: number;
+    login: string;
+    pseudo: string;
+}
+
+export interface CredentialsDto {
+
     login: string;
     password: string;
-    pseudo: string;
+}
+
+export interface AuthenticationDto {
+
+    jwtoken: string;
+    utilisateurDto: User;
 }

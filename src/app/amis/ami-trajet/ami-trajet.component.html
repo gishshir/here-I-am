@@ -5,7 +5,7 @@
         <h3>{{getDescriptionTrajet()}}</h3>
 
         <!--détail du trajet - timer permettant de mettre à jour le changement etat -->
-        <app-trajet-common *ngIf="amiTrajet" [trajet]="amiTrajet" [timerOn]="true"
+        <app-trajet-common *ngIf="amiTrajet" [trajet]="amiTrajet" [ami]="true" [timerOn]="true"
             (trajetChangeEtatEvent)="onTrajetChangeEtatEvent($event)"></app-trajet-common>
 
 

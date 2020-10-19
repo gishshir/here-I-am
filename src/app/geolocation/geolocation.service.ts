@@ -4,6 +4,18 @@ import { Message } from '../common/message.type';
 import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { AppPosition } from '../trajets/position.type';
 import { PositionService } from './position.service';
+import { NetworkState } from '../common/common.service';
+import { AppStorageService } from '../trajets/storage.service';
+
+export enum GeolocationState {
+
+  started = "started",
+  stopped = "stopped",
+  pending = "pending",
+  succes = "succes",
+  error = "error"
+}
+const TIMEOUT: number = 29000;
 
 /*
 * Service gerant la localisation du trajet en cours
@@ -25,19 +37,26 @@ export class GeolocationService implements OnInit, OnDestroy {
   private frequenceRafraichissement: number = 30000;
   private facteurMoyenTransport: number = 1;
 
+  private geoState: GeolocationState = GeolocationState.stopped;
+  private geoMessage: Message;
+
 
   private currentPosition: AppPosition;
   // stockage en mémoire de la  liste des positions
-  private listPositions: Array<AppPosition>;
+  //private listPositions: Array<AppPosition>;
 
-  private geo_options = {
-    enableHighAccuracy: true,
-    maximumAge: 20000,
-    timeout: 29000
-  };
+  private currentTimeout: number = TIMEOUT;
+  private geoOptions = this.buildGeoOptions();
+  private buildGeoOptions(): any {
+    return {
+      enableHighAccuracy: true,
+      maximumAge: 20000,
+      timeout: this.currentTimeout
+    };
+  }
 
   constructor(private notificationService: NotificationService,
-    private positionService: PositionService) {
+    private positionService: PositionService, private localStorage: AppStorageService) {
     if ("geolocation" in navigator) {
 
       console.log("geolocation active dans le navigateur!");
@@ -51,7 +70,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
       // abonnement a un logout
       this.notificationService.closedSession$.subscribe(
-        (v: boolean) => this.clearWatchAndSave()
+        (v: boolean) => this.clearWatchAndStorePositions()
       )
 
     } else {
@@ -65,19 +84,20 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
   @HostListener('window:beforeunload')
   ngOnDestroy(): void {
-    this.clearWatchAndSave();
+    this.clearWatchAndStorePositions();
   }
 
-  private clearWatchAndSave(): void {
+  private clearWatchAndStorePositions(): void {
     this.clearWatch();
-    this.positionService.saveListPositionsToLocalStorage(this.trajetid, this.listPositions);
+    //this.localStorage.storeCurrentPositions(this.listPositions);
   }
 
   getCurrentPosition(): AppPosition {
     return this.currentPosition;
   }
 
-
+  // nouveau trajet ou
+  // changement etat ou moyen de transport
   private onChangeMonTrajet(trajet: Trajet) {
     console.log("GeolocationService#onChangeTrajet");
 
@@ -86,7 +106,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (trajet && trajet.etat != TrajetState.ended) {
       if (newtrajet) {
-        this.listPositions = this.positionService.restoreListePositionsFromLocalStorage(this.trajetid);
+        //this.listPositions = this.localStorage.restoreCurrentPositions();
       }
       // on ralentit la mesure de position si on est en pause
       // on ralentit également selon le moyen de transport
@@ -95,10 +115,12 @@ export class GeolocationService implements OnInit, OnDestroy {
     } else {
 
       // trajet ended
-      this.clearWatchAndSave();
+      this.clearWatchAndStorePositions();
 
-      // sauvegarde sur le serveur de la liste complète
-      this.positionService.insererListePositionAndClearLocalStorage(this.trajetid, this.listPositions);
+      if (this.trajetid > 0) {
+        // sauvegarde sur le serveur de la liste complète
+        this.positionService.insererListePositionAndClearLocalStorage();
+      }
 
     }
   }
@@ -140,7 +162,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     if (this.geolocation && this.timerid < 0) {
       console.log("startWatch(): toutes les " + (frequence / 1000) + " s");
 
-      this.notificationService.activateGeolocation(true);
+      this.activateGeolocation(GeolocationState.started);
       this.findCurrentPosition();
 
       //rafraichir position toutes les 30s 
@@ -156,32 +178,37 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   /**
    * force la recherche d'une position 
-   * si le timer de la geolocation n'est pas en route.
+   * si le status de geolocation est différent de succes
    */
   forceCurrentPosition(): boolean {
 
     console.log("force current position...");
-    if (this.timerid == -1) {
+    if (this.geoState != GeolocationState.succes) {
       this.findCurrentPosition();
       return true;
     }
 
     return false;
   }
+  private activateGeolocation(state: GeolocationState): void {
+    this.geoState = state;
+    this.notificationService.activateGeolocation(state);
+  }
   private findCurrentPosition(): void {
 
+    this.activateGeolocation(GeolocationState.pending);
     navigator.geolocation.getCurrentPosition(
       (position: Position) => this.geo_success(position),
       (error: PositionError) => this.geo_error(error),
-      this.geo_options);
+      this.geoOptions);
   }
 
   private clearWatch() {
 
     if (this.timerid >= 0) {
 
-      this.notificationService.activateGeolocation(false);
-      this.notificationService.useNetwork(false);
+      this.activateGeolocation(GeolocationState.stopped);
+      this.notificationService.useNetwork(NetworkState.stopped);
       console.log("clearWatch()");
       clearInterval(this.timerid);
       this.timerid = -1;
@@ -191,15 +218,13 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   private geo_success(position: Position): void {
 
+    this.geoMessage = null;
+    this.activateGeolocation(GeolocationState.succes);
+    this.decrementsTimeout();
+
     // ne pas soliciter trop le reseau
     let timestampSec = Math.floor(position.timestamp / 1000);
     console.log("geo_success - TS (sec): " + timestampSec);
-
-
-    if (this.currentPosition &&
-      (timestampSec - this.currentPosition.timestamp < 30)) {
-      return;
-    }
 
     this.currentPosition = {
 
@@ -214,32 +239,77 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     if (this.trajetid > 0) {
       console.log("appel du service insererNouvellePosition()...");
+      this.notificationService.useNetwork(NetworkState.pending);
       this.positionService.insererNouvellePosition(this.currentPosition, {
         onMessage: (m: Message) => {
           console.log(m.msg);
-          this.notificationService.useNetwork(true);
+          this.notificationService.useNetwork(NetworkState.success);
         },
         onError: (e: Message) => {
           console.log(e.msg);
-          this.notificationService.useNetwork(false);
+          this.notificationService.useNetwork(NetworkState.error);
         }
       });
     }
 
 
   }
+  getGeoMessage(): Message {
+    return this.geoMessage;
+  }
+  private incrementsTimeout(): void {
+
+    let max = TIMEOUT * 4;
+    if (this.currentTimeout < max) {
+      this.currentTimeout += TIMEOUT;
+      this.geoOptions = this.buildGeoOptions();
+      this.restart(this.frequenceRafraichissement);
+    }
+
+  }
+  private decrementsTimeout(): void {
+
+    if (this.currentTimeout > TIMEOUT) {
+      this.currentTimeout -= TIMEOUT;
+      this.geoOptions = this.buildGeoOptions();
+      this.restart(this.frequenceRafraichissement);
+    }
+  }
+
   private geo_error(error: PositionError) {
 
     console.log("Position inconnue! (" + error.code + " - " + error.message + ")");
+    this.activateGeolocation(GeolocationState.error);
+
+    let message = null;
+    switch (error.code) {
+
+      case 1: message = "La géolocalisation n'est pas activée sur votre appareil!"; break;
+      case 2: message = "La position ne peut être déterminée à cause d'une erreur technique!"; break;
+      case 3: {
+        message = "La position prend trop de temps à être déterminée!";
+        this.incrementsTimeout();
+        break;
+      }
+    }
+    if (message) {
+      this.geoMessage = {
+        error: true,
+        msg: message
+      }
+      this.notificationService.emitGeoMessage(this.geoMessage);
+    }
+
   }
 
   // stockage en mémoire et dans le LocalStorage
   private storePosition(appPosition: AppPosition): void {
 
-    if (appPosition && appPosition.trajetid > 0) {
+    if (appPosition) {
 
-      this.listPositions.push(appPosition);
-      this.positionService.saveListPositionsToLocalStorage(this.trajetid, this.listPositions);
+      let listPositions = this.localStorage.restoreCurrentPositions();
+      listPositions.push(appPosition);
+      this.localStorage.storeCurrentPositions(listPositions);
     }
 
   }

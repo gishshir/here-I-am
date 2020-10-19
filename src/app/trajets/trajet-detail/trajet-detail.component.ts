@@ -39,10 +39,11 @@ export class TrajetDetailComponent implements OnInit {
 
   private onChangeState(state: TrajetState): void {
 
-    this.trajetService.changerStatusTrajet(this.trajetDetail.id, state, {
+    this.trajetService.changerStatusTrajet(this.trajetDetail, state, {
 
       onGetTrajet: (t: Trajet) => {
         this.trajetDetail = t;
+        console.log("changement état réussi!");
         this.eventMessage.emit({ msg: "changement état réussi!", error: false });
         this.notificationService.changeMonTrajet(this.trajetDetail);
       },

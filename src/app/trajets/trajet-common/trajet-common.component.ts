@@ -4,6 +4,7 @@ import { ToolsService } from 'src/app/common/tools.service';
 import { TrajetService } from '../trajet.service';
 import { Message } from '../../common/message.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
+import { NetworkState } from 'src/app/common/common.service';
 
 
 /**
@@ -17,6 +18,7 @@ import { NotificationService } from 'src/app/common/notification/notification.se
 })
 export class TrajetCommonComponent implements OnInit, OnDestroy {
 
+  @Input() ami: boolean;
   @Input() trajet: Trajet;
   @Input() timerOn: boolean = false;
 
@@ -35,7 +37,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
   private refreshTrajet() {
 
     if (this.trajetService) {
-      this.trajetService.findTrajetById(this.trajet.id, {
+      this.trajetService.findTrajetById(this.trajet.id, this.ami, {
 
         onGetTrajet: (t: Trajet) => {
 
@@ -57,7 +59,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
   private startTimer() {
 
     console.log("start timer");
-    this.notificationService.useNetwork(true);
+    this.notificationService.useNetwork(NetworkState.started);
     this.timerid = window.setInterval(() => {
 
       this.refreshTrajet();
@@ -68,7 +70,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
 
     if (this.timerid >= 0) {
       console.log("stop timer");
-      this.notificationService.useNetwork(false);
+      this.notificationService.useNetwork(NetworkState.stopped);
       clearInterval(this.timerid);
       this.timerid = -1;
     }
@@ -90,7 +92,7 @@ export class TrajetCommonComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log("trajet en cours: " + this.trajetService);
+    console.log("trajet en cours: " + this.trajet.id);
     if (this.timerOn) {
       this.startTimer();
     }

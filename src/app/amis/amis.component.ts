@@ -45,8 +45,14 @@ export class AmisComponent implements OnInit {
     // de l'ami en cours
     this.notificationService.amiTrajet$.subscribe(
       (trajet?: Trajet) => {
+        let changementEtat: boolean =
+          (this.selectedAmiTrajet && (this.selectedAmiTrajet.etat != trajet.etat)) ? true : false;
         this.selectedAmiTrajet = trajet;
-        logger.log("selectedAmiTrajet: " + (trajet ? trajet.etat : "null"));
+        logger.log("selectedAmiTrajet: " + (trajet ? trajet.etat : "null") + " changement etat: " + changementEtat);
+
+        if (changementEtat) {
+          this.refreshList();
+        }
       }
     );
   }
@@ -123,11 +129,11 @@ export class AmisComponent implements OnInit {
     this.response = response;
   }
   // reception d'un evenement de modification d'un Ami
-  onChange(ami: Ami) {
-    // rafraichir la liste complète
-    this.logger.log("event de modification de l'ami (rel): " + ami.idrelation);
-    this.refreshList();
-  }
+  // onChange(ami: Ami) {
+  //   // rafraichir la liste complète
+  //   this.logger.log("event de modification de l'ami (rel): " + ami.idrelation);
+  //   this.refreshList();
+  // }
 
 
 

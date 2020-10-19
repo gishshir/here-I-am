@@ -19,6 +19,11 @@ export class ToolsService {
     return _window();
   }
 
+  getNowTimestampEnSec(): number {
+
+    return Math.floor(new Date().getTime() / 1000);
+  }
+
   private _formatDate(timestamp: number, format: string): string {
     let date = new Date(timestamp * 1000);
     return moment(date).format(format);
@@ -55,7 +60,7 @@ export class ToolsService {
 
   formatDureeFromNow(tsStart: number): DureeDecoupee {
 
-    return this.formatDuree(tsStart, new Date().getTime() / 1000);
+    return this.formatDuree(tsStart, this.getNowTimestampEnSec());
   }
 
   // decoupage en un objet DureeDecoupee

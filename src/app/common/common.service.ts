@@ -13,16 +13,26 @@ export const HTTP_HEADER_URL = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
 });
 
+export enum NetworkState {
 
-export const PHP_API_SERVER = environment.apiUrl;
+  started = "started",
+  stopped = "stopped",
+  pending = "pending",
+  success = "success",
+  error = "error"
+}
 
-// sur dist ou bien en remote
-//export const PHP_API_SERVER = "./api";
+//export const PHP_API_SERVER = environment.apiUrl;
+export const TOMCAT_API_SERVER = environment.apiUrl;
 
-// en DEV depuis localhost:4200
-//export const PHP_API_SERVER = "https://hereiam-api.secure";
+// pour test avec tomcat localhost SSL
+//"https://hereiam-tomcat.secure:8443/";
+
+// eclipse tomcat embeded
+//"https://localhost:444/";
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
+const TOKEN_TOO_OLD: string = "TOKEN_TOO_OLD";
 
 
 @Injectable({
@@ -30,21 +40,29 @@ const SESSION_CLOSED: string = "SESSION_CLOSED";
 })
 export class CommonService {
 
+
+
   httpOptionsHeaderJson = {
     headers: HTTP_HEADER_JSON
   };
 
-  constructor(private notificationService: NotificationService) { }
+
+  constructor(private notificationService: NotificationService) {
+
+    if (this.notificationService == undefined) {
+      console.error("notification service undefined!");
+    }
+  }
 
 
   /*
- * HttpErrorResponse
- * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
- * .headers: [header...]
- * .message: "Http failure.... 400"
- * .status: 400
- * .url: "http://..../update.php" par ex
- */
+  * HttpErrorResponse
+  * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
+  * .headers: [header...]
+  * .message: "Http failure.... 400"
+  * .status: 400
+  * .url: "http://..../update.php" par ex
+  */
   handleError(httpError: HttpErrorResponse): Observable<never> {
 
     let message = 'Erreur technique! consulter la sortie console';
@@ -63,11 +81,18 @@ export class CommonService {
         `body was: ${body}`);
 
       // session fermée - utilisateur non authentifié
+      // code 401 Unauthorized : voir si on peut renouveller le token
       if (httpError.status == 401 && httpError.error.msg) {
-        message = SESSION_CLOSED;
+        if (httpError.error.msg == "Token to be renewed!") {
+          message = TOKEN_TOO_OLD;
+        } else {
+          message = SESSION_CLOSED;
+        }
       }
+
       // message metier depuis api
-      if (httpError.status == 400 && httpError.error.msg) {
+      else if ((httpError.status >= 400 && httpError.status < 500)
+        && httpError.error.msg) {
         message = httpError.error.msg;
       }
     }
@@ -79,6 +104,10 @@ export class CommonService {
 
     if (error === SESSION_CLOSED) {
       this.notificationService.informClosedSession(true);
+    } else if (error === TOKEN_TOO_OLD) {
+      console.log("reconnexion automatique...");
+      this.notificationService.informInvalidToken(true);
+      return;
     }
     if (handler) {
       let errorMsg = {

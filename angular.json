@@ -105,6 +105,9 @@
           "configurations": {
             "production": {
               "browserTarget": "here-I-am:build:production"
+            },
+            "dist": {
+              "browserTarget": "here-I-am:build:dist"
             }
           }
         },

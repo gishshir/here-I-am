@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, ValidatorFn, ValidationErrors, AsyncValidator, AbstractControl } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { Message } from 'src/app/common/message.type';
-import { User } from '../user.type';
+import { CredentialsDto, User } from '../user.type';
 import { Observable, of } from 'rxjs';
 import { map, catchError, delay } from 'rxjs/operators';
 import { AccountInfo } from '../accountinfo.type';
@@ -29,7 +29,7 @@ export class CreateAccountComponent implements OnInit {
       password1Control: ['', [Validators.required, Validators.minLength(4)]],
       password2Control: ['', [Validators.required, Validators.minLength(4)]],
       pseudoControl: ['', [Validators.required, Validators.minLength(6)], [new UniquePseudoValidator(this.accountService)]],
-      emailControl: ['', [Validators.required, Validators.email]]
+      emailControl: ['', [Validators.required, Validators.email], [new UniqueEmailValidator(this.accountService)]]
     },
     {
       validator: MustMatch('password1Control', 'password2Control')
@@ -61,13 +61,15 @@ export class CreateAccountComponent implements OnInit {
   onSubmit() {
     console.log("onSubmit() : " + this.createAccountFormGroup.value);
 
-    let user: User = this.accountService.buildUser(this.loginControl.value, this.password1Control.value, this.pseudoControl.value);
+    let credentials: CredentialsDto = this.accountService.buildCredentials(this.loginControl.value, this.password1Control.value);
     let email: string = this.emailControl.value;
-    this.accountService.creerCompte(user, email, {
+    let pseudo: string = this.pseudoControl.value;
+    this.accountService.creerCompte(credentials, pseudo, email, {
 
       onGetAccountInfo: (a: AccountInfo) => {
         this.response = { msg: "Le compte a été créé avec succès!", error: false };
         delay(1000);
+        let user: User = this.accountService.buildUser(credentials.login, pseudo);
         this.dialogContinuer(user);
       },
       onError: (e: Message) => this.response = e
@@ -148,6 +150,20 @@ export class UniquePseudoValidator implements AsyncValidator {
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.accountService.isPseudoTaken(ctrl.value).pipe(
       map(isTaken => (isTaken ? { uniquePseudo: true } : null)),
+      catchError(() => of(null))
+    );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class UniqueEmailValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isEmailTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniqueEmail: true } : null)),
       catchError(() => of(null))
     );
   }

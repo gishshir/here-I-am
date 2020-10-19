@@ -1,14 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppPosition } from '../trajets/position.type';
+import { AppStorageService } from '../trajets/storage.service';
 import { Observable } from 'rxjs';
-import { PHP_API_SERVER, MessageHandler, CommonService, Handler, HTTP_HEADER_URL, StringResponseHandler } from '../common/common.service';
+import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { catchError } from 'rxjs/operators';
-import { NotificationService } from '../common/notification/notification.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { HttpClient } from '@angular/common/http';
 import { Geoportail } from '../geoportail/geoportail.type';
-import { Location } from '@angular/common';
 
 
 import * as fileSaver from 'file-saver';
@@ -21,68 +19,33 @@ import * as fileSaver from 'file-saver';
 })
 export class PositionService {
 
-  private remote: boolean = false;
 
-  constructor(private notificationService: NotificationService, private http: HttpClient,
-    private commonService: CommonService, @Inject(LOCAL_STORAGE) private storage: StorageService,
-    private location: Location) {
+  constructor(private http: HttpClient,
+    private commonService: CommonService, private localStorage: AppStorageService) {
   }
 
 
-  restoreListePositionsFromLocalStorage(trajetid: number): Array<AppPosition> {
+  insererListePositionAndClearLocalStorage(): void {
 
-    console.log("restoreListePositionsFromLocalStorage...");
-
-    let listPositions = new Array<AppPosition>();
-    if (trajetid > 0) {
-      let key: string = this.buildLocalStorageKey(trajetid);
-      if (this.storage.has(key)) {
-        // on récupère les valeurs stockées sur ce même trajet
-        listPositions = JSON.parse(this.storage.get(key));
-
-        listPositions.forEach(p => console.log("position: [trajetid:" + p.timestamp + " - tmst: " + p.timestamp));
-      } else {
-        console.log(".. pas de positions stockées!")
-
-      }
-    }
-    return listPositions;
-  }
-  saveListPositionsToLocalStorage(trajetid: number, listPositions: Array<AppPosition>): void {
-
-    if (trajetid > 0 && listPositions && listPositions.length > 0) {
-      let key: string = this.buildLocalStorageKey(trajetid);
-      let values = JSON.stringify(listPositions);
-      console.log("saveListPositionsToLocalStorage(): " + values);
-      this.storage.set(key, values);
-    }
-  }
-
-  insererListePositionAndClearLocalStorage(trajetid: number, listPositions: Array<AppPosition>): void {
-
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
     if (listPositions && listPositions.length > 0) {
       this.insererListePositions(listPositions, {
         onError: (e: Message) => console.log(e.msg),
         onMessage: (m: Message) => {
           console.log(m.msg);
-          this.storage.remove(this.buildLocalStorageKey(trajetid));
+          this.localStorage.clearLocalStorageListPositions();
         }
       });
     }
   }
 
-  private buildLocalStorageKey(trajetid: number): string {
-    return "TRAJET#" + trajetid;
-  }
-
   // ===========================================================
   private _callInsertTrajetPosition(newPosition: AppPosition): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/create.php";
+    let url = TOMCAT_API_SERVER + "/geolocation";
 
     return this.http.post<Message>(url, newPosition, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
-
   }
   insererNouvellePosition(currentPosition: AppPosition, handler: MessageHandler): void {
 
@@ -94,7 +57,7 @@ export class PositionService {
   // ===========================================================
   private _callInsertTrajetListePositions(listPositions: Array<AppPosition>): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/create.php";
+    let url = TOMCAT_API_SERVER + "/geolocations";
 
     return this.http.post<Message>(url, listPositions, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
@@ -110,15 +73,10 @@ export class PositionService {
   // ===========================================================
   private _callFindTrajetLastPosition(trajetid: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/read_one.php";
+    let url = TOMCAT_API_SERVER + "/last/geolocation/" + trajetid;
 
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("trajetid", trajetid + "")
-
-    };
     // attention si pas de Position alors {"retour": false}
-    return this.http.get<AppPosition>(url, options)
+    return this.http.get<AppPosition>(url)
       .pipe(catchError(this.commonService.handleError));
 
   }
@@ -134,13 +92,34 @@ export class PositionService {
     );
   }
   // ===========================================================
+  private _callFindAmiTrajetLastPosition(trajetid: number): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/last/geolocation/ami/" + trajetid;
+
+    // attention si pas de Position alors {"retour": false}
+    return this.http.get<AppPosition>(url)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
+  findAmiTrajetLastPosition(trajetid: number, handler: AppPositionHandler): void {
+
+    this._callFindAmiTrajetLastPosition(trajetid).subscribe(
+
+      (p: any) => {
+        p = (p && p.retour == false) ? null : p;
+        handler.onGetPosition(p);
+      },
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+    );
+  }
+  // ===========================================================
   private _callDownloadGpxfile(gpxfile: string): Observable<string> {
 
-    let url = PHP_API_SERVER + "/geolocation/gpx/read.php";
+    let url = TOMCAT_API_SERVER + "/gpx/" + gpxfile;
+
     let options = {
       headers: HTTP_HEADER_URL,
       reportProgress: true,
-      params: new HttpParams().set("gpx", gpxfile),
       responseType: 'text' as const
     };
     return this.http.get(url, options)
@@ -162,17 +141,19 @@ export class PositionService {
     )
   }
   // ===========================================================
-  private _callCreateGpxfile(trajetid: number): Observable<any> {
+  private _callCreateGpxfile(trajetid: number, ami: boolean,): Observable<any> {
 
-    let url = PHP_API_SERVER + "/geolocation/gpx/create.php";
+    let uri = ami ? "/ami/gpx/" : "/gpx/";
+    let url = TOMCAT_API_SERVER + uri + trajetid;
 
-    return this.http.post<Geoportail>(url, { "trajetid": trajetid }, this.commonService.httpOptionsHeaderJson)
+    return this.http.post<Geoportail>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 
   }
-  createGpxfile(trajetid: number, handler: GeoportailHandler): void {
 
-    this._callCreateGpxfile(trajetid).subscribe({
+  createGpxfile(trajetid: number, ami: boolean, handler: GeoportailHandler): void {
+
+    this._callCreateGpxfile(trajetid, ami).subscribe({
       next: (geoportail: Geoportail) => {
         // le nom du fichier est dans le msg
         handler.onGetGeoportailInfo(geoportail);
@@ -186,6 +167,74 @@ export class PositionService {
 
   //=============================================
 
+  /*
+ * aucune position n'est enregistrée.
+ * Verifier le local storage contient ces informations
+ * Si c'est le cas elles sont envoyées au serveur et le local storage est nettoyé.
+ * C'est une fonction de récupération dans le cas où l'envoi normal a échoué pour
+ * un problème réseau.
+ */
+  verifierSiListPositionExisteInLocalStorage() {
+
+    let listPositions = this.localStorage.restoreCurrentPositions();
+    if (listPositions && listPositions.length > 0) {
+
+      // on les envoie sur le serveur distant
+      this.insererListePositionAndClearLocalStorage();
+    }
+  }
+
+  // mets à jour le trajet id dans la liste des positions
+  // après sauvegarde réussie d'un trajet
+  updateListPositionsInLocalStorage(trajetidOld: number, trajetidBdd: number) {
+
+    console.log("changer le trajetid des positions sauvegardées de " + trajetidOld + " vers " + trajetidBdd);
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+    if (listPositions && listPositions.length > 0) {
+
+      listPositions.filter(p => p.trajetid == trajetidOld).forEach(
+
+        (p: AppPosition) => {
+          console.log("correctif " + p.timestamp);
+          p.trajetid = trajetidBdd;
+        }
+      );
+
+      this.localStorage.storeCurrentPositions(listPositions);
+
+    }
+  }
+
+  // construit la liste des positions en fonction de l'id du trajet
+  buildListPositionsInLocalStorageForTrajet(trajetid: number): Array<AppPosition> {
+
+    console.log("buildListPositionsInLocalStorageForTrajet()");
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+
+    let listPositionsForTrajet = new Array<AppPosition>();
+
+    if (listPositions && listPositions.length > 0) {
+      listPositionsForTrajet = listPositions.filter(p => p.trajetid == trajetid);
+    }
+
+    return listPositionsForTrajet;
+  }
+
+  clearListPositionsInLocalStorageForTrajet(trajetid: number): void {
+
+    console.log("clearListPositionsInLocalStorageForTrajet()");
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+
+    let listPositionsHorsTrajet = new Array<AppPosition>();
+
+    if (listPositions && listPositions.length > 0) {
+      listPositionsHorsTrajet = listPositions.filter(p => p.trajetid != trajetid);
+    }
+
+    this.localStorage.storeCurrentPositions(listPositionsHorsTrajet);
+  }
+
+  //=============================================
 
   buildUrlToMaps(position: AppPosition): string {
 

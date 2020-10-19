@@ -20,10 +20,15 @@
         </mat-card-content>
 
     </mat-card>
-
-
 </ng-container>
 
 <ng-template #noPosition>
-    <h4>Pas de position connue!</h4>
+    <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px" style="background-color: pink;">
+        <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
+            <div>Pas de position connue!</div>
+            <div *ngIf="geoMessage" class="mat-primary">
+                <h4>{{geoMessage.msg}}</h4>
+            </div>
+        </mat-card-content>
+    </mat-card>
 </ng-template>

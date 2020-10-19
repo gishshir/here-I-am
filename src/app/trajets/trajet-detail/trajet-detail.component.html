@@ -2,7 +2,7 @@
 
     <ng-container *ngIf="trajetDetail">
         <h3 fxFlex>{{getTrajetDescription()}}</h3>
-        <app-trajet-common fxFlex [trajet]="trajetDetail"></app-trajet-common>
+        <app-trajet-common fxFlex [trajet]="trajetDetail" [ami]="false"></app-trajet-common>
 
         <!-- changement etat du trajet-->
         <div fxFlex="initial" style="margin-top:20px">

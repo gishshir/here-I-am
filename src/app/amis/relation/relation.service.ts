@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { LoggerService } from '../../common/logger.service';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CommonService, PHP_API_SERVER, Handler, HTTP_HEADER_URL, MessageHandler } from 'src/app/common/common.service';
-import { RelationInfo, RelationAction } from './relationinfo.type';
+import { CommonService, Handler, MessageHandler, TOMCAT_API_SERVER } from 'src/app/common/common.service';
+import { RelationInfo } from './relationinfo.type';
 import { Message } from 'src/app/common/message.type';
-import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +19,9 @@ export class RelationService {
   // ===========================================================
   private _callDeleteRelation(id: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/delete.php";
+    let url = TOMCAT_API_SERVER + "/relation/" + id;
 
-    let options = {
-      // params: new HttpParams().set("id", "" + id)
-      body: { "id": "" + id }
-    };
-
-    return this.http.request<Message>('delete', url, options)
+    return this.http.request<Message>('delete', url)
       .pipe(
         catchError(this.commonService.handleError)
       );
@@ -42,15 +36,16 @@ export class RelationService {
   // ===========================================================
 
   //==============================================================
-  private _callCreateInvitation(relationToCreate: object): Observable<any> {
+  private _callCreateInvitation(idperson: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/create.php";
-    return this.http.post<Message>(url, relationToCreate, this.commonService.httpOptionsHeaderJson)
+    let url = TOMCAT_API_SERVER + "/relation/invitation/" + idperson;
+
+    return this.http.post<Message>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
   createInvitation(idperson: number, handler: MessageHandler): void {
 
-    this._callCreateInvitation({ idperson: idperson, action: RelationAction.invitation })
+    this._callCreateInvitation(idperson)
       .subscribe(this.commonService._createMessageObserver(handler));
   }
   //==============================================================
@@ -59,14 +54,14 @@ export class RelationService {
   //==============================================================
   private _callActionUpdate(relationToUpdate: object): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/update.php";
+    let url = TOMCAT_API_SERVER + "/relation/action";
 
     return this.http.put<Message>(url, relationToUpdate, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
   }
-  updateActionRelation(idrelation: number, action: string, handler: MessageHandler): any {
+  updateActionRelation(relationid: number, action: string, handler: MessageHandler): any {
     this.logger.log("updateRelation() : " + action);
-    this._callActionUpdate({ idrelation: idrelation, action: action }).subscribe(
+    this._callActionUpdate({ relationid: relationid, action: action }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
   }
@@ -75,13 +70,9 @@ export class RelationService {
   //==============================================================
   private _callRelationInfo(idrelation: number): Observable<any> {
 
-    let url = PHP_API_SERVER + "/relation/read.php";
-    let options = {
-      headers: HTTP_HEADER_URL,
-      params: new HttpParams().set("id", idrelation + "")
+    let url = TOMCAT_API_SERVER + "/relation/" + idrelation;
 
-    };
-    return this.http.get<RelationInfo>(url, options)
+    return this.http.get<RelationInfo>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 
   }

@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Trajet } from 'src/app/trajets/trajet.type';
 import { AppPosition } from 'src/app/trajets/position.type';
+import { Message } from '../message.type';
+import { GeolocationState } from 'src/app/geolocation/geolocation.service';
+import { NetworkState } from '../common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,15 +20,28 @@ export class NotificationService {
   }
 
   //--------------------------------------------------
-  // Observable boolean source
-  private networkUsageSource = new Subject<boolean>();
-  // observable boolean streams
+  // Observable NetworkState source
+  private networkUsageSource = new Subject<NetworkState>();
+  // observable NetworkState streams
   networkUsage$ = this.networkUsageSource.asObservable();
 
   // services message commands
-  useNetwork(usage: boolean) {
-    console.log("NotificationService#useNetwork() " + usage);
-    this.networkUsageSource.next(usage);
+  useNetwork(state: NetworkState) {
+    console.log("NotificationService#useNetwork() " + state);
+    this.networkUsageSource.next(state);
+  }
+  //--------------------------------------------------
+
+  //--------------------------------------------------
+  // Observable Message source
+  private emitGeoMessageSource = new Subject<Message>();
+  // observable Message streams
+  emitGeoMessage$ = this.emitGeoMessageSource.asObservable();
+
+  // services message commands
+  emitGeoMessage(message?: Message) {
+    console.log("NotificationService#emitGeoMessage() " + message.msg);
+    this.emitGeoMessageSource.next(message);
   }
   //--------------------------------------------------
 
@@ -55,6 +71,17 @@ export class NotificationService {
   }
   //--------------------------------------------------
 
+  //--------------------------------------------------
+  //Observable boolean source
+  private invalidTokenSource = new Subject<boolean>();
+  // observable boolean streams
+  invalidToken$ = this.invalidTokenSource.asObservable();
+
+  informInvalidToken(value: boolean) {
+    console.log("NotificationService#informInvalidToken() " + value);
+    this.invalidTokenSource.next(value);
+  }
+  //--------------------------------------------------
 
   //---------------------------------------------------------------
   // notification d'un changement dans le trajet de mon ami en cours
@@ -98,13 +125,13 @@ export class NotificationService {
 
   //---------------------------------------------------------------
   // notification de l'activation de la geoposition
-  private geolocationSource = new Subject<Boolean>();
+  private geolocationSource = new Subject<GeolocationState>();
   // observable boolean streams
   geolocation$ = this.geolocationSource.asObservable();
 
-  activateGeolocation(value: Boolean) {
-    console.log("NotificationService#activateGeolocation() " + value);
-    this.geolocationSource.next(value);
+  activateGeolocation(state: GeolocationState) {
+    console.log("NotificationService#activateGeolocation() " + state);
+    this.geolocationSource.next(state);
   }
   //---------------------------------------------------------------
 

@@ -29,7 +29,7 @@ export class AppGuardGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    console.log("App-Guard#canActivate called")
+    console.log("App-Guard#canActivate called: " + state.url);
     let url: string = state.url;
     return this.checkLogin(url, false);
   }

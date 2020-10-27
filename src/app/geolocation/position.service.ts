@@ -25,6 +25,37 @@ export class PositionService {
   }
 
 
+  /*
+  * On ajoute la position courante à la liste en attente dans le LS et
+  * on essaie d'envoyer la liste complète sur le server
+  * si succes on efface la liste dans le localstorage
+  * si echec on stocke la liste complétée dans le LS pour un envoi ultérieur
+  **/
+  insererCurrentAndListePositionAndClearLocalStorage(currentPosition: AppPosition, handler: MessageHandler): void {
+
+    if (currentPosition) {
+
+      let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
+      listPositions.push(currentPosition);
+
+      this.insererListePositions(listPositions, {
+        onError: (e: Message) => {
+          this.localStorage.storeCurrentPositions(listPositions);
+          handler.onError(e);
+        },
+
+        onMessage: (m: Message) => {
+          this.localStorage.clearLocalStorageListPositions();
+          handler.onMessage(m);
+        }
+      });
+    }
+
+  }
+  /*
+  * on essaie d'envoyer la liste de toutes les positions en attente
+  * si succes on nettoie le LS
+  */
   insererListePositionAndClearLocalStorage(): void {
 
     let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();

@@ -222,7 +222,7 @@ export class GeolocationService implements OnInit, OnDestroy {
     this.activateGeolocation(GeolocationState.succes);
     this.decrementsTimeout();
 
-    // ne pas soliciter trop le reseau
+    // pourquoi ne pas récupérer le ts de la position ?
     let timestampSec = Math.floor(position.timestamp / 1000);
     console.log("geo_success - TS (sec): " + timestampSec);
 
@@ -234,13 +234,14 @@ export class GeolocationService implements OnInit, OnDestroy {
       timestamp: timestampSec
     }
 
-    this.storePosition(this.currentPosition);
     this.notificationService.changeMaPosition(this.currentPosition);
 
     if (this.trajetid > 0) {
-      console.log("appel du service insererNouvellePosition()...");
+
+      console.log("appel du service insererCurrentAndListePositionAndClearLocalStorage()...");
       this.notificationService.useNetwork(NetworkState.pending);
-      this.positionService.insererNouvellePosition(this.currentPosition, {
+      this.positionService.insererCurrentAndListePositionAndClearLocalStorage(this.currentPosition, {
+
         onMessage: (m: Message) => {
           console.log(m.msg);
           this.notificationService.useNetwork(NetworkState.success);
@@ -250,6 +251,9 @@ export class GeolocationService implements OnInit, OnDestroy {
           this.notificationService.useNetwork(NetworkState.error);
         }
       });
+    } else {
+      // trajet non connu en BDD, on garde la position en local
+      this.storePosition(this.currentPosition);
     }
 
 
@@ -302,7 +306,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
   }
 
-  // stockage en mémoire et dans le LocalStorage
+  // stockage dans le LocalStorage
   private storePosition(appPosition: AppPosition): void {
 
     if (appPosition) {

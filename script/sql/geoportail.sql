@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 07 sep. 2020 à 16:43
+-- Généré le : mar. 27 oct. 2020 à 15:47
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -35,7 +35,8 @@ CREATE TABLE `geoportail` (
   `description` varchar(100) NOT NULL,
   `gpxfile` varchar(20) NOT NULL COMMENT 'fichier gpx contenant les points du trajet',
   `center_lat` varchar(20) NOT NULL DEFAULT '0',
-  `center_long` varchar(20) NOT NULL DEFAULT '0'
+  `center_long` varchar(20) NOT NULL DEFAULT '0',
+  `ownerid` int(11) NOT NULL COMMENT 'id de l''utilisateur propriétaire'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -48,7 +49,8 @@ CREATE TABLE `geoportail` (
 ALTER TABLE `geoportail`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `IND_TOKEN` (`token`) USING BTREE,
-  ADD KEY `geoportail_ibfk_1` (`trajetid`);
+  ADD UNIQUE KEY `IND_TRAJ_OWNER` (`trajetid`,`ownerid`),
+  ADD KEY `IND_OWNER` (`ownerid`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -68,7 +70,8 @@ ALTER TABLE `geoportail`
 -- Contraintes pour la table `geoportail`
 --
 ALTER TABLE `geoportail`
-  ADD CONSTRAINT `geoportail_ibfk_1` FOREIGN KEY (`trajetid`) REFERENCES `trajet` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `geoportail_ibfk_1` FOREIGN KEY (`trajetid`) REFERENCES `trajet` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `geoportail_ibfk_2` FOREIGN KEY (`ownerid`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

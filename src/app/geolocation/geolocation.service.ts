@@ -222,10 +222,12 @@ export class GeolocationService implements OnInit, OnDestroy {
     this.activateGeolocation(GeolocationState.succes);
     this.decrementsTimeout();
 
-    // pourquoi ne pas récupérer le ts de la position ?
     let timestampSec = Math.floor(position.timestamp / 1000);
+    // attention de ne pas enregistrer deux fois le meme timestamp!
+    if (this.currentPosition && this.currentPosition.timestamp == timestampSec) {
+      return;
+    }
     console.log("geo_success - TS (sec): " + timestampSec);
-
     this.currentPosition = {
 
       trajetid: this.trajetid,

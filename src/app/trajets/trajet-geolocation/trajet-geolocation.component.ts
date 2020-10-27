@@ -29,8 +29,10 @@ export class TrajetGeolocationComponent implements OnInit {
 
   appPosition: AppPosition;
   private urlToMaps: string;
-  private urlToGeoportail: string;
-  private gpxfile: string;
+  // private urlToGeoportail: string;
+  // private gpxfile: string;
+
+  private geoportail: Geoportail;
 
 
   constructor(private positionService: PositionService, private localStorage: AppStorageService,
@@ -39,7 +41,9 @@ export class TrajetGeolocationComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // uniquement si trajet termine
   private chercherLastPosition() {
+
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
 
       this.positionService.findTrajetLastPosition(this._trajet.id, {
@@ -48,7 +52,7 @@ export class TrajetGeolocationComponent implements OnInit {
           this.appPosition = p;
           if (this.appPosition) {
             this.urlToMaps = this.positionService.buildUrlToMaps(p);
-            this.createGpxFile();
+            this.createOrUpdateGeoportail();
           } else {
             // pas de positions. S'assurer que c'est normal...
             this.positionService.verifierSiListPositionExisteInLocalStorage();
@@ -59,8 +63,8 @@ export class TrajetGeolocationComponent implements OnInit {
   }
 
   openMaps() {
-    if (this.urlToGeoportail) {
-      this.tools.openNewWindow(this.urlToGeoportail);
+    if (this.geoportail) {
+      this.tools.openNewWindow(this.geoportail.url);
     } else if (this.urlToMaps) {
       this.tools.openNewWindow(this.urlToMaps);
     }
@@ -68,15 +72,21 @@ export class TrajetGeolocationComponent implements OnInit {
 
 
 
+  // uniquement si trajet termine
+  createOrUpdateGeoportail() {
 
-  createGpxFile() {
-    this.gpxfile = null;
-    if (this._trajet && this._trajet.etat == TrajetState.ended) {
-      this.positionService.createGpxfile(this._trajet.id, false, {
+    // on ne fait rien si on a déjà l'info pour le meme trajet
+    if (this.geoportail && this._trajet && this.geoportail.trajetid == this._trajet.id) {
+      console.log("... createOrUpdateGeoportail() non nécessaire!");
+      return;
+    }
+
+    this.geoportail = null;
+    if (this._trajet) {
+      this.positionService.createOrUpdateGeoportail(this._trajet.id, false, {
 
         onGetGeoportailInfo: (g: Geoportail) => {
-          this.gpxfile = g.gpxfile;
-          this.urlToGeoportail = g.url;
+          this.geoportail = g;
         },
         onError: (e: Message) => console.log(e.msg)
       });
@@ -84,10 +94,12 @@ export class TrajetGeolocationComponent implements OnInit {
   }
 
   download() {
-    this.positionService.downloadGpxfile(this.gpxfile, {
-      onMessage: (m: Message) => this.eventMessage.emit(m),
-      onError: (e: Message) => this.eventMessage.emit(e)
-    })
+    if (this.geoportail) {
+      this.positionService.downloadGpxfile(this.geoportail.gpxfile, {
+        onMessage: (m: Message) => this.eventMessage.emit(m),
+        onError: (e: Message) => this.eventMessage.emit(e)
+      })
+    }
   }
 
   displayDate(): string {

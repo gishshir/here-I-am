@@ -24,7 +24,8 @@
                 <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
                 Carte
             </div>
-            <div fxFlex="grow" *ngIf="gpxfile" class="mat-raised-button" (click)="download()" style="cursor: pointer;">
+            <div fxFlex="grow" *ngIf="geoportail" class="mat-raised-button" (click)="download()"
+                style="cursor: pointer;">
                 <mat-icon class="icon-map material-icons md-24" color="accent">archive</mat-icon>
                 Télécharger
             </div>

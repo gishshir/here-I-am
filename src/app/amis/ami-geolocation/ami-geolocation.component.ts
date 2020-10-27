@@ -25,9 +25,10 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
   appPosition: AppPosition;
   private urlToMaps: string;
-  private urlToGeoportail: string;
-  gpxfile: string;
+  // private urlToGeoportail: string;
+  // gpxfile: string;
 
+  geoportail: Geoportail;
   titre: string = "Position de mon ami(e)";
 
   private _amiTrajet: Trajet;
@@ -45,8 +46,8 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
   openMaps() {
-    if (this.urlToGeoportail) {
-      this.tools.openNewWindow(this.urlToGeoportail);
+    if (this.geoportail) {
+      this.tools.openNewWindow(this.geoportail.url);
     } else if (this.urlToMaps) {
       this.tools.openNewWindow(this.urlToMaps);
     }
@@ -70,14 +71,21 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     }
   }
 
-  createGpxFile() {
-    this.gpxfile = null;
-    if (this._amiTrajet && this._amiTrajet.etat == TrajetState.ended) {
-      this.positionService.createGpxfile(this._amiTrajet.id, true, {
+  createOrUpdateGeoportail() {
+
+    // on ne fait rien si on a déjà l'info pour le meme trajet
+    if (this.geoportail && this._amiTrajet && this.geoportail.trajetid == this._amiTrajet.id) {
+      console.log("... createOrUpdateGeoportail() non nécessaire!");
+      return;
+    }
+
+    // sinon on cherche l'info en remote...
+    this.geoportail = null;
+    if (this._amiTrajet) {
+      this.positionService.createOrUpdateGeoportail(this._amiTrajet.id, true, {
 
         onGetGeoportailInfo: (g: Geoportail) => {
-          this.gpxfile = g.gpxfile;
-          this.urlToGeoportail = g.url;
+          this.geoportail = g;
         },
         onError: (e: Message) => console.log(e.msg)
       });
@@ -85,10 +93,12 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   }
 
   download() {
-    this.positionService.downloadGpxfile(this.gpxfile, {
-      onMessage: (m: Message) => this.eventMessage.emit(m),
-      onError: (e: Message) => this.eventMessage.emit(e)
-    })
+    if (this.geoportail) {
+      this.positionService.downloadGpxfile(this.geoportail.gpxfile, {
+        onMessage: (m: Message) => this.eventMessage.emit(m),
+        onError: (e: Message) => this.eventMessage.emit(e)
+      });
+    }
   }
 
   // demarre timer si necessaire
@@ -121,6 +131,8 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
       if (this.appPosition == undefined) {
         this.findAmiTrajetPosition();
       }
+      // depuis 27/10 : acces à geoportail dans tous les cas
+      this.createOrUpdateGeoportail();
       switch (this._amiTrajet.etat) {
 
         case TrajetState.started: this.startTimer(); break;
@@ -128,7 +140,6 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
         case TrajetState.pausing:
         case TrajetState.ended: {
           this.stopTimer();
-          this.createGpxFile();
           this.titre = "Dernière position connue";
         }
       }

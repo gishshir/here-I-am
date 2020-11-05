@@ -5,7 +5,7 @@ import { Message } from 'src/app/common/message.type';
 import { ToolsService } from 'src/app/common/tools.service';
 import { PositionService } from 'src/app/geolocation/position.service';
 import { Geoportail } from 'src/app/geoportail/geoportail.type';
-import { AppStorageService } from '../storage.service';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Component({
   selector: 'app-trajet-geolocation',
@@ -27,15 +27,18 @@ export class TrajetGeolocationComponent implements OnInit {
   }
   @Output() eventMessage = new EventEmitter<Message>();
 
-  appPosition: AppPosition;
-  private urlToMaps: string;
+  // TODO A terminer: utiliser dans tous les cas le component geolocation-component
+  //appPosition: AppPosition;
+  //private urlToMaps: string;
   // private urlToGeoportail: string;
   // private gpxfile: string;
 
+  url: string;
+  titre: string;
   private geoportail: Geoportail;
 
 
-  constructor(private positionService: PositionService, private localStorage: AppStorageService,
+  constructor(private positionService: PositionService, private notificationService: NotificationService,
     private tools: ToolsService) { }
 
   ngOnInit(): void {
@@ -44,35 +47,48 @@ export class TrajetGeolocationComponent implements OnInit {
   // uniquement si trajet termine
   private chercherLastPosition() {
 
+    this.createOrUpdateGeoportail();
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
 
+      this.titre = "Dernière position";
       this.positionService.findTrajetLastPosition(this._trajet.id, {
         onError: (e: Message) => this.eventMessage.emit(e),
         onGetPosition: (p: AppPosition) => {
-          this.appPosition = p;
-          if (this.appPosition) {
-            this.urlToMaps = this.positionService.buildUrlToMaps(p);
-            this.createOrUpdateGeoportail();
+          //this.appPosition = p;
+          if (p) {
+            if (!this.url) {
+              this.url = this.positionService.buildUrlToMaps(p);
+            }
+            this.notificationService.changeMaPosition(p);
+
           } else {
             // pas de positions. S'assurer que c'est normal...
             this.positionService.verifierSiListPositionExisteInLocalStorage();
           }
         }
       });
+    } else {
+      this.titre = "Position connue";
     }
   }
 
-  openMaps() {
-    if (this.geoportail) {
-      this.tools.openNewWindow(this.geoportail.url);
-    } else if (this.urlToMaps) {
-      this.tools.openNewWindow(this.urlToMaps);
-    }
-  }
+  // getUrl(): string {
+  //   if (this.geoportail) {
+  //     return this.geoportail.url;
+  //   } else if (this.urlToMaps) {
+  //     return this.urlToMaps;
+  //   }
+  // }
+  // openMaps() {
+  //   //let url = this.getUrl();
+  //   if (this.url) {
+  //     this.tools.openNewWindow(this.url);
+  //   }
+  // }
 
 
 
-  // uniquement si trajet termine
+  // dans tous les cas
   createOrUpdateGeoportail() {
 
     // on ne fait rien si on a déjà l'info pour le meme trajet
@@ -87,6 +103,7 @@ export class TrajetGeolocationComponent implements OnInit {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.geoportail = g;
+          this.url = this.geoportail.url;
         },
         onError: (e: Message) => console.log(e.msg)
       });
@@ -104,20 +121,22 @@ export class TrajetGeolocationComponent implements OnInit {
 
   displayDate(): string {
 
-    if (this.appPosition) {
-      return this.tools.formatDateJourMoisYY(this.appPosition.timestamp);
-    } else {
-      return "";
-    }
+    // if (this.appPosition) {
+    //   return this.tools.formatDateJourMoisYY(this.appPosition.timestamp);
+    // } else {
+    //   return "";
+    // }
+    return "";
   }
 
   displayTime(): string {
 
-    if (this.appPosition) {
-      return this.tools.formatTime(this.appPosition.timestamp);
-    } else {
-      return "";
-    }
+    // if (this.appPosition) {
+    //   return this.tools.formatTime(this.appPosition.timestamp);
+    // } else {
+    //   return "";
+    // }
+    return "";
   }
 
 }

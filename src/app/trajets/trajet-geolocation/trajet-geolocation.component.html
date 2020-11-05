@@ -1,35 +1,4 @@
 <!-- geo location (uniquement pour le trajet en cours)-->
-<ng-container *ngIf="trajet && trajet.etat != 'Ended'">
-    <app-geolocation> </app-geolocation>
-</ng-container>
-
-
-<!-- last position et fichier gpx d'un trajet terminé -->
-<ng-container *ngIf="trajet && trajet.etat == 'Ended' && appPosition">
-
-    <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
-
-        <h4 fxFlex>Dernière position:</h4>
-        <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
-
-            <div fxFlex fxLayout="column" fxLayoutGap="5px" style="margin-bottom: 30px;">
-                <div fxFlex="initial"><b>latitude:</b> {{appPosition.latitude}}</div>
-                <div fxFlex="initial"><b>longitude:</b> {{appPosition.longitude}}</div>
-                <div fxFlex="initial"><b>date:</b> {{displayDate()}}&nbsp;&nbsp;{{displayTime()}}</div>
-            </div>
-        </mat-card-content>
-
-        <mat-dialog-actions fxFlex fxLayout="column" fxLayoutGap="10px">
-            <div fxFlex="grow" class="mat-raised-button mat-primary" (click)="openMaps()" style="cursor: pointer;">
-                <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
-                Carte
-            </div>
-            <div fxFlex="grow" *ngIf="geoportail" class="mat-raised-button" (click)="download()"
-                style="cursor: pointer;">
-                <mat-icon class="icon-map material-icons md-24" color="accent">archive</mat-icon>
-                Télécharger
-            </div>
-        </mat-dialog-actions>
-    </mat-card>
-
+<ng-container *ngIf="trajet">
+    <app-geolocation [url]="url" [titre]="titre" [showLienToMaps]="true"> </app-geolocation>
 </ng-container>

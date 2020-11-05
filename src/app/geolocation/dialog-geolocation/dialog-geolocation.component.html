@@ -3,14 +3,16 @@
 
     <mat-dialog-actions fxFlexFill fxLayout fxLayoutGap="10px">
 
-        <button fxFlex="initial" class="mat-raised-button" (click)="close()">Fermer</button>
+        <button fxFlex="initial" class="mat-raised-button" (click)="close()"
+            style="cursor: pointer; padding: 5px;">Fermer</button>
 
-        <ng-container *ngIf="geolocation.urlToMaps">
-            <a fxFlex="initial" class="mat-raised-button mat-primary" target="_blank" rel="noopener noreferrer"
-                [href]="geolocation.urlToMaps">
-                <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
-                Carte
-            </a>
+        <ng-container *ngIf="geolocation.appPosition">
+            <button fxFlex class="mat-raised-button mat-primary" (click)="openMaps(geolocation.appPosition)"
+                style="cursor: pointer; padding: 2px;">
+                <mat-icon class=" material-icons md-24">location_on</mat-icon>
+                <span class="text-button">Carte</span>
+            </button>
         </ng-container>
+
     </mat-dialog-actions>
 </div>

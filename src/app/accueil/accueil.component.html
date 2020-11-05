@@ -5,7 +5,7 @@
 
   <!-- AMIS -->
   <mat-card class="card" fxFlex="initial" routerLink="/go-amis" routerLinkActive="active">
-    <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+    <mat-card-header fxLayout fxLayoutAlign="center" fxLayoutGap="5px">
       <mat-icon fxFlex="initial" class="material-icons md-24" color="primary">favorite</mat-icon>
       <mat-card-title fxFlex="grow">Mes amis</mat-card-title>
     </mat-card-header>
@@ -13,7 +13,7 @@
 
   <!-- TRAJETS -->
   <mat-card class="card" fxFlex="initial" routerLink="/go-trajets" routerLinkActive="active">
-    <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+    <mat-card-header fxLayout fxLayoutAlign="center" fxLayoutGap="5px">
       <mat-icon fxFlex="initial" class="material-icons md-24" color="primary">card_travel</mat-icon>
       <mat-card-title fxFlex="grow">Mes trajets</mat-card-title>
     </mat-card-header>
@@ -22,7 +22,7 @@
   <!-- NOUVEAU TRAJET -->
   <nf-container *ngIf="dernierTrajet === undefined || dernierTrajet == null || dernierTrajet.etat == 'Ended'">
     <mat-card class="card" fxFlex="grow" routerLink="/go-starting" routerLinkActive="active">
-      <mat-card-header fxFlexLayout fxFlexLayoutAlign="center" fxFlexLayoutGap="5px">
+      <mat-card-header fxLayout fxLayoutAlign="center" fxLayoutGap="5px">
         <mat-icon fxFlex="initial" class="material-icons md-24" color="primary">flight_takeof</mat-icon>
         <mat-card-title fxFlex="grow">Commencer un trajet</mat-card-title>
       </mat-card-header>

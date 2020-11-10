@@ -24,12 +24,13 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   @Output() eventMessage = new EventEmitter<Message>();
 
   appPosition: AppPosition;
-  private urlToMaps: string;
+  //private urlToMaps: string;
   // private urlToGeoportail: string;
   // gpxfile: string;
 
   geoportail: Geoportail;
   titre: string = "Position de mon ami(e)";
+  url: string;
 
   private _amiTrajet: Trajet;
 
@@ -45,31 +46,31 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopTimer();
   }
-  openMaps() {
-    if (this.geoportail) {
-      this.tools.openNewWindow(this.geoportail.url);
-    } else if (this.urlToMaps) {
-      this.tools.openNewWindow(this.urlToMaps);
-    }
-  }
+  // openMaps() {
+  //   if (this.geoportail) {
+  //     this.tools.openNewWindow(this.geoportail.url);
+  //   } else if (this.urlToMaps) {
+  //     this.tools.openNewWindow(this.urlToMaps);
+  //   }
+  // }
 
-  displayDate(): string {
+  // displayDate(): string {
 
-    if (this.appPosition) {
-      return this.tools.formatDateJourMoisYY(this.appPosition.timestamp);
-    } else {
-      return "";
-    }
-  }
+  //   if (this.appPosition) {
+  //     return this.tools.formatDateJourMoisYY(this.appPosition.timestamp);
+  //   } else {
+  //     return "";
+  //   }
+  // }
 
-  displayTime(): string {
+  // displayTime(): string {
 
-    if (this.appPosition) {
-      return this.tools.formatTime(this.appPosition.timestamp);
-    } else {
-      return "";
-    }
-  }
+  //   if (this.appPosition) {
+  //     return this.tools.formatTime(this.appPosition.timestamp);
+  //   } else {
+  //     return "";
+  //   }
+  // }
 
   createOrUpdateGeoportail() {
 
@@ -86,6 +87,7 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.geoportail = g;
+          this.url = g.url;
         },
         onError: (e: Message) => console.log(e.msg)
       });
@@ -158,8 +160,9 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
 
       onGetPosition: (p: AppPosition) => {
         this.appPosition = p;
-        this.urlToMaps = this.positionService.buildUrlToMaps(p);
+        //this.url = this.positionService.buildUrlToMaps(p);
         this.notificationService.useNetwork(NetworkState.success);
+        this.notificationService.changeMaPosition(p);
       },
       onError: (e: Message) => {
         console.log(e.msg);

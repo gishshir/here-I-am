@@ -47,7 +47,10 @@ export class TrajetGeolocationComponent implements OnInit {
   // uniquement si trajet termine
   private chercherLastPosition() {
 
+    // dans tous les cas
     this.createOrUpdateGeoportail();
+
+    // uniquement si trajet terminé
     if (this._trajet && this._trajet.etat == TrajetState.ended) {
 
       this.titre = "Dernière position";
@@ -71,21 +74,6 @@ export class TrajetGeolocationComponent implements OnInit {
       this.titre = "Position connue";
     }
   }
-
-  // getUrl(): string {
-  //   if (this.geoportail) {
-  //     return this.geoportail.url;
-  //   } else if (this.urlToMaps) {
-  //     return this.urlToMaps;
-  //   }
-  // }
-  // openMaps() {
-  //   //let url = this.getUrl();
-  //   if (this.url) {
-  //     this.tools.openNewWindow(this.url);
-  //   }
-  // }
-
 
 
   // dans tous les cas

@@ -1,4 +1,3 @@
-<ng-container>
-
-    <app-geolocation [url]="url" [titre]="titre" [showLienToMaps]="true"> </app-geolocation>
+<ng-container *ngIf="amiTrajet">
+    <app-geolocation [ami]="true" [locale]="false" [titre]="titre" [trajetid]="amiTrajet.id"> </app-geolocation>
 </ng-container>

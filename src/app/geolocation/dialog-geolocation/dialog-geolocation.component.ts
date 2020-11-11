@@ -1,9 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { AppPosition } from 'src/app/trajets/position.type';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GeolocationService } from '../geolocation.service';
-import { PositionService } from '../position.service';
-import { ToolsService } from 'src/app/common/tools.service';
+
 
 @Component({
   selector: 'app-dialog-geolocation',
@@ -14,19 +12,16 @@ export class DialogGeolocationComponent implements OnInit {
 
 
   titre: string;
+  trajetid: number = -1;
+  actionFermer: string = "Fermer";
 
-  constructor(private positionService: PositionService, private tools: ToolsService,
+
+  constructor(
     private dialogRef: MatDialogRef<DialogGeolocationComponent>, @Inject(MAT_DIALOG_DATA) data) {
 
     this.titre = data.titre;
   }
 
-  openMaps(p: AppPosition) {
-    let url = this.positionService.buildUrlToMaps(p);
-    if (url) {
-      this.tools.openNewWindow(url);
-    }
-  }
 
 
   ngOnInit(): void {

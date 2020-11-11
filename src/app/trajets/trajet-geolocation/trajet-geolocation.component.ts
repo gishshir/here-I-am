@@ -27,42 +27,30 @@ export class TrajetGeolocationComponent implements OnInit {
   }
   @Output() eventMessage = new EventEmitter<Message>();
 
-  // TODO A terminer: utiliser dans tous les cas le component geolocation-component
-  //appPosition: AppPosition;
-  //private urlToMaps: string;
-  // private urlToGeoportail: string;
-  // private gpxfile: string;
-
-  url: string;
+  //url: string;
   titre: string;
-  private geoportail: Geoportail;
+  //private geoportail: Geoportail;
 
 
-  constructor(private positionService: PositionService, private notificationService: NotificationService,
-    private tools: ToolsService) { }
+  constructor(private positionService: PositionService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
   }
 
-  // uniquement si trajet termine
+  // dans tous les cas
   private chercherLastPosition() {
 
-    // dans tous les cas
-    this.createOrUpdateGeoportail();
+    console.log("chercherLastPosition()");
 
-    // uniquement si trajet terminé
-    if (this._trajet && this._trajet.etat == TrajetState.ended) {
+    if (this._trajet) {
 
-      this.titre = "Dernière position";
+      console.log("on cherche dernière position en BDD!");
+      this.titre = this._trajet.etat == TrajetState.ended ? "Dernière position" : "Position connue:";
       this.positionService.findTrajetLastPosition(this._trajet.id, {
         onError: (e: Message) => this.eventMessage.emit(e),
         onGetPosition: (p: AppPosition) => {
-          //this.appPosition = p;
           if (p) {
-            if (!this.url) {
-              this.url = this.positionService.buildUrlToMaps(p);
-            }
-            this.notificationService.changeMaPosition(p);
+            this.notificationService.changeUnePosition(p);
 
           } else {
             // pas de positions. S'assurer que c'est normal...
@@ -70,61 +58,30 @@ export class TrajetGeolocationComponent implements OnInit {
           }
         }
       });
-    } else {
-      this.titre = "Position connue";
     }
   }
 
 
   // dans tous les cas
-  createOrUpdateGeoportail() {
+  // createOrUpdateGeoportail() {
 
-    // on ne fait rien si on a déjà l'info pour le meme trajet
-    if (this.geoportail && this._trajet && this.geoportail.trajetid == this._trajet.id) {
-      console.log("... createOrUpdateGeoportail() non nécessaire!");
-      return;
-    }
+  //   // on ne fait rien si on a déjà l'info pour le meme trajet
+  //   if (this.geoportail && this._trajet && this.geoportail.trajetid == this._trajet.id) {
+  //     console.log("... createOrUpdateGeoportail() non nécessaire!");
+  //     return;
+  //   }
 
-    this.geoportail = null;
-    if (this._trajet) {
-      this.positionService.createOrUpdateGeoportail(this._trajet.id, false, {
+  //   this.geoportail = null;
+  //   if (this._trajet) {
+  //     this.positionService.createOrUpdateGeoportail(this._trajet.id, false, {
 
-        onGetGeoportailInfo: (g: Geoportail) => {
-          this.geoportail = g;
-          this.url = this.geoportail.url;
-        },
-        onError: (e: Message) => console.log(e.msg)
-      });
-    }
-  }
-
-  download() {
-    if (this.geoportail) {
-      this.positionService.downloadGpxfile(this.geoportail.gpxfile, {
-        onMessage: (m: Message) => this.eventMessage.emit(m),
-        onError: (e: Message) => this.eventMessage.emit(e)
-      })
-    }
-  }
-
-  displayDate(): string {
-
-    // if (this.appPosition) {
-    //   return this.tools.formatDateJourMoisYY(this.appPosition.timestamp);
-    // } else {
-    //   return "";
-    // }
-    return "";
-  }
-
-  displayTime(): string {
-
-    // if (this.appPosition) {
-    //   return this.tools.formatTime(this.appPosition.timestamp);
-    // } else {
-    //   return "";
-    // }
-    return "";
-  }
+  //       onGetGeoportailInfo: (g: Geoportail) => {
+  //         this.geoportail = g;
+  //         this.url = this.geoportail.url;
+  //       },
+  //       onError: (e: Message) => console.log(e.msg)
+  //     });
+  //   }
+  // }
 
 }

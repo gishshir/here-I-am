@@ -8,4 +8,7 @@ export interface AppPosition {
     // timestamp en secondes
     timestamp: number
 
+    // origine locale ou remote (bdd)
+    locale: boolean;
+
 }

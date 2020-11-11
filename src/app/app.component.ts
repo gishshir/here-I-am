@@ -5,10 +5,8 @@ import { Message } from './common/message.type';
 import { Router } from '@angular/router';
 import { AccountService } from './account/account.service';
 import { NotificationService } from './common/notification/notification.service';
-import { Trajet, TrajetState } from './trajets/trajet.type';
 import { GeolocationService, GeolocationState } from './geolocation/geolocation.service';
 import { TrajetService } from './trajets/trajet.service';
-import { AppPosition } from './trajets/position.type';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { NetworkState } from './common/common.service';
@@ -16,7 +14,7 @@ import { NetworkState } from './common/common.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
 
@@ -72,7 +70,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private route: Router, private accountService: AccountService,
+  constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router, private dialog: MatDialog) {
 
     console.log("production: " + environment.production);
@@ -133,17 +131,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   showDialogGeolocation(): void {
 
+    console.log("showDialogGeolocation(): geostate: " + this._geolocationState);
     let titreDial: string;
 
-    // au cas où .. on cherche une position
-    if (this._geolocationState == GeolocationState.stopped ||
-      this._geolocationState == GeolocationState.error) {
-      let forcePosition: boolean = this.geolocationService.forceCurrentPosition();
-      titreDial = forcePosition ? "Ma position actuelle" : "Dernière position connue";
-    } else {
-      titreDial = "Ma position actuelle";
-    }
+    // dans tous les cas .. on cherche une position
+    this.geolocationService.forceCurrentPosition();
 
+    titreDial = "Ma position actuelle";
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;

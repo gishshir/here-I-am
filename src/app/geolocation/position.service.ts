@@ -10,6 +10,7 @@ import { Geoportail } from '../geoportail/geoportail.type';
 
 
 import * as fileSaver from 'file-saver';
+import { NotificationService } from '../common/notification/notification.service';
 
 /**
  * Gestion des positions d'un trajet quelconque
@@ -20,7 +21,7 @@ import * as fileSaver from 'file-saver';
 export class PositionService {
 
 
-  constructor(private http: HttpClient,
+  constructor(private http: HttpClient, private notificationService: NotificationService,
     private commonService: CommonService, private localStorage: AppStorageService) {
   }
 
@@ -116,7 +117,13 @@ export class PositionService {
     this._callFindTrajetLastPosition(trajetid).subscribe(
 
       (p: any) => {
-        p = (p && p.retour == false) ? null : p;
+        if (p && p.retour == false) {
+          this.notificationService.informTrajetSansPosition(trajetid);
+          p = null;
+        }
+        if (p) {
+          p.locale = false;
+        }
         handler.onGetPosition(p);
       },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
@@ -138,6 +145,9 @@ export class PositionService {
 
       (p: any) => {
         p = (p && p.retour == false) ? null : p;
+        if (p) {
+          p.locale = false;
+        }
         handler.onGetPosition(p);
       },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)

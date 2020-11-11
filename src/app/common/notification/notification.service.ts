@@ -112,14 +112,27 @@ export class NotificationService {
   //---------------------------------------------------------------
 
   //---------------------------------------------------------------
-  // notification d'une nouvelle position de mon trajet
-  private maPositionSource = new Subject<AppPosition>();
+  // notification d'une nouvelle position de mon trajet ou de celui de mon ami
+  // c'est le trajetid porté par AppPosition qui permet de filtrer les notifications
+  private unePositionSource = new Subject<AppPosition>();
   // observable AppPosition streams
-  maPosition$ = this.maPositionSource.asObservable();
+  unePosition$ = this.unePositionSource.asObservable();
 
-  changeMaPosition(value: AppPosition) {
-    console.log("NotificationService#changeMaPosition() " + value.timestamp);
-    this.maPositionSource.next(value);
+  changeUnePosition(value: AppPosition) {
+    console.log("NotificationService#changeUnePosition() " + value.timestamp);
+    this.unePositionSource.next(value);
+  }
+  //---------------------------------------------------------------
+
+  //---------------------------------------------------------------
+  // notification d'un trajet sans positions connues
+  private trajetSansPositionSource = new Subject<number>();
+  // observable AppPosition streams
+  trajetSansPosition$ = this.trajetSansPositionSource.asObservable();
+
+  informTrajetSansPosition(trajetid: number) {
+    console.log("NotificationService#informTrajetSansPosition() " + trajetid);
+    this.trajetSansPositionSource.next(trajetid);
   }
   //---------------------------------------------------------------
 

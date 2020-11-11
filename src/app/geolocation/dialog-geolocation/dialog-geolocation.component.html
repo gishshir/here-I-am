@@ -1,18 +1,5 @@
-<div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
-    <app-geolocation #geolocation fxFlex [titre]="titre" [showLienToMaps]="false"></app-geolocation>
-
-    <mat-dialog-actions fxFlexFill fxLayout fxLayoutGap="10px">
-
-        <button fxFlex="initial" class="mat-raised-button" (click)="close()"
-            style="cursor: pointer; padding: 5px;">Fermer</button>
-
-        <ng-container *ngIf="geolocation.appPosition">
-            <button fxFlex class="mat-raised-button mat-primary" (click)="openMaps(geolocation.appPosition)"
-                style="cursor: pointer; padding: 2px;">
-                <mat-icon class=" material-icons md-24">location_on</mat-icon>
-                <span class="text-button">Carte</span>
-            </button>
-        </ng-container>
-
-    </mat-dialog-actions>
-</div>
+<ng-container *ngIf="titre">
+    <app-geolocation [ami]="false" [locale]="true" [titre]="titre" [trajetid]="trajetid" [actionButton]="actionFermer"
+        (eventClickAction)="close()">
+    </app-geolocation>
+</ng-container>

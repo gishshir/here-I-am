@@ -26,7 +26,8 @@
 
 
 <ng-template #noPosition>
-    <mat-card fxFlex="initial" fxLayout="column" fxLayoutGap="20px" style="background-color: pink;">
+    <mat-card *ngIf="!initEnCours" fxFlex="initial" fxLayout="column" fxLayoutGap="20px"
+        style="background-color: pink;">
         <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
             <div>Pas de position connue!</div>
             <div *ngIf="geoMessage" class="mat-primary">

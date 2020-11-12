@@ -27,9 +27,7 @@ export class TrajetGeolocationComponent implements OnInit {
   }
   @Output() eventMessage = new EventEmitter<Message>();
 
-  //url: string;
   titre: string;
-  //private geoportail: Geoportail;
 
 
   constructor(private positionService: PositionService, private notificationService: NotificationService) { }
@@ -60,28 +58,5 @@ export class TrajetGeolocationComponent implements OnInit {
       });
     }
   }
-
-
-  // dans tous les cas
-  // createOrUpdateGeoportail() {
-
-  //   // on ne fait rien si on a déjà l'info pour le meme trajet
-  //   if (this.geoportail && this._trajet && this.geoportail.trajetid == this._trajet.id) {
-  //     console.log("... createOrUpdateGeoportail() non nécessaire!");
-  //     return;
-  //   }
-
-  //   this.geoportail = null;
-  //   if (this._trajet) {
-  //     this.positionService.createOrUpdateGeoportail(this._trajet.id, false, {
-
-  //       onGetGeoportailInfo: (g: Geoportail) => {
-  //         this.geoportail = g;
-  //         this.url = this.geoportail.url;
-  //       },
-  //       onError: (e: Message) => console.log(e.msg)
-  //     });
-  //   }
-  // }
 
 }

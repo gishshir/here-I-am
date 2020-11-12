@@ -118,7 +118,6 @@ export class PositionService {
 
       (p: any) => {
         if (p && p.retour == false) {
-          this.notificationService.informTrajetSansPosition(trajetid);
           p = null;
         }
         if (p) {

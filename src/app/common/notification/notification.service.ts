@@ -124,17 +124,7 @@ export class NotificationService {
   }
   //---------------------------------------------------------------
 
-  //---------------------------------------------------------------
-  // notification d'un trajet sans positions connues
-  private trajetSansPositionSource = new Subject<number>();
-  // observable AppPosition streams
-  trajetSansPosition$ = this.trajetSansPositionSource.asObservable();
 
-  informTrajetSansPosition(trajetid: number) {
-    console.log("NotificationService#informTrajetSansPosition() " + trajetid);
-    this.trajetSansPositionSource.next(trajetid);
-  }
-  //---------------------------------------------------------------
 
   //---------------------------------------------------------------
   // notification de l'activation de la geoposition

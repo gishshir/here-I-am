@@ -6,6 +6,7 @@ import { GeolocationService } from './geolocation.service';
 import { ToolsService } from '../common/tools.service';
 import { Geoportail } from '../geoportail/geoportail.type';
 import { PositionService } from './position.service';
+import { Subscription } from 'rxjs';
 
 /*
 * composant interne utilise dans
@@ -33,7 +34,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
 
   appPosition: AppPosition;
   geoMessage: Message;
-  initEnCours: boolean = true;
+  waiting: boolean = true;
 
   private geoportail: Geoportail;
 
@@ -44,9 +45,10 @@ export class GeolocationComponent implements OnInit, OnDestroy {
   // important pour distinguer les positions à prendre en compte
   @Input() set trajetid(trajetid: number) {
     this._trajetid = trajetid;
-    console.log("set trajetid: " + this.trajetid);
+    console.log("set trajetid: " + this._trajetid);
     this.appPosition = null;
-    this.initEnCours = true;
+    this.geoMessage = null;
+    this.waiting = true;
     this.createOrUpdateGeoportail();
 
   }
@@ -58,11 +60,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
     private tools: ToolsService) {
 
     // s'abonne aux evenements de changement de position
-    this.notificationService.unePosition$.subscribe(
-      (p: AppPosition) => {
-        this.setPosition(p);
-      }
-    )
+    this.substribeChangeAndNoPosition();
 
     // abonnement aux evenements de geolocalisation
     this.notificationService.emitGeoMessage$.subscribe(
@@ -70,6 +68,19 @@ export class GeolocationComponent implements OnInit, OnDestroy {
     );
   }
 
+  private substribeChangeAndNoPosition() {
+
+    // s'abonne aux evenements de changement de position
+    this.notificationService.unePosition$.subscribe(
+      (p: AppPosition) => this.setPosition(p)
+
+    );
+    // s'abonne aux evenements de changement de pas de  position connue!
+    this.notificationService.noPosition$.subscribe(
+      (trajetid: number) => this.noPosition(trajetid)
+    );
+
+  }
 
   private buildUrl(): void {
     if (this.geoportail) {
@@ -90,9 +101,19 @@ export class GeolocationComponent implements OnInit, OnDestroy {
     this.eventClickAction.emit(true);
   }
 
+  private noPosition(trajetid: number): void {
+
+    if (trajetid == this._trajetid) {
+      console.log("Pas de position pour le trajet: " + trajetid);
+      this.appPosition = null;
+      this.waiting = false;
+    }
+  }
   private setPosition(p: AppPosition): void {
 
     console.log("setPosition...");
+    this.waiting = false;
+
     // Filtrage pour savoir si on utilise ou pas cette position dans le component
     let keepPosition = false;
 
@@ -140,12 +161,10 @@ export class GeolocationComponent implements OnInit, OnDestroy {
 
         onGetGeoportailInfo: (g: Geoportail) => {
           this.geoportail = g;
-          this.initEnCours = false;
           this.buildUrl();
         },
         onError: (e: Message) => {
-          console.log(e.msg);
-          this.initEnCours = false;
+          console.log("createOrUpdateGeoportail: " + e.msg);
           this.url = null;
         }
       });

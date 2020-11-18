@@ -299,6 +299,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
     console.log("Position inconnue! (" + error.code + " - " + error.message + ")");
     this.activateGeolocation(GeolocationState.error);
+    this.notificationService.informNoPosition(this.trajetid);
 
     let message = null;
     switch (error.code) {

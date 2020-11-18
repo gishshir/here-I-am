@@ -122,9 +122,22 @@ export class NotificationService {
     console.log("NotificationService#changeUnePosition() " + value.timestamp);
     this.unePositionSource.next(value);
   }
+
   //---------------------------------------------------------------
 
+  //---------------------------------------------------------------
+  // notification pas de position connue pour mon trajet ou de celui de mon ami
+  // c'est le trajetid porté par AppPosition qui permet de filtrer les notifications
+  private noPositionSource = new Subject<number>();
+  // observable number streams
+  noPosition$ = this.noPositionSource.asObservable();
 
+  // a tester
+  informNoPosition(trajetid: number) {
+    console.log("NotificationService#informNoPosition() - trajetid: " + trajetid);
+    this.noPositionSource.next(trajetid);
+  }
+  //---------------------------------------------------------------
 
   //---------------------------------------------------------------
   // notification de l'activation de la geoposition

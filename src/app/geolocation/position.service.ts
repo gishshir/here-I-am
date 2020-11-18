@@ -118,12 +118,13 @@ export class PositionService {
 
       (p: any) => {
         if (p && p.retour == false) {
-          p = null;
+          this.notificationService.informNoPosition(trajetid);
         }
-        if (p) {
+        else if (p) {
           p.locale = false;
+          handler.onGetPosition(p);
         }
-        handler.onGetPosition(p);
+
       },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
     );
@@ -143,11 +144,13 @@ export class PositionService {
     this._callFindAmiTrajetLastPosition(trajetid).subscribe(
 
       (p: any) => {
-        p = (p && p.retour == false) ? null : p;
-        if (p) {
-          p.locale = false;
+        if (p && p.retour == false) {
+          this.notificationService.informNoPosition(trajetid);
         }
-        handler.onGetPosition(p);
+        else if (p) {
+          p.locale = false;
+          handler.onGetPosition(p);
+        }
       },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
     );

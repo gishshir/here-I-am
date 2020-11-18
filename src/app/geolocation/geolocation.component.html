@@ -10,13 +10,13 @@
         </ng-container>
 
 
-        <mat-dialog-actions fxFlex fxLayout fxLayoutGap="10px">
-            <div *ngIf="url" fxFlex="auto" class="mat-raised-button mat-primary" (click)="openMaps()"
+        <mat-dialog-actions fxFlex style="width: 100%;" fxLayout fxLayoutGap="5px" fxLayoutAlign="center">
+            <div *ngIf="url" fxFlex class="mat-raised-button mat-primary" (click)="openMaps()"
                 style="cursor: pointer; padding: 5px;">
                 <mat-icon class="icon-map material-icons md-24">location_on</mat-icon>
                 Carte
             </div>
-            <button *ngIf="actionButton" fxFlex="auto" class="mat-raised-button" (click)="clickAction()"
+            <button *ngIf="actionButton" fxFlex class="mat-raised-button" (click)="clickAction()"
                 style="cursor: pointer; padding: 5px;">{{actionButton}}</button>
         </mat-dialog-actions>
 
@@ -26,13 +26,16 @@
 
 
 <ng-template #noPosition>
-    <mat-card *ngIf="!initEnCours" fxFlex="initial" fxLayout="column" fxLayoutGap="20px"
-        style="background-color: pink;">
-        <mat-card-content fxFlex fxLayout="column" fxLayoutGap="5px">
-            <div>Pas de position connue!</div>
-            <div *ngIf="geoMessage" class="mat-primary">
-                <h4>{{geoMessage.msg}}</h4>
+    <mat-spinner fxFlex="auto" *ngIf="waiting" [diameter]="30" style="margin:0 auto;"></mat-spinner>
+
+    <ng-container *ngIf="!waiting">
+        <div fxFlex fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="start stretch"
+            style="background-color: pink; padding: 5px;">
+            <div fxFlex>Pas de position connue!</div>
+            <div fxFlex="grow" *ngIf="geoMessage && locale" class="mat-primary">
+                <textarea readonly enabled="false" row="5" cols="25" resize="false"
+                    style="height: 50px; background-color: pink;"> {{geoMessage.msg}}</textarea>
             </div>
-        </mat-card-content>
-    </mat-card>
+        </div>
+    </ng-container>
 </ng-template>

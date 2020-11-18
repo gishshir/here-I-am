@@ -1,4 +1,5 @@
 <!-- geo location (uniquement pour le trajet en cours)-->
 <ng-container *ngIf="trajet">
-    <app-geolocation [ami]="false" [titre]="titre" [trajetid]="trajet.id"> </app-geolocation>
+    <app-geolocation [locale]="trajet.etat != 'Ended'" [ami]="false" [titre]="titre" [trajetid]="trajet.id">
+    </app-geolocation>
 </ng-container>

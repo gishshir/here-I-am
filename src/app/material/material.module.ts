@@ -13,7 +13,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 
@@ -21,9 +22,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
   declarations: [],
   imports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
     MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatChipsModule,
-    MatTableModule, MatPaginatorModule],
+    MatTableModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule],
   exports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
     MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatChipsModule,
-    MatTableModule, MatPaginatorModule]
+    MatTableModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule]
 })
 export class MaterialModule { }

@@ -48,6 +48,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
     console.log("set trajetid: " + this._trajetid);
     this.appPosition = null;
     this.geoMessage = null;
+    this.url = null;
     this.waiting = true;
     this.createOrUpdateGeoportail();
 

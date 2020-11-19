@@ -4,7 +4,7 @@ import { AppStorageService } from '../trajets/storage.service';
 import { Observable } from 'rxjs';
 import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';
-import { catchError } from 'rxjs/operators';
+import { catchError, filter, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Geoportail } from '../geoportail/geoportail.type';
 
@@ -108,22 +108,41 @@ export class PositionService {
     let url = TOMCAT_API_SERVER + "/last/geolocation/" + trajetid;
 
     // attention si pas de Position alors {"retour": false}
-    return this.http.get<AppPosition>(url)
+    let obs: Observable<any> = this.http.get<AppPosition>(url)
       .pipe(catchError(this.commonService.handleError));
 
+    return this.catchNoPositions(trajetid, obs);
   }
+
+  // opérateurs pour intercepter un retour sans position
+  // si c'est le cas envoi d'une notification
+  // filtrage pour ne laisser passer que les réponses OK
+  private catchNoPositions(trajetid: number, obs: Observable<any>): Observable<any> {
+
+    return obs.pipe(
+
+      tap(p => {
+
+        if (p && p.retour == false) {
+          this.notificationService.informNoPosition(trajetid);
+        }
+
+      })
+      ,
+
+      filter(p => (p && p.retour == undefined))
+
+    );
+  }
+
   findTrajetLastPosition(trajetid: number, handler: AppPositionHandler): void {
 
     this._callFindTrajetLastPosition(trajetid).subscribe(
 
-      (p: any) => {
-        if (p && p.retour == false) {
-          this.notificationService.informNoPosition(trajetid);
-        }
-        else if (p) {
-          p.locale = false;
-          handler.onGetPosition(p);
-        }
+      (p: AppPosition) => {
+
+        p.locale = false;
+        handler.onGetPosition(p);
 
       },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
@@ -135,22 +154,19 @@ export class PositionService {
     let url = TOMCAT_API_SERVER + "/last/geolocation/ami/" + trajetid;
 
     // attention si pas de Position alors {"retour": false}
-    return this.http.get<AppPosition>(url)
+    let obs: Observable<any> = this.http.get<AppPosition>(url)
       .pipe(catchError(this.commonService.handleError));
+
+    return this.catchNoPositions(trajetid, obs);
 
   }
   findAmiTrajetLastPosition(trajetid: number, handler: AppPositionHandler): void {
 
     this._callFindAmiTrajetLastPosition(trajetid).subscribe(
 
-      (p: any) => {
-        if (p && p.retour == false) {
-          this.notificationService.informNoPosition(trajetid);
-        }
-        else if (p) {
-          p.locale = false;
-          handler.onGetPosition(p);
-        }
+      (p: AppPosition) => {
+        p.locale = false;
+        handler.onGetPosition(p);
       },
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
     );
@@ -189,22 +205,20 @@ export class PositionService {
     let uri = ami ? "/ami/gpx/" : "/gpx/";
     let url = TOMCAT_API_SERVER + uri + trajetid;
 
-    return this.http.post<Geoportail>(url, this.commonService.httpOptionsHeaderJson)
+    // attention si pas de Position alors {"retour": false}
+    let obs: Observable<any> = this.http.post<Geoportail>(url, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 
+    return this.catchNoPositions(trajetid, obs);
   }
 
   createOrUpdateGeoportail(trajetid: number, ami: boolean, handler: GeoportailHandler): void {
 
-    this._callCreateOrUpdateGeoportail(trajetid, ami).subscribe({
-      next: (geoportail: Geoportail) => {
-        // le nom du fichier gpx est dans geoportail avec le token et l'url
-        handler.onGetGeoportailInfo(geoportail);
-      },
-      error: (error: string) => {
-        this.commonService._propageErrorToHandler(error, handler);
-      }
-    }
+    this._callCreateOrUpdateGeoportail(trajetid, ami).subscribe(
+      // le nom du fichier gpx est dans geoportail avec le token et l'url
+      (geoportail: Geoportail) => handler.onGetGeoportailInfo(geoportail),
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+
     )
   }
 

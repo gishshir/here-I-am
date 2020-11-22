@@ -15,6 +15,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 
@@ -22,9 +23,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   declarations: [],
   imports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
     MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatChipsModule,
-    MatTableModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule],
+    MatTableModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatMenuModule],
   exports: [MatButtonModule, MatCheckboxModule, MatToolbarModule, MatCardModule, MatButtonToggleModule, MatIconModule,
     MatSnackBarModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatChipsModule,
-    MatTableModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule]
+    MatTableModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatMenuModule]
 })
 export class MaterialModule { }

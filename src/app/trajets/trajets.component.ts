@@ -11,7 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 
-
+const NAME = "TrajetsComponent";
 
 @Component({
   selector: 'app-trajets',
@@ -50,7 +50,7 @@ export class TrajetsComponent implements OnInit {
   // event en provenant de trajet-detail
   onChangeState(trajet: Trajet): void {
 
-    this.logger.log("onChangeState(): " + trajet.etat);
+    this.logger.log(NAME, "onChangeState(): " + trajet.etat);
     // on rafraichit la liste des trajets
     this.selectedTrajet = trajet;
     this.updateList(trajet);
@@ -120,7 +120,7 @@ export class TrajetsComponent implements OnInit {
    * @param selectedid 
    */
   private refreshList(selectedid: number): void {
-    this.logger.log("rafraichir la liste des trajets");
+    this.logger.log(NAME, "rafraichir la liste des trajets");
 
     this.trajetService.getListeTrajets({
 

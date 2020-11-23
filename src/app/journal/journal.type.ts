@@ -3,6 +3,7 @@ export class Journal {
     level: JournalLevel;
     timestampSec: number;
     message: string;
+    caller: string;
 
 }
 

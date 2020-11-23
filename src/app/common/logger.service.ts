@@ -23,18 +23,18 @@ export class LoggerService {
   }
   // ------------------------------------------------
 
-  log(message: string) {
-    this.logWithLevel(JournalLevel.DEBUG, message);
+  log(caller: string, message: string) {
+    this.logWithLevel(JournalLevel.DEBUG, caller, message);
   }
 
-  logInfo(message: string) {
-    this.logWithLevel(JournalLevel.INFO, message);
+  logInfo(caller: string, message: string) {
+    this.logWithLevel(JournalLevel.INFO, caller, message);
   }
-  logError(message: string) {
-    this.logWithLevel(JournalLevel.ERROR, message);
+  logError(caller: string, message: string) {
+    this.logWithLevel(JournalLevel.ERROR, caller, message);
   }
 
-  private logWithLevel(level: JournalLevel, message: string) {
+  private logWithLevel(level: JournalLevel, caller: string, message: string) {
 
     console.log(message);
 
@@ -43,6 +43,7 @@ export class LoggerService {
       journal.level = level;
       journal.message = message;
       journal.timestampSec = this.tools.getNowTimestampEnSec();
+      journal.caller = caller;
 
       this.localStorage.storeLogLine(journal);
     }

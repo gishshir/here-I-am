@@ -19,6 +19,16 @@ export class ToolsService {
     return _window();
   }
 
+  pad(pad: string, str: string, padLeft: boolean): string {
+    if (typeof str === 'undefined')
+      return pad;
+    if (padLeft) {
+      return (pad + str).slice(-pad.length);
+    } else {
+      return (str + pad).substring(0, pad.length);
+    }
+  }
+
   getNowTimestampEnSec(): number {
 
     return Math.floor(new Date().getTime() / 1000);

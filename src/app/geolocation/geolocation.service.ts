@@ -6,6 +6,9 @@ import { AppPosition } from '../trajets/position.type';
 import { PositionService } from './position.service';
 import { NetworkState } from '../common/common.service';
 import { AppStorageService } from '../common/storage.service';
+import { LoggerService } from '../common/logger.service';
+
+
 
 export enum GeolocationState {
 
@@ -16,6 +19,8 @@ export enum GeolocationState {
   error = "error"
 }
 const TIMEOUT: number = 29000;
+
+const NAME = "GeolocationService";
 
 /*
 * Service gerant la localisation de mon trajet en cours
@@ -56,10 +61,11 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
 
   constructor(private notificationService: NotificationService,
-    private positionService: PositionService, private localStorage: AppStorageService) {
+    private positionService: PositionService, private localStorage: AppStorageService,
+    private logger: LoggerService) {
     if ("geolocation" in navigator) {
 
-      console.log("geolocation active dans le navigateur!");
+      logger.logInfo(NAME, "geolocation active dans le navigateur!");
       this.geolocation = true;
 
       // abonnement à une modification de mon trajet
@@ -74,7 +80,7 @@ export class GeolocationService implements OnInit, OnDestroy {
       )
 
     } else {
-      console.log("fonction geolocation n'existe pas sur ce navigateur!");
+      logger.logError(NAME, "fonction geolocation n'existe pas sur ce navigateur!");
       this.geolocation = false;
     }
   }
@@ -103,7 +109,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   // nouveau trajet ou
   // changement etat ou moyen de transport
   private onChangeMonTrajet(trajet: Trajet) {
-    console.log("GeolocationService#onChangeTrajet");
+    this.logger.log(NAME, "onChangeTrajet");
 
     // si changement de trajetid on réinitialise la current position
     if (this.trajetid && this.trajetid != trajet.id) {
@@ -169,7 +175,7 @@ export class GeolocationService implements OnInit, OnDestroy {
   private startWatch(frequence: number) {
 
     if (this.geolocation && this.timerid < 0) {
-      console.log("startWatch(): toutes les " + (frequence / 1000) + " s");
+      this.logger.log(NAME, "startWatch(): toutes les " + (frequence / 1000) + " s");
 
       this.activateGeolocation(GeolocationState.started);
       this.findCurrentPosition();
@@ -180,7 +186,7 @@ export class GeolocationService implements OnInit, OnDestroy {
         this.findCurrentPosition();
 
       }, frequence);
-      console.log("geolocation timerid: " + this.timerid);
+      this.logger.log(NAME, "geolocation timerid: " + this.timerid);
     }
 
   }
@@ -216,7 +222,7 @@ export class GeolocationService implements OnInit, OnDestroy {
 
       this.activateGeolocation(GeolocationState.stopped);
       this.notificationService.useNetwork(NetworkState.stopped);
-      console.log("clearWatch()");
+      this.logger.log(NAME, "clearWatch()");
       clearInterval(this.timerid);
       this.timerid = -1;
     }
@@ -263,6 +269,7 @@ export class GeolocationService implements OnInit, OnDestroy {
         },
         onError: (e: Message) => {
           console.log(e.msg);
+          this.logger.logError(NAME, "echec envoi de la liste des positions!");
           this.notificationService.useNetwork(NetworkState.error);
         }
       });
@@ -318,6 +325,7 @@ export class GeolocationService implements OnInit, OnDestroy {
         msg: message
       }
       this.notificationService.emitGeoMessage(this.geoMessage);
+      this.logger.logError(NAME, message);
     }
 
   }

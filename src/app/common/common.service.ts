@@ -4,6 +4,7 @@ import { Observable, throwError, Observer } from 'rxjs';
 import { Message } from './message.type';
 import { NotificationService } from './notification/notification.service';
 import { environment } from 'src/environments/environment';
+import { LoggerService } from './logger.service';
 
 
 export const HTTP_HEADER_JSON = new HttpHeaders({
@@ -34,20 +35,19 @@ export const TOMCAT_API_SERVER = environment.apiUrl;
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 const TOKEN_TOO_OLD: string = "TOKEN_TOO_OLD";
 
+const NAME = "CommonService";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
-
-
   httpOptionsHeaderJson = {
     headers: HTTP_HEADER_JSON
   };
 
 
-  constructor(private notificationService: NotificationService) {
+  constructor(private notificationService: NotificationService, private logger: LoggerService) {
 
     if (this.notificationService == undefined) {
       console.error("notification service undefined!");
@@ -98,6 +98,7 @@ export class CommonService {
     }
     // return an observable with a user-facing error message
     // call observer.error(...)
+    this.logger.logError(NAME, message);
     return throwError(message);
   }
   _propageErrorToHandler(error: string, handler?: Handler): void {

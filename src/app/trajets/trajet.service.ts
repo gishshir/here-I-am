@@ -13,6 +13,8 @@ import { NotificationService } from '../common/notification/notification.service
 import { PositionService } from '../geolocation/position.service';
 import { User } from '../account/user.type';
 
+const NAME = "TrajetService";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -65,7 +67,7 @@ export class TrajetService {
   }
 
   getListeTrajets(handler?: TrajetsHandler): void {
-    this.logger.log("construire la liste des trajets");
+    this.logger.logInfo(NAME, "construire la liste des trajets");
 
     this._callListeTrajets().subscribe(
       // next

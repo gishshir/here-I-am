@@ -1,5 +1,5 @@
 <div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
-    <h2 fxFlex>Journal interne</h2>
+    <h2 fxFlex>{{title}}</h2>
 
     <div fxLayout fxLayout="column" fxLayoutGap="10px" class="journal">
 
@@ -15,8 +15,10 @@
             </mat-button-toggle-group>
 
             <div fxFlex="initial" fxLayout fxLayoutGap="5px">
-                <button fxFlex="initial" mat-raised-button color="accent" (click)="refreshJournal()">refresh</button>
-                <button fxFlex="initial" mat-raised-button color="primary" (click)="clearJournal()">clear</button>
+                <button fxFlex="initial" mat-raised-button color="accent" title="rafraichir le journal"
+                    (click)="refreshJournal()">Rafraichir</button>
+                <button fxFlex="initial" mat-raised-button color="primary" title="vider le journal"
+                    (click)="clearJournal()">Vider</button>
             </div>
         </div>
 

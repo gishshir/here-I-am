@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { NotificationService } from '../common/notification/notification.service';
 import { AppStorageService } from '../common/storage.service';
 import { ToolsService } from '../common/tools.service';
 import { Journal, JournalLevel } from './journal.type';
 
+const LEVEL_PAD = "     ";
+const NAME_PAD = "                    ";
 @Component({
   selector: 'app-journal',
   templateUrl: './journal.component.html',
@@ -14,6 +15,7 @@ export class JournalComponent implements OnInit {
 
   selectedValue: string;
   listLines: string;
+  title: string = "Journal interne";
 
   get journal_on(): boolean {
     return this.selectedValue == "on";
@@ -24,6 +26,7 @@ export class JournalComponent implements OnInit {
 
     let activateJournal = this.loggerService.isJournalActivated();
     this.selectedValue = activateJournal ? "on" : "off";
+    this.buildTitre();
 
     this.refreshJournal();
 
@@ -32,7 +35,17 @@ export class JournalComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  private buildTitre(): void {
+
+    if (this.journal_on) {
+      this.title = "Journal interne actif";
+    } else {
+      this.title = "Journal interne inactif";
+    }
+  }
+
   onChangeValue(): void {
+    this.buildTitre();
     this.loggerService.activateJournal(this.journal_on);
   }
 
@@ -54,9 +67,10 @@ export class JournalComponent implements OnInit {
 
   private ecrireLine(journal: Journal): string {
 
-    let level: string = JournalLevel[journal.level];
+    let level: string = this.tools.pad(LEVEL_PAD, JournalLevel[journal.level], false);
     let date: string = this.tools.formatShortDateAndTime(journal.timestampSec);
-    return "[" + level + "] - " + date + " - " + journal.message;
+    let caller: string = this.tools.pad(NAME_PAD, journal.caller, false);
+    return "[" + level + "] " + caller + ": " + date + " - " + journal.message;
   }
 
 }

@@ -14,6 +14,7 @@ import { Trajet } from '../trajets/trajet.type';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 
+const NAME = "AmisComponent";
 
 @Component({
   selector: 'app-amis',
@@ -48,7 +49,7 @@ export class AmisComponent implements OnInit {
         let changementEtat: boolean =
           (this.selectedAmiTrajet && (this.selectedAmiTrajet.etat != trajet.etat)) ? true : false;
         this.selectedAmiTrajet = trajet;
-        logger.log("selectedAmiTrajet: " + (trajet ? trajet.etat : "null") + " changement etat: " + changementEtat);
+        logger.log(NAME, "selectedAmiTrajet: " + (trajet ? trajet.etat : "null") + " changement etat: " + changementEtat);
 
         if (changementEtat) {
           this.refreshList();
@@ -128,22 +129,15 @@ export class AmisComponent implements OnInit {
   onMessage(response: Message) {
     this.response = response;
   }
-  // reception d'un evenement de modification d'un Ami
-  // onChange(ami: Ami) {
-  //   // rafraichir la liste complète
-  //   this.logger.log("event de modification de l'ami (rel): " + ami.idrelation);
-  //   this.refreshList();
-  // }
-
 
 
 
   private refreshList(): void {
-    this.logger.log("rafraichir la liste des amis");
+    this.logger.log(NAME, "rafraichir la liste des amis");
 
     // on mémorise l'ami selectionne avant le rafraichissement si existe
     let selectedRelationId: number = (this.selectedAmi) ? this.selectedAmi.idrelation : undefined;
-    this.logger.log("selectedRelationId: " + selectedRelationId);
+    this.logger.log(NAME, "selectedRelationId: " + selectedRelationId);
 
     this.selectedAmi = null;
     this.amis = [];

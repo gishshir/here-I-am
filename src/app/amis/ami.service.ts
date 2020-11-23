@@ -11,7 +11,7 @@ import { Message } from '../common/message.type';
 import { AmisFilter } from './amis.pipe';
 import { RelationState } from './relation/relationinfo.type';
 
-
+const NAME = "AmiService";
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +65,7 @@ export class AmiService {
   // =============================================
   private _callListePersonneNonAmis(): Observable<any> {
 
-    this.logger.log("callListePersonneNonAmis()");
+    this.logger.log(NAME, "callListePersonneNonAmis()");
 
     let url = TOMCAT_API_SERVER + "/nonamis";
 
@@ -120,7 +120,7 @@ export class AmiService {
   // =============================================
   private _callAmiByIdPerson(idperson: number): Observable<any> {
 
-    this.logger.log("getAmiInfo()");
+    this.logger.log(NAME, "getAmiInfo()");
     let url = TOMCAT_API_SERVER + "/ami/" + idperson;
 
     return this.http.get<AmiInfo>(url, this.commonService.httpOptionsHeaderJson);
@@ -140,7 +140,7 @@ export class AmiService {
   // =============================================
   private _callListeAmis(): Observable<any> {
 
-    this.logger.log("getListeAmis()");
+    this.logger.log(NAME, "getListeAmis()");
 
     let url = TOMCAT_API_SERVER + "/amis"
 
@@ -185,7 +185,7 @@ export class AmiService {
       );
   }
   updateSuivreAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateSuivreAmi() " + amiToUpdate.pseudo + " suivre: " + amiToUpdate.suivre);
+    this.logger.log(NAME, "updateSuivreAmi() " + amiToUpdate.pseudo + " suivre: " + amiToUpdate.suivre);
     this._callSuivreAmi({ relationid: amiToUpdate.idrelation, suivre: amiToUpdate.suivre }).subscribe(
       this.commonService._createMessageObserver(handler)
     );
@@ -200,7 +200,7 @@ export class AmiService {
       );
   }
   updateNotifierAmi(amiToUpdate: Ami, handler: MessageHandler): any {
-    this.logger.log("updateNotifierAmi() " + amiToUpdate.pseudo + " notifier: " + amiToUpdate.notifier);
+    this.logger.log(NAME, "updateNotifierAmi() " + amiToUpdate.pseudo + " notifier: " + amiToUpdate.notifier);
     this._callNotifierAmi({ relationid: amiToUpdate.idrelation, notifier: amiToUpdate.notifier }).subscribe(
       this.commonService._createMessageObserver(handler)
     );

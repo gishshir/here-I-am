@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../common/notification/notification.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
+const NAME = "AccountService";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -149,7 +151,7 @@ export class AccountService {
   }
 
   logout(handler: MessageHandler): void {
-    this.logger.log("logout");
+    this.logger.log(NAME, "logout");
 
 
     this._callLogout().subscribe({
@@ -246,7 +248,7 @@ export class AccountService {
   }
 
   login(login: string, password: string, handler: UserHandler): void {
-    this.logger.log("login " + login);
+    this.logger.log(NAME, "login " + login);
 
     let credentials = this.buildCredentials(login, password);
 

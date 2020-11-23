@@ -7,6 +7,8 @@ import { CommonService, Handler, MessageHandler, TOMCAT_API_SERVER } from 'src/a
 import { RelationInfo } from './relationinfo.type';
 import { Message } from 'src/app/common/message.type';
 
+const NAME = "RelationService";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,7 +62,7 @@ export class RelationService {
       .pipe(catchError(this.commonService.handleError));
   }
   updateActionRelation(relationid: number, action: string, handler: MessageHandler): any {
-    this.logger.log("updateRelation() : " + action);
+    this.logger.log(NAME, "updateRelation() : " + action);
     this._callActionUpdate({ relationid: relationid, action: action }).subscribe(
       this.commonService._createMessageObserver(handler)
     );

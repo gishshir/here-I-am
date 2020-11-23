@@ -192,7 +192,7 @@ export class AccountService {
     // soit on connait la reponse
     if (!forceControl && this.userLoggedIn) {
       console.log("isLoggedIn: " + this.userLoggedIn.login);
-      this.notificationService.changeUser(this.userLoggedIn.pseudo);
+      this.notificationService.changeUser(this.userLoggedIn);
       return of(true);
     }
 
@@ -202,7 +202,7 @@ export class AccountService {
         console.log("Session ouverte pour user " + user.login);
         this.userLoggedIn = user;
 
-        this.notificationService.changeUser(user.pseudo);
+        this.notificationService.changeUser(user);
         return true;
       }),
       catchError(e => {
@@ -259,7 +259,7 @@ export class AccountService {
 
         if (handler != null) {
           // lance un message pour l'ensemble de l'application
-          this.notificationService.changeUser(this.userLoggedIn.pseudo);
+          this.notificationService.changeUser(this.userLoggedIn);
           handler.onGetUser(this.userLoggedIn);
 
           this._subscribeRenewToken();

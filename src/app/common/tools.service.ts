@@ -47,6 +47,10 @@ export class ToolsService {
 
     return this._formatDate(timestamp, 'D MMM YYYY HH:mm');
   }
+  formatShortDateAndTime(timestamp: number): string {
+
+    return this._formatDate(timestamp, 'D/MM HH:mm:ss');
+  }
   formatTime(timestamp: number): string {
     return this._formatDate(timestamp, 'HH:mm:ss');
   }

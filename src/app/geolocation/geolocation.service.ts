@@ -5,7 +5,7 @@ import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
 import { AppPosition } from '../trajets/position.type';
 import { PositionService } from './position.service';
 import { NetworkState } from '../common/common.service';
-import { AppStorageService } from '../trajets/storage.service';
+import { AppStorageService } from '../common/storage.service';
 
 export enum GeolocationState {
 

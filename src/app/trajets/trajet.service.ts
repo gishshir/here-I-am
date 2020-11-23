@@ -8,9 +8,10 @@ import { Trajet, TrajetState, TrajetMeans, TrajetEtPositions } from './trajet.ty
 import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER, BoolResponseHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { ToolsService } from '../common/tools.service';
-import { AppStorageService } from './storage.service';
+import { AppStorageService } from '../common/storage.service';
 import { NotificationService } from '../common/notification/notification.service';
 import { PositionService } from '../geolocation/position.service';
+import { User } from '../account/user.type';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,9 @@ export class TrajetService {
 
     // abonnement au changement d'utilisateur
     this.notificationService.changeUser$.subscribe(
-      (pseudo?: string) => {
-        if (pseudo) {
-          console.log("pseudo: " + pseudo);
+      (user?: User) => {
+        if (user) {
+          console.log("pseudo: " + user.pseudo);
           this.sauvegarderTrajetsArchives();
         }
       }

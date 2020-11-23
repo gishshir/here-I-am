@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { AccountService } from '../account/account.service';
-import { AppPosition } from './position.type';
-import { Trajet } from './trajet.type';
+import { AppPosition } from '../trajets/position.type';
+import { Trajet } from '../trajets/trajet.type';
+import { Journal } from '../journal/journal.type';
+import { User } from '../account/user.type';
+import { NotificationService } from './notification/notification.service';
 
 // Attention prendre en compte plusieurs utilisateurs différents sur une meme machine...
 @Injectable({
@@ -10,15 +13,60 @@ import { Trajet } from './trajet.type';
 })
 export class AppStorageService {
 
+  private currentUser: User;
+
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService,
-    private accountService: AccountService) { }
+    private notificationService: NotificationService) {
+
+    this.notificationService.changeUser$.subscribe(
+      (user?: User) => this.currentUser = user
+    );
+
+
+  }
 
   private prefix(key: string): string {
     return "[key:" + key + "] ";
   }
+
+  //=====================================================
+  // JOURNAL
+  //=====================================================
+  storeLogLine(journal: Journal): void {
+
+    let listLines: Array<Journal> = this.restoreLogs();
+    listLines.push(journal);
+    this.storeLogs(listLines);
+  }
+  private storeLogs(listLines: Array<Journal>): void {
+
+    let key: string = this.buildKeyForJournal();
+    this.storage.set(key, JSON.stringify(listLines));
+  }
+  restoreLogs(): Array<Journal> {
+
+    let key: string = this.buildKeyForJournal();
+    let listLines: Array<Journal> = new Array<Journal>();
+
+    if (this.storage.has(key)) {
+      listLines = JSON.parse(this.storage.get(key));
+    }
+
+    return listLines;
+  }
+
+  clearLogs(): void {
+
+    let key: string = this.buildKeyForJournal();
+    this.storage.remove(key);
+  }
+
+  //=====================================================
+  // POSITIONS
+  //=====================================================
   restoreCurrentPositions(): Array<AppPosition> {
 
-    let key: string = this.buildLocalStorageKeyForPositions();
+    let key: string = this.buildKeyForPositions();
     console.log(this.prefix(key) + "restoreListePositions...");
 
     let listPositions = new Array<AppPosition>();
@@ -39,7 +87,7 @@ export class AppStorageService {
   storeCurrentPositions(listPositions: Array<AppPosition>): void {
 
     if (listPositions && listPositions.length > 0) {
-      let key: string = this.buildLocalStorageKeyForPositions();
+      let key: string = this.buildKeyForPositions();
       let values = JSON.stringify(listPositions);
       console.log(this.prefix(key) + "storeCurrentPositions(): " + values);
       this.storage.set(key, values);
@@ -48,7 +96,7 @@ export class AppStorageService {
 
   restoreCurrentTrajet(): Trajet {
 
-    let key: string = this.buildLocalStorageKeyForTrajet();
+    let key: string = this.buildKeyForTrajet();
     console.log(this.prefix(key) + "restoreCurrentTrajet...");
     let trajet: Trajet = null;
 
@@ -65,7 +113,7 @@ export class AppStorageService {
   }
 
   storeCurrentTrajet(trajet: Trajet): void {
-    let key: string = this.buildLocalStorageKeyForTrajet();
+    let key: string = this.buildKeyForTrajet();
     console.log(this.prefix(key) + "store current trajet... " + trajet.id);
 
     let values = JSON.stringify(trajet);
@@ -74,7 +122,7 @@ export class AppStorageService {
   }
 
   archiveTrajet(trajetToArchive: Trajet): void {
-    let key: string = this.buildLocalStorageKeyForListTrajets();
+    let key: string = this.buildKeyForListTrajets();
 
     console.log(this.prefix(key) + "archivage d'un trajet non enregistré en BDD... " + trajetToArchive.id);
     let list: Array<Trajet> = this.restoreListTrajetArchives();
@@ -88,7 +136,7 @@ export class AppStorageService {
   }
   restoreListTrajetArchives(): Array<Trajet> {
 
-    let key = this.buildLocalStorageKeyForListTrajets();
+    let key = this.buildKeyForListTrajets();
     if (this.storage.has(key)) {
 
       let listJson = this.storage.get(key);
@@ -102,38 +150,41 @@ export class AppStorageService {
   }
 
   clearLocalStorageListPositions(): void {
-    let key = this.buildLocalStorageKeyForPositions();
+    let key = this.buildKeyForPositions();
     console.log(this.prefix(key) + "effacement des positions du trajet courant ");
     this.storage.remove(key);
   }
   clearLocalStorageTrajet(): void {
-    let key = this.buildLocalStorageKeyForTrajet();
+    let key = this.buildKeyForTrajet();
     console.log(this.prefix(key) + "effacement du trajet courant");
     this.storage.remove(key);
   }
   clearLocalStorageTrajetsArchives(): void {
-    let key = this.buildLocalStorageKeyForListTrajets();
+    let key = this.buildKeyForListTrajets();
     console.log(this.prefix(key) + "effacement de la liste des trajets archives");
     this.storage.remove(key);
   }
 
   private buildKeyCurrentUser(): string {
 
-    let currentUser = this.accountService.getCurrentUser();
-    if (currentUser) {
-      return "USER#" + currentUser.login;
+    if (this.currentUser) {
+      return "USER#" + this.currentUser.login;
     }
     return "USER#xx";
   }
 
-  private buildLocalStorageKeyForPositions(): string {
+  private buildKeyForJournal(): string {
+    return this.buildKeyCurrentUser() + "#LOGS#";
+  }
+
+  private buildKeyForPositions(): string {
     return this.buildKeyCurrentUser() + "#POS#";
   }
-  private buildLocalStorageKeyForTrajet(): string {
+  private buildKeyForTrajet(): string {
     return this.buildKeyCurrentUser() + "#TRAJET#";
   }
 
-  private buildLocalStorageKeyForListTrajets(): string {
+  private buildKeyForListTrajets(): string {
     return this.buildKeyCurrentUser() + "#LIST_TRAJET#";
   }
 }

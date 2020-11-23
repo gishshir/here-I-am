@@ -10,6 +10,7 @@ import { TrajetService } from './trajets/trajet.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { NetworkState } from './common/common.service';
+import { User } from './account/user.type';
 
 @Component({
   selector: 'app-root',
@@ -70,7 +71,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private trajetService: TrajetService, private geolocationService: GeolocationService, private accountService: AccountService,
+  constructor(private geolocationService: GeolocationService, private accountService: AccountService,
     private notificationService: NotificationService, private router: Router, private dialog: MatDialog) {
 
     console.log("production: " + environment.production);
@@ -79,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // abonnement au changement d'utilisateur
     this.notificationService.changeUser$.subscribe(
-      (pseudo?: string) => this.mettreAJourBanniere(pseudo));
+      (user?: User) => this.mettreAJourBanniere((user ? user.pseudo : null)));
 
     // abonnement à l'usage intensif du réseau
     this.notificationService.networkUsage$.subscribe(

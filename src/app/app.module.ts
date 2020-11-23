@@ -39,6 +39,8 @@ import { GeolocationComponent } from './geolocation/geolocation.component';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { TrajetGeolocationComponent } from './trajets/trajet-geolocation/trajet-geolocation.component';
 import { GeoportailComponent } from './geoportail/geoportail.component';
+import { JournalComponent } from './journal/journal.component';
+import { OptionsComponent } from './options/options.component';
 
 
 
@@ -73,7 +75,9 @@ import { GeoportailComponent } from './geoportail/geoportail.component';
     GeolocationComponent,
     DialogGeolocationComponent,
     TrajetGeolocationComponent,
-    GeoportailComponent
+    GeoportailComponent,
+    JournalComponent,
+    OptionsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppPosition } from '../trajets/position.type';
-import { AppStorageService } from '../trajets/storage.service';
+import { AppStorageService } from '../common/storage.service';
 import { Observable } from 'rxjs';
 import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { Message } from '../common/message.type';

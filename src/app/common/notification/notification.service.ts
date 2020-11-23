@@ -5,6 +5,7 @@ import { AppPosition } from 'src/app/trajets/position.type';
 import { Message } from '../message.type';
 import { GeolocationState } from 'src/app/geolocation/geolocation.service';
 import { NetworkState } from '../common.service';
+import { User } from 'src/app/account/user.type';
 
 @Injectable({
   providedIn: 'root'
@@ -46,15 +47,15 @@ export class NotificationService {
   //--------------------------------------------------
 
   //--------------------------------------------------
-  // Observable string source
-  private changeUserSource = new Subject<string>();
-  // observable string streams
+  // Observable User source
+  private changeUserSource = new Subject<User>();
+  // observable User streams
   changeUser$ = this.changeUserSource.asObservable();
 
   // services message commands
-  changeUser(pseudo?: string) {
-    console.log("NotificationService#changeUser() " + pseudo);
-    this.changeUserSource.next(pseudo);
+  changeUser(user?: User) {
+    console.log("NotificationService#changeUser() " + (user ? user.pseudo : null));
+    this.changeUserSource.next(user);
   }
   //--------------------------------------------------
 
@@ -150,6 +151,4 @@ export class NotificationService {
     this.geolocationSource.next(state);
   }
   //---------------------------------------------------------------
-
-
 }

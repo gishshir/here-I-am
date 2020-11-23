@@ -1,0 +1,32 @@
+<div class="container" fxLayout fxLayout="column" fxLayoutAlign="start center">
+    <h2 fxFlex>Journal interne</h2>
+
+    <div fxLayout fxLayout="column" fxLayoutGap="10px" class="journal">
+
+        <div fxFlex="grow" fxLayout fxLayoutAlign="space-between center">
+
+            <mat-button-toggle-group fxFlex="initial" [(value)]="selectedValue" #group="matButtonToggleGroup">
+                <mat-button-toggle value="on" (change)="onChangeValue($event)">ON&nbsp;
+                    <mat-icon [color]="journal_on?'primary':'basic'">visibility</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="off" (change)="onChangeValue($event)">OFF&nbsp;
+                    <mat-icon [color]="journal_on?'basic':'warn'">visibility_off</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div fxFlex="initial" fxLayout fxLayoutGap="5px">
+                <button fxFlex="initial" mat-raised-button color="accent" (click)="refreshJournal()">refresh</button>
+                <button fxFlex="initial" mat-raised-button color="primary" (click)="clearJournal()">clear</button>
+            </div>
+        </div>
+
+        <div fxFlex="grow">
+
+            <textarea cols="80" rows="30" readonly [ngModel]="listLines"
+                [style.background-color]="journal_on?'lightblue':'lightcoral'">
+    </textarea>
+        </div>
+
+    </div>
+
+</div>

@@ -37,15 +37,18 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #moremenu="matMenu">
-    <button *ngIf="loggedIn" mat-menu-item>
-      <mat-icon>miscellaneous_services</mat-icon>Options
-    </button>
-    <button *ngIf="loggedIn" mat-menu-item>
-      <mat-icon>person</mat-icon>Compte
-    </button>
-    <button *ngIf="loggedIn" mat-menu-item>
-      <mat-icon>article</mat-icon>Journal
-    </button>
+    <!-- <ng-container *ngIf="loggedIn"> -->
+    <ng-container>
+      <button mat-menu-item routerLink="/go-options">
+        <mat-icon>miscellaneous_services</mat-icon>Options
+      </button>
+      <button mat-menu-item routerLink="/go-account">
+        <mat-icon>person</mat-icon>Compte
+      </button>
+      <button mat-menu-item routerLink="/go-journal">
+        <mat-icon>article</mat-icon>Journal
+      </button>
+    </ng-container>
 
     <!--go logout-->
     <button *ngIf="loggedIn" mat-menu-item aria-label="déconnection" title="Logout" (click)="logout()">

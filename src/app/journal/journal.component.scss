@@ -10,7 +10,11 @@ textarea {
     margin: 10px;
 }
 
-.boutonJournal {
+.controlJournal {
 
     margin-top: 5px;
+}
+
+mat-form-field.mat-form-field {
+    font-size: 1em!important;
 }

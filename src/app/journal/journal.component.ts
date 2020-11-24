@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { LoggerService } from '../common/logger.service';
 import { AppStorageService } from '../common/storage.service';
 import { ToolsService } from '../common/tools.service';
@@ -19,6 +20,9 @@ export class JournalComponent implements OnInit {
 
   selectedLevel: number = JournalLevel.INFO;
 
+  private search: string;
+  searchControl: FormControl = new FormControl('');
+
   get journal_on(): boolean {
     return this.selectedValue == "on";
   }
@@ -34,6 +38,11 @@ export class JournalComponent implements OnInit {
 
     this.refreshJournal();
 
+    this.searchControl.valueChanges.subscribe(
+
+      (value: string) => this.onChangeSearch(value)
+    )
+
   }
 
   ngOnInit(): void {
@@ -43,7 +52,6 @@ export class JournalComponent implements OnInit {
       if (typeof JournalLevel[level] !== "string") {
         continue;
       }
-      console.log("level: " + level);
       let journalItem: JournalItem = { value: Number(level), viewValue: JournalLevel[Number(level)] };
       this.levels.push(journalItem);
     }
@@ -57,6 +65,19 @@ export class JournalComponent implements OnInit {
       this.title = "Journal interne inactif";
     }
   }
+
+  onChangeSearch(value: string): void {
+
+    if (value && value.length >= 3) {
+      this.search = value;
+      this.refreshJournal();
+    } else if (this.search) {
+      this.search = null;
+      this.refreshJournal();
+    }
+
+  }
+
 
   onChangeValue(): void {
     this.buildTitre();
@@ -77,11 +98,28 @@ export class JournalComponent implements OnInit {
     this.listLines = "";
     let logs: Array<Journal> = this.storageService.restoreLogs();
 
-    logs.filter(journal => journal.level <= this.selectedItem)
+    logs.filter(journal => journal.level <= this.selectedLevel)
+      .filter(journal => this.containsValue(journal, this.search))
       .forEach(
         (j: Journal) => this.listLines += "\n" + this.ecrireLine(j)
       );
 
+  }
+
+  private containsValue(journal: Journal, search?: string): boolean {
+
+    if (search) {
+
+      let result: boolean = journal.message.indexOf(search) > -1;
+      if (!result) {
+        result = journal.caller.indexOf(search) > -1
+      }
+
+      return result;
+
+    } else {
+      return true;
+    }
   }
 
   private ecrireLine(journal: Journal): string {

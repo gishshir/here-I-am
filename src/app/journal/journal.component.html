@@ -14,9 +14,9 @@
                 </mat-button-toggle>
             </mat-button-toggle-group>
 
-            <div>
-                <mat-form-field appearance="fill">
-                    <mat-label>Select a level</mat-label>
+            <div fxFlex="initial" class="controlJournal">
+                <mat-form-field appearance="legacy">
+                    <mat-label>choisir le niveau</mat-label>
                     <mat-select [(value)]="selectedLevel" (selectionChange)="onChangeLevel()">
                         <mat-option *ngFor="let level of levels" [value]="level.value">
                             {{level.viewValue}}
@@ -24,7 +24,16 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div fxFlex="initial" class="boutonJournal" fxLayout fxLayoutGap="5px">
+
+            <div fxFlex="initial" class="controlJournal">
+                <mat-form-field appearance="legacy" name="search">
+                    <mat-label>recherche</mat-label>
+                    <input matInput placeholder="recherche" minlength="3" [formControl]="searchControl">
+                    <mat-hint>Au minimum 3 caractères</mat-hint>
+                </mat-form-field>
+
+            </div>
+            <div fxFlex="initial" class="controlJournal" fxLayout fxLayoutGap="5px">
                 <button fxFlex="initial" mat-raised-button color="accent" title="rafraichir le journal"
                     (click)="refreshJournal()">Rafraichir</button>
                 <button fxFlex="initial" mat-raised-button color="primary" title="vider le journal"

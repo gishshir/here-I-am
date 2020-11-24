@@ -17,9 +17,13 @@ export class JournalComponent implements OnInit {
   listLines: string;
   title: string = "Journal interne";
 
+  selectedLevel: number = JournalLevel.INFO;
+
   get journal_on(): boolean {
     return this.selectedValue == "on";
   }
+
+  levels: Array<JournalItem>;
 
   constructor(private loggerService: LoggerService, private storageService: AppStorageService,
     private tools: ToolsService) {
@@ -33,6 +37,16 @@ export class JournalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.levels = new Array<JournalItem>();
+    for (const level in Object.keys(JournalLevel)) {
+      if (typeof JournalLevel[level] !== "string") {
+        continue;
+      }
+      console.log("level: " + level);
+      let journalItem: JournalItem = { value: Number(level), viewValue: JournalLevel[Number(level)] };
+      this.levels.push(journalItem);
+    }
   }
 
   private buildTitre(): void {
@@ -49,6 +63,10 @@ export class JournalComponent implements OnInit {
     this.loggerService.activateJournal(this.journal_on);
   }
 
+  onChangeLevel(): void {
+    this.refreshJournal();
+  }
+
   clearJournal(): void {
     this.storageService.clearLogs();
     this.listLines = "";
@@ -59,9 +77,10 @@ export class JournalComponent implements OnInit {
     this.listLines = "";
     let logs: Array<Journal> = this.storageService.restoreLogs();
 
-    logs.forEach(
-      (j: Journal) => this.listLines += "\n" + this.ecrireLine(j)
-    );
+    logs.filter(journal => journal.level <= this.selectedItem)
+      .forEach(
+        (j: Journal) => this.listLines += "\n" + this.ecrireLine(j)
+      );
 
   }
 
@@ -74,3 +93,10 @@ export class JournalComponent implements OnInit {
   }
 
 }
+
+interface JournalItem {
+
+  value: number;
+  viewValue: string;
+}
+

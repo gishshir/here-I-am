@@ -3,18 +3,28 @@
 
     <div fxLayout fxLayout="column" fxLayoutGap="10px" class="journal">
 
-        <div fxFlex="grow" fxLayout fxLayoutAlign="space-between center">
+        <div fxFlex="grow" fxLayout="row wrap" fxLayoutAlign="space-between center">
 
             <mat-button-toggle-group fxFlex="initial" [(value)]="selectedValue" #group="matButtonToggleGroup">
-                <mat-button-toggle value="on" (change)="onChangeValue($event)">ON&nbsp;
+                <mat-button-toggle value="on" (change)="onChangeValue()">ON&nbsp;
                     <mat-icon [color]="journal_on?'primary':'basic'">visibility</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle value="off" (change)="onChangeValue($event)">OFF&nbsp;
+                <mat-button-toggle value="off" (change)="onChangeValue()">OFF&nbsp;
                     <mat-icon [color]="journal_on?'basic':'warn'">visibility_off</mat-icon>
                 </mat-button-toggle>
             </mat-button-toggle-group>
 
-            <div fxFlex="initial" fxLayout fxLayoutGap="5px">
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Select a level</mat-label>
+                    <mat-select [(value)]="selectedLevel" (selectionChange)="onChangeLevel()">
+                        <mat-option *ngFor="let level of levels" [value]="level.value">
+                            {{level.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxFlex="initial" class="boutonJournal" fxLayout fxLayoutGap="5px">
                 <button fxFlex="initial" mat-raised-button color="accent" title="rafraichir le journal"
                     (click)="refreshJournal()">Rafraichir</button>
                 <button fxFlex="initial" mat-raised-button color="primary" title="vider le journal"

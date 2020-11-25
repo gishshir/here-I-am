@@ -11,6 +11,9 @@ import { Geoportail } from '../geoportail/geoportail.type';
 
 import * as fileSaver from 'file-saver';
 import { NotificationService } from '../common/notification/notification.service';
+import { LoggerService } from '../common/logger.service';
+
+const NAME = "PositionService";
 
 /**
  * Gestion des positions d'un trajet quelconque
@@ -22,7 +25,8 @@ export class PositionService {
 
 
   constructor(private http: HttpClient, private notificationService: NotificationService,
-    private commonService: CommonService, private localStorage: AppStorageService) {
+    private commonService: CommonService, private localStorage: AppStorageService,
+    private logger: LoggerService) {
   }
 
 
@@ -32,25 +36,32 @@ export class PositionService {
   * si succes on efface la liste dans le localstorage
   * si echec on stocke la liste complétée dans le LS pour un envoi ultérieur
   **/
-  insererCurrentAndListePositionAndClearLocalStorage(currentPosition: AppPosition, handler: MessageHandler): void {
+  insererCurrentAndListePositionAndClearLocalStorage(currentPosition?: AppPosition, handler?: MessageHandler): void {
 
+
+    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
     if (currentPosition) {
-
-      let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
       listPositions.push(currentPosition);
+    }
 
-      this.insererListePositions(listPositions, {
-        onError: (e: Message) => {
+    this.insererListePositions(listPositions, {
+      onError: (e: Message) => {
+        if (currentPosition) {
           this.localStorage.storeCurrentPositions(listPositions);
+        }
+        if (handler) {
           handler.onError(e);
-        },
+        }
+      },
 
-        onMessage: (m: Message) => {
-          this.localStorage.clearLocalStorageListPositions();
+      onMessage: (m: Message) => {
+        this.logger.log(NAME, m.msg);
+        this.localStorage.clearLocalStorageListPositions();
+        if (handler) {
           handler.onMessage(m);
         }
-      });
-    }
+      }
+    });
 
   }
   /*
@@ -59,16 +70,7 @@ export class PositionService {
   */
   insererListePositionAndClearLocalStorage(): void {
 
-    let listPositions: Array<AppPosition> = this.localStorage.restoreCurrentPositions();
-    if (listPositions && listPositions.length > 0) {
-      this.insererListePositions(listPositions, {
-        onError: (e: Message) => console.log(e.msg),
-        onMessage: (m: Message) => {
-          console.log(m.msg);
-          this.localStorage.clearLocalStorageListPositions();
-        }
-      });
-    }
+    this.insererCurrentAndListePositionAndClearLocalStorage(undefined, undefined);
   }
 
   // ===========================================================

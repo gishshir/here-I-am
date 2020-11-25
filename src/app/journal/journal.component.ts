@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { LoggerService } from '../common/logger.service';
+import { NotificationService } from '../common/notification/notification.service';
 import { AppStorageService } from '../common/storage.service';
 import { ToolsService } from '../common/tools.service';
 import { Journal, JournalLevel } from './journal.type';
@@ -30,7 +31,7 @@ export class JournalComponent implements OnInit {
   levels: Array<JournalItem>;
 
   constructor(private loggerService: LoggerService, private storageService: AppStorageService,
-    private tools: ToolsService) {
+    private tools: ToolsService, private notificationService: NotificationService) {
 
     let activateJournal = this.loggerService.isJournalActivated();
     this.selectedValue = activateJournal ? "on" : "off";
@@ -81,7 +82,7 @@ export class JournalComponent implements OnInit {
 
   onChangeValue(): void {
     this.buildTitre();
-    this.loggerService.activateJournal(this.journal_on);
+    this.notificationService.activateJournal(this.journal_on);
   }
 
   onChangeLevel(): void {

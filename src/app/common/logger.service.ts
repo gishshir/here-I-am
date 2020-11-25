@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Journal, JournalLevel } from '../journal/journal.type';
+import { NotificationService } from './notification/notification.service';
 import { AppStorageService } from './storage.service';
 import { ToolsService } from './tools.service';
 
@@ -10,17 +11,23 @@ export class LoggerService {
 
   private activeJournal: boolean = false;
 
-  constructor(private localStorage: AppStorageService, private tools: ToolsService) {
+  constructor(private localStorage: AppStorageService, private tools: ToolsService, notificationService: NotificationService) {
+
+    // s'inscrit aux notifications d'activation du journal
+    notificationService.journal$.subscribe(
+
+      (activate: boolean) => this.activeJournal = activate
+
+    );
 
   }
 
   // uniquement appellé et utilisé par journal component
+  // pour son initialisation
   isJournalActivated(): boolean {
     return this.activeJournal;
   }
-  activateJournal(active: boolean): void {
-    this.activeJournal = active;
-  }
+
   // ------------------------------------------------
 
   log(caller: string, message: string) {

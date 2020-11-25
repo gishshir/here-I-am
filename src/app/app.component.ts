@@ -11,6 +11,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { NetworkState } from './common/common.service';
 import { User } from './account/user.type';
+import { LoggerService } from './common/logger.service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'Où sont mes amis ?';
   loggedIn: boolean = false;
   response: Message;
+  journalOn: boolean;
 
   // Network state
   private _networkState: NetworkState = NetworkState.stopped;
@@ -72,27 +74,35 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   constructor(private geolocationService: GeolocationService, private accountService: AccountService,
-    private notificationService: NotificationService, private router: Router, private dialog: MatDialog) {
+    notificationService: NotificationService, private router: Router, private dialog: MatDialog,
+    logger: LoggerService) {
 
     console.log("production: " + environment.production);
     console.log("database: " + environment.database);
     console.log("apiUrl: " + environment.apiUrl);
 
+    // initialisation
+    this.journalOn = logger.isJournalActivated();
+
     // abonnement au changement d'utilisateur
-    this.notificationService.changeUser$.subscribe(
+    notificationService.changeUser$.subscribe(
       (user?: User) => this.mettreAJourBanniere((user ? user.pseudo : null)));
 
     // abonnement à l'usage intensif du réseau
-    this.notificationService.networkUsage$.subscribe(
+    notificationService.networkUsage$.subscribe(
       (state: NetworkState) => this._networkState = state);
 
     // abonnement à l'activation de la recherche de position
-    this.notificationService.geolocation$.subscribe(
+    notificationService.geolocation$.subscribe(
       (state: GeolocationState) => this._geolocationState = state);
 
     // abonnement aux messages
-    this.notificationService.emitGeoMessage$.subscribe(
+    notificationService.emitGeoMessage$.subscribe(
       (m: Message) => this.response = m);
+
+    // s'inscrit aux notifications d'activation du journal
+    notificationService.journal$.subscribe(
+      (activate: boolean) => this.journalOn = activate);
 
   }
   ngOnDestroy(): void {

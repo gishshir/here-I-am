@@ -32,7 +32,9 @@
     </mat-menu>
   </button>
 
-
+  <!-- ==============-->
+  <!-- MORE MENU-->
+  <!-- ==============-->
   <button mat-button class="menuitem" [matMenuTriggerFor]="moremenu">
     <mat-icon>more_vert</mat-icon>
   </button>
@@ -44,20 +46,28 @@
       <button mat-menu-item routerLink="/go-account">
         <mat-icon>person</mat-icon>Compte
       </button>
-      <button mat-menu-item routerLink="/go-journal">
-        <mat-icon>article</mat-icon>Journal
+      <button mat-menu-item routerLink="/go-journal" [title]="journalOn?'journal actif':'journal inactif'">
+        <mat-icon [color]="journalOn?'primary':'warn'">article</mat-icon>Journal
+      </button>
+
+      <!--go accueil-->
+      <button mat-menu-item routerLink="/go-accueil" aria-label="Accès à la page principale" title="Login">
+        <mat-icon color="primary">home</mat-icon>accueil
+      </button>
+
+      <!--go logout-->
+      <button mat-menu-item aria-label="déconnection" title="Logout" (click)="logout()">
+        <mat-icon color="accent">toggle_off</mat-icon>logout
       </button>
     </ng-container>
 
-    <!--go logout-->
-    <button *ngIf="loggedIn" mat-menu-item aria-label="déconnection" title="Logout" (click)="logout()">
-      <mat-icon class="material-icons md-24" color="accent">toggle_off</mat-icon>logout
-    </button>
+
     <!--go login-->
     <button *ngIf="!loggedIn" mat-menu-item routerLink="/go-login" aria-label="Accès à la page d'authentification"
       title="Login">
-      <mat-icon class="material-icons md-24" color="accent">login</mat-icon>login
+      <mat-icon color="accent">login</mat-icon>login
     </button>
+
   </mat-menu>
 
 </div>

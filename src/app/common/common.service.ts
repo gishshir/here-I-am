@@ -70,6 +70,7 @@ export class CommonService {
     if (httpError.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', httpError.error.message);
+      this.logger.logError(NAME, "client side error: " + httpError.error.message);
 
     } else {
 

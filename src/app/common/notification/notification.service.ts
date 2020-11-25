@@ -151,4 +151,16 @@ export class NotificationService {
     this.geolocationSource.next(state);
   }
   //---------------------------------------------------------------
+
+  //---------------------------------------------------------------
+  // notification de l'activation du journal interne
+  private journalSource = new Subject<boolean>();
+  // observable boolean streams
+  journal$ = this.journalSource.asObservable();
+
+  activateJournal(activate: boolean) {
+    console.log("NotificationService#activateJournal() " + activate);
+    this.journalSource.next(activate);
+  }
+  //---------------------------------------------------------------
 }

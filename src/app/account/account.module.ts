@@ -9,7 +9,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { LoginComponent } from './login/login.component';
 import { CreateAccountComponent } from './creation/creation.component';
 import { DialogCreateAccountSuccessComponent } from './creation/dialog-success.component';
-import { AccountComponent } from './account.component';
+import { AccountComponent } from './modify/account.component';
 
 
 @NgModule({

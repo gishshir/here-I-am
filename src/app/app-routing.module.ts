@@ -8,7 +8,6 @@ import { StartingComponent } from './starting/starting.component';
 import { AppGuardGuard } from './app-guard.guard';
 import { StartingGuard } from "./starting/starting.guard";
 import { JournalComponent } from './journal/journal.component';
-import { AccountComponent } from './account/account.component';
 import { OptionsComponent } from './options/options.component';
 
 const routes: Routes = [
@@ -18,7 +17,6 @@ const routes: Routes = [
   { path: 'go-trajets', component: TrajetsComponent, canActivate: [AppGuardGuard] },
   { path: 'go-starting', component: StartingComponent, canActivate: [AppGuardGuard, StartingGuard] },
   { path: 'go-journal', component: JournalComponent, canActivate: [AppGuardGuard] },
-  { path: 'go-account', component: AccountComponent, canActivate: [AppGuardGuard] },
   { path: 'go-options', component: OptionsComponent, canActivate: [AppGuardGuard] },
   { path: '', redirectTo: '/go-accueil', pathMatch: 'full' },
   { path: '**', component: AccueilComponent }

@@ -1,0 +1,83 @@
+<div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <h2 fxFlex="grow">Modification du compte</h2>
+
+    <ng-container *ngIf="accountInfo">
+        <form fxFlex="grow" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center"
+            [formGroup]="modifyAccountFormGroup" (ngSubmit)="onSubmit()">
+
+            <mat-form-field fxFlex appearance="fill">
+                <mat-label>login</mat-label>
+                <input matInput placeholder="login" formControlName="loginControl" readonly>
+            </mat-form-field>
+
+            <hr noshade size="1" class="line-separation">
+            <mat-form-field fxFlex appearance="legacy">
+                <mat-label>mot de passe</mat-label>
+                <input type="password" matInput placeholder="mot de passe" formControlName="oldPasswordControl"
+                    required>
+                <mat-error *ngIf="oldPasswordControl.invalid && oldPasswordControl.errors.required">mot de passe
+                    obligatoire!
+                </mat-error>
+            </mat-form-field>
+            <ng-container *ngIf="changerMotPasse">
+
+                <mat-form-field fxFlex appearance="legacy">
+                    <mat-label>Nouveau mot de passe</mat-label>
+                    <input type="password" matInput placeholder="mot de passe" formControlName="newPasswordControl">
+                    <mat-error *ngIf="newPasswordControl.invalid ">Mot de passe invalide!
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field fxFlex appearance="legacy">
+                    <mat-label>Contrôle du mot de passe</mat-label>
+                    <input type="password" matInput placeholder="mot de passe" formControlName="password2Control">
+                    <mat-error *ngIf="password2Control.invalid">
+                        <div *ngIf="password2Control.errors.mustMatch"> mot de passe différent!</div>
+                    </mat-error>
+                </mat-form-field>
+            </ng-container>
+            <mat-slide-toggle color='accent' (change)="onModeChangeMotPasse($event)">changer le mot de passe
+            </mat-slide-toggle>
+
+            <hr noshade size="1" class="line-separation">
+
+            <mat-form-field fxFlex appearance="legacy">
+                <mat-label>Pseudo</mat-label>
+                <input matInput placeholder="pseudo" formControlName="pseudoControl" required>
+                <mat-hint>Au minimum 6 caractères</mat-hint>
+                <mat-error *ngIf="pseudoControl.invalid">
+                    <div *ngIf="pseudoControl.errors.required">Le pseudo est obligatoire!</div>
+                    <div *ngIf="pseudoControl.errors.minlength">minimum 6 caractères!</div>
+                    <div *ngIf="pseudoControl.errors.uniquePseudo">le pseudo existe déjà!</div>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="legacy">
+                <mat-label>email</mat-label>
+                <input matInput placeholder="adresse mail" formControlName="emailControl" required>
+                <mat-hint>monadress@monsite</mat-hint>
+                <mat-error *ngIf="emailControl.invalid">
+                    <div *ngIf="emailControl.errors.required">L'adresse mail est obligatoire!</div>
+                    <div *ngIf="emailControl.errors.email">email invalid!</div>
+                    <div *ngIf="emailControl.errors.uniqueEmail">L'adresse mail existe déjà!</div>
+                </mat-error>
+            </mat-form-field>
+
+            <div fxFlex="initial" fxLayout fxLayoutGap="20px" class="container">
+                <button fxFlex="initial" class="mat-raised-button" (click)="annuler()">Annuler</button>
+                <button fxFlex="initial" type="submit" class="mat-raised-button mat-primary"
+                    [disabled]="!modifyAccountFormGroup.valid">Modification du compte</button>
+            </div>
+
+        </form>
+    </ng-container>
+
+    <div *ngIf="response" class="bloc-reponse" [style.background-color]="response.error?'lightcoral':'lightgreen'">
+        <p>{{response.msg}}</p>
+    </div>
+
+
+</div>
+
+<app-notification *ngIf="response" [message]="response"></app-notification>

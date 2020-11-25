@@ -43,9 +43,12 @@
       <button mat-menu-item routerLink="/go-options">
         <mat-icon>miscellaneous_services</mat-icon>Options
       </button>
-      <button mat-menu-item routerLink="/go-account">
+      <!-- go account-->
+      <button mat-menu-item routerLink="/go-account-modify">
         <mat-icon>person</mat-icon>Compte
       </button>
+
+      <!-- go journal -->
       <button mat-menu-item routerLink="/go-journal" [title]="journalOn?'journal actif':'journal inactif'">
         <mat-icon [color]="journalOn?'primary':'warn'">article</mat-icon>Journal
       </button>

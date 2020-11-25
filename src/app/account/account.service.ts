@@ -6,7 +6,7 @@ import { CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADE
 import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
 import { AuthenticationDto, CredentialsDto, User } from './user.type';
-import { AccountInfo } from './accountinfo.type';
+import { AccountInfo, AccountState } from './account.type';
 import { Router } from '@angular/router';
 import { NotificationService } from '../common/notification/notification.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -28,6 +28,8 @@ export class AccountService {
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
+  private accountInfo: AccountInfo;
+
 
   constructor(private logger: LoggerService, private http: HttpClient, private router: Router,
     private sanitizer: DomSanitizer,
@@ -35,6 +37,24 @@ export class AccountService {
 
   getCurrentUser(): User {
     return this.userLoggedIn;
+  }
+
+  // TODO appeller le service
+  getAccountInfo(handler: AccountInfoHandler) {
+
+    let accountInfo: AccountInfo = {
+
+      utilisateur: this.userLoggedIn,
+      account: {
+        id: -1,
+        userid: -1,
+        email: 'monemail@gmail.com',
+        etat: AccountState.Open
+      }
+    };
+
+    this.accountInfo = accountInfo;
+    handler.onGetAccountInfo(accountInfo);
   }
 
   // ============================================
@@ -102,8 +122,12 @@ export class AccountService {
     return this.http.get<BoolResponse>(url);
 
   }
+
   isPseudoTaken(pseudo: string): Observable<boolean> {
 
+    if (this.accountInfo && this.accountInfo.utilisateur.pseudo == pseudo) {
+      return of(false);
+    }
     return this._callVerifyPseudo(pseudo).
       pipe(map(bresp => bresp.retour));
   }
@@ -127,6 +151,9 @@ export class AccountService {
   }
   isEmailTaken(email: string): Observable<boolean> {
 
+    if (this.accountInfo && this.accountInfo.account.email == email) {
+      return of(false);
+    }
     return this._callVerifyEmail(email).
       pipe(map(bresp => bresp.retour));
   }

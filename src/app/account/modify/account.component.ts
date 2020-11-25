@@ -1,32 +1,36 @@
-import { Component, OnInit, Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder, ValidatorFn, ValidationErrors, AsyncValidator, AbstractControl } from '@angular/forms';
-import { AccountService } from '../account.service';
-import { Message } from 'src/app/common/message.type';
-import { CredentialsDto, User } from '../user.type';
-import { Observable, of } from 'rxjs';
-import { map, catchError, delay } from 'rxjs/operators';
-import { AccountInfo } from '../account.type';
+import { Component, Injectable, OnInit } from '@angular/core';
+import { AbstractControl, AsyncValidator, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
-import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
-import { DialogCreateAccountSuccessComponent } from './dialog-success.component';
-
-
+import { Observable, of } from 'rxjs';
+import { delay, map, catchError } from 'rxjs/operators';
+import { Message } from 'src/app/common/message.type';
+import { AccountService } from '../account.service';
+import { AccountInfo } from '../account.type';
+import { DialogCreateAccountSuccessComponent } from '../creation/dialog-success.component';
+import { CredentialsDto, User } from '../user.type';
 
 @Component({
-  selector: 'app-creation',
-  templateUrl: './creation.component.html',
-  styleUrls: ['./creation.component.scss']
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.scss']
 })
-export class CreateAccountComponent implements OnInit {
+export class AccountComponent implements OnInit {
+
+  accountInfo: AccountInfo;
+  changerMotPasse: boolean = false;
 
   response: Message;
 
 
-  createAccountFormGroup: FormGroup = this.fb.group(
+
+  modifyAccountFormGroup: FormGroup = this.fb.group(
 
     {
-      loginControl: ['', [Validators.required, Validators.minLength(4)], [new UniqueLoginValidator(this.accountService)]],
-      password1Control: ['', [Validators.required, Validators.minLength(4)]],
+      loginControl: ['', []],
+      oldPasswordControl: ['', [Validators.required, Validators.minLength(4)]],
+      newPasswordControl: ['', [Validators.required, Validators.minLength(4)]],
       password2Control: ['', [Validators.required, Validators.minLength(4)]],
       pseudoControl: ['', [Validators.required, Validators.minLength(6)], [new UniquePseudoValidator(this.accountService)]],
       emailControl: ['', [Validators.required, Validators.email], [new UniqueEmailValidator(this.accountService)]]
@@ -38,42 +42,65 @@ export class CreateAccountComponent implements OnInit {
   );
 
   get loginControl(): FormControl {
-    return this.createAccountFormGroup.get("loginControl") as FormControl;
+    return this.modifyAccountFormGroup.get("loginControl") as FormControl;
   }
-  get password1Control(): FormControl {
-    return this.createAccountFormGroup.get("password1Control") as FormControl;
+  get oldPasswordControl(): FormControl {
+    return this.modifyAccountFormGroup.get("oldPasswordControl") as FormControl;
+  }
+  get newPasswordControl(): FormControl {
+    return this.modifyAccountFormGroup.get("newPasswordControl") as FormControl;
   }
   get password2Control(): FormControl {
-    return this.createAccountFormGroup.get("password2Control") as FormControl;
+    return this.modifyAccountFormGroup.get("password2Control") as FormControl;
   }
   get pseudoControl(): FormControl {
-    return this.createAccountFormGroup.get("pseudoControl") as FormControl;
+    return this.modifyAccountFormGroup.get("pseudoControl") as FormControl;
   }
   get emailControl(): FormControl {
-    return this.createAccountFormGroup.get("emailControl") as FormControl;
+    return this.modifyAccountFormGroup.get("emailControl") as FormControl;
   }
+
+
   constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router,
     public dialog: MatDialog) { }
 
   ngOnInit(): void {
 
+    this.accountService.getAccountInfo({
+      onError: (e: Message) => console.log(e.msg),
+      onGetAccountInfo: (a: AccountInfo) => this.onGetAccountInfo(a)
+
+    }
+    )
+  }
+
+  onGetAccountInfo(accountInfo: AccountInfo): void {
+
+    this.accountInfo = accountInfo;
+    this.loginControl.setValue(this.accountInfo.utilisateur.login);
+    this.emailControl.setValue(this.accountInfo.account.email);
+    this.pseudoControl.setValue(this.accountInfo.utilisateur.pseudo);
+  }
+  onModeChangeMotPasse($event: MatSlideToggleChange) {
+    this.changerMotPasse = $event.checked;
   }
   onSubmit() {
-    console.log("onSubmit() : " + this.createAccountFormGroup.value);
+    console.log("onSubmit() : " + this.modifyAccountFormGroup.value);
 
-    let credentials: CredentialsDto = this.accountService.buildCredentials(this.loginControl.value, this.password1Control.value);
+    let credentials: CredentialsDto = this.accountService.buildCredentials(this.loginControl.value, this.newPasswordControl.value);
     let email: string = this.emailControl.value;
     let pseudo: string = this.pseudoControl.value;
-    this.accountService.creerCompte(credentials, pseudo, email, {
 
-      onGetAccountInfo: (a: AccountInfo) => {
-        this.response = { msg: "Le compte a été créé avec succès!", error: false };
-        delay(1000);
-        let user: User = this.accountService.buildUser(credentials.login, pseudo);
-        this.dialogContinuer(user);
-      },
-      onError: (e: Message) => this.response = e
-    });
+    // this.accountService.creerCompte(credentials, pseudo, email, {
+
+    //   onGetAccountInfo: (a: AccountInfo) => {
+    //     this.response = { msg: "Le compte a été modifié avec succès!", error: false };
+    //     delay(1000);
+    //     let user: User = this.accountService.buildUser(credentials.login, pseudo);
+    //     this.dialogContinuer(user);
+    //   },
+    //   onError: (e: Message) => this.response = e
+    // });
 
   }
 
@@ -126,20 +153,6 @@ export function MustMatch(controlName: string, matchingControlName: string) {
   }
 }
 
-// asynchrone validateur : controle si le login existe déjà en bdd
-@Injectable({ providedIn: 'root' })
-export class UniqueLoginValidator implements AsyncValidator {
-  constructor(private accountService: AccountService) { }
-
-  validate(
-    ctrl: AbstractControl
-  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.accountService.isLoginTaken(ctrl.value).pipe(
-      map(isTaken => (isTaken ? { uniqueLogin: true } : null)),
-      catchError(() => of(null))
-    );
-  }
-}
 
 @Injectable({ providedIn: 'root' })
 export class UniquePseudoValidator implements AsyncValidator {
@@ -167,4 +180,5 @@ export class UniqueEmailValidator implements AsyncValidator {
       catchError(() => of(null))
     );
   }
+
 }

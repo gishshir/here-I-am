@@ -15,7 +15,7 @@
             </mat-button-toggle-group>
 
             <div fxFlex="initial" class="controlJournal">
-                <mat-form-field appearance="legacy">
+                <mat-form-field *ngIf="selectedLevel" appearance="legacy">
                     <mat-label>choisir le niveau</mat-label>
                     <mat-select [(value)]="selectedLevel" (selectionChange)="onChangeLevel()">
                         <mat-option *ngFor="let level of levels" [value]="level.value">

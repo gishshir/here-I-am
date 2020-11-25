@@ -19,7 +19,7 @@ export class JournalComponent implements OnInit {
   listLines: string;
   title: string = "Journal interne";
 
-  selectedLevel: number = JournalLevel.INFO;
+  selectedLevel: JournalLevel;
 
   private search: string;
   searchControl: FormControl = new FormControl('');
@@ -30,11 +30,13 @@ export class JournalComponent implements OnInit {
 
   levels: Array<JournalItem>;
 
-  constructor(private loggerService: LoggerService, private storageService: AppStorageService,
+  constructor(loggerService: LoggerService, private storageService: AppStorageService,
     private tools: ToolsService, private notificationService: NotificationService) {
 
-    let activateJournal = this.loggerService.isJournalActivated();
+    let activateJournal = loggerService.isJournalActivated();
     this.selectedValue = activateJournal ? "on" : "off";
+    this.selectedLevel = storageService.restoreLogLevel();
+
     this.buildTitre();
 
     this.refreshJournal();
@@ -86,6 +88,7 @@ export class JournalComponent implements OnInit {
   }
 
   onChangeLevel(): void {
+    this.storageService.storeLogLevel(this.selectedLevel);
     this.refreshJournal();
   }
 

@@ -3,7 +3,7 @@ import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { AccountService } from '../account/account.service';
 import { AppPosition } from '../trajets/position.type';
 import { Trajet } from '../trajets/trajet.type';
-import { Journal } from '../journal/journal.type';
+import { Journal, JournalLevel } from '../journal/journal.type';
 import { User } from '../account/user.type';
 import { NotificationService } from './notification/notification.service';
 
@@ -32,6 +32,19 @@ export class AppStorageService {
   //=====================================================
   // JOURNAL
   //=====================================================
+  storeLogLevel(level: JournalLevel): void {
+
+    let key = this.buildKeyForJournalLevel();
+    this.storage.set(key, JSON.stringify(level));
+  }
+  restoreLogLevel(): JournalLevel {
+    let key = this.buildKeyForJournalLevel();
+    if (this.storage.has(key)) {
+      return JSON.parse(this.storage.get(key));
+    } else {
+      return JournalLevel.INFO;
+    }
+  }
   storeLogLine(journal: Journal): void {
 
     let listLines: Array<Journal> = this.restoreLogs();
@@ -171,6 +184,10 @@ export class AppStorageService {
       return "USER#" + this.currentUser.login;
     }
     return "USER#xx";
+  }
+
+  private buildKeyForJournalLevel() {
+    return this.buildKeyCurrentUser() + "#LOG_LEVEL";
   }
 
   private buildKeyForJournal(): string {

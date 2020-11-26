@@ -10,6 +10,7 @@ import { AccountInfo, AccountState } from './account.type';
 import { Router } from '@angular/router';
 import { NotificationService } from '../common/notification/notification.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AbstractControl, AsyncValidator, FormGroup, ValidationErrors } from '@angular/forms';
 
 const NAME = "AccountService";
 
@@ -340,4 +341,67 @@ export interface UserHandler extends Handler {
 export interface AccountInfoHandler extends Handler {
 
   onGetAccountInfo(accountinfo?: AccountInfo): void;
+}
+
+@Injectable({ providedIn: 'root' })
+export class UniqueEmailValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isEmailTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniqueEmail: true } : null)),
+      catchError(() => of(null))
+    );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class UniquePseudoValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isPseudoTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniquePseudo: true } : null)),
+      catchError(() => of(null))
+    );
+  }
+}
+
+// custom validator to check that two fields match
+export function MustMatch(controlName: string, matchingControlName: string) {
+  return (formGroup: FormGroup) => {
+    const control = formGroup.controls[controlName];
+    const matchingControl = formGroup.controls[matchingControlName];
+
+    if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+      // return if another validator has already found an error on the matchingControl
+      return;
+    }
+
+    // set error on matchingControl if validation fails
+    if (control.value !== matchingControl.value) {
+      matchingControl.setErrors({ mustMatch: true });
+    } else {
+      matchingControl.setErrors(null);
+    }
+  }
+}
+
+// asynchrone validateur : controle si le login existe déjà en bdd
+@Injectable({ providedIn: 'root' })
+export class UniqueLoginValidator implements AsyncValidator {
+  constructor(private accountService: AccountService) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    return this.accountService.isLoginTaken(ctrl.value).pipe(
+      map(isTaken => (isTaken ? { uniqueLogin: true } : null)),
+      catchError(() => of(null))
+    );
+  }
 }

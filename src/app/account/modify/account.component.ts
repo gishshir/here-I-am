@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { delay, map, catchError } from 'rxjs/operators';
 import { Message } from 'src/app/common/message.type';
-import { AccountService } from '../account.service';
+import { AccountService, MustMatch, UniqueEmailValidator, UniquePseudoValidator } from '../account.service';
 import { AccountInfo } from '../account.type';
 import { DialogCreateAccountSuccessComponent } from '../creation/dialog-success.component';
 import { CredentialsDto, User } from '../user.type';
@@ -158,40 +158,8 @@ export class AccountComponent implements OnInit {
 
 }
 
-// custom validator to check that two fields match
-export function MustMatch(controlName: string, matchingControlName: string) {
-  return (formGroup: FormGroup) => {
-    const control = formGroup.controls[controlName];
-    const matchingControl = formGroup.controls[matchingControlName];
-
-    if (matchingControl.errors && !matchingControl.errors.mustMatch) {
-      // return if another validator has already found an error on the matchingControl
-      return;
-    }
-
-    // set error on matchingControl if validation fails
-    if (control.value !== matchingControl.value) {
-      matchingControl.setErrors({ mustMatch: true });
-    } else {
-      matchingControl.setErrors(null);
-    }
-  }
-}
 
 
-@Injectable({ providedIn: 'root' })
-export class UniquePseudoValidator implements AsyncValidator {
-  constructor(private accountService: AccountService) { }
-
-  validate(
-    ctrl: AbstractControl
-  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.accountService.isPseudoTaken(ctrl.value).pipe(
-      map(isTaken => (isTaken ? { uniquePseudo: true } : null)),
-      catchError(() => of(null))
-    );
-  }
-}
 
 @Injectable({ providedIn: 'root' })
 export class RequiredIfVisible implements AsyncValidator {
@@ -208,17 +176,6 @@ export class RequiredIfVisible implements AsyncValidator {
   }
 }
 
-@Injectable({ providedIn: 'root' })
-export class UniqueEmailValidator implements AsyncValidator {
-  constructor(private accountService: AccountService) { }
 
-  validate(
-    ctrl: AbstractControl
-  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.accountService.isEmailTaken(ctrl.value).pipe(
-      map(isTaken => (isTaken ? { uniqueEmail: true } : null)),
-      catchError(() => of(null))
-    );
-  }
 
-}
+

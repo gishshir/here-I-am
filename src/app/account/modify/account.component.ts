@@ -4,11 +4,11 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { delay, map, catchError } from 'rxjs/operators';
+import { delay } from 'rxjs/operators';
 import { Message } from 'src/app/common/message.type';
 import { AccountService, MustMatch, UniqueEmailValidator, UniquePseudoValidator } from '../account.service';
 import { AccountInfo } from '../account.type';
-import { DialogCreateAccountSuccessComponent } from '../creation/dialog-success.component';
+import { DialogCreateAccountSuccessComponent } from '../dialog/dialog-success.component';
 import { CredentialsDto, User } from '../user.type';
 
 @Component({
@@ -97,6 +97,23 @@ export class AccountComponent implements OnInit {
     }
   }
 
+  hasModification(): boolean {
+
+    let modification: boolean = false;
+
+    if (this.pseudoControl.dirty || this.emailControl.dirty) {
+      modification = true;
+    }
+
+    if (!modification && this.changerMotPasse) {
+      if (this.newPasswordControl.dirty) {
+        modification = true;
+      }
+    }
+
+    return modification;
+  }
+
   private enablePasswordChangeControle(enable: boolean): void {
 
     if (enable) {
@@ -112,25 +129,33 @@ export class AccountComponent implements OnInit {
   onSubmit() {
     console.log("onSubmit() : " + this.modifyAccountFormGroup.value);
 
-    let credentials: CredentialsDto = this.accountService.buildCredentials(this.loginControl.value, this.newPasswordControl.value);
+    let credentials: CredentialsDto = this.accountService.buildCredentials(this.loginControl.value, this.oldPasswordControl.value);
     let email: string = this.emailControl.value;
     let pseudo: string = this.pseudoControl.value;
+    let newpassword: string | null = this.newPasswordControl.dirty && this.changerMotPasse ? this.newPasswordControl.value : null;
 
-    // this.accountService.creerCompte(credentials, pseudo, email, {
+    this.accountService.modifierCompte(credentials, pseudo, email, newpassword, {
 
-    //   onGetAccountInfo: (a: AccountInfo) => {
-    //     this.response = { msg: "Le compte a été modifié avec succès!", error: false };
-    //     delay(1000);
-    //     let user: User = this.accountService.buildUser(credentials.login, pseudo);
-    //     this.dialogContinuer(user);
-    //   },
-    //   onError: (e: Message) => this.response = e
-    // });
+      onGetAccountInfo: (a: AccountInfo) => {
+        this.response = { msg: "Le compte a été modifié avec succès!", error: false };
+        delay(1000);
+        let user: User = this.accountService.buildUser(credentials.login, pseudo);
+        this.dialogContinuer(user);
+      },
+      onError: (e: Message) => this.response = e
+    });
 
   }
 
   annuler(): void {
-    this.router.navigate(["/go-login"]);
+    this.router.navigate(["/go-accueil"]);
+  }
+
+  private logout() {
+    this.accountService.logout({
+      onMessage: (m: Message) => this.response = m,
+      onError: (e: Message) => this.response = e
+    });
   }
 
   dialogContinuer(user: User): void {
@@ -142,7 +167,11 @@ export class AccountComponent implements OnInit {
 
     dialogConfig.data = {
       login: user.login,
-      pseudo: user.pseudo
+      pseudo: user.pseudo,
+      title: "Modification du compte réussie!",
+      message: "Le compte a été modifié avec succès!",
+      redirectmessage: "Vous allez être redirigé vers la page " +
+        (this.changerMotPasse ? "de login." : "d'accueil.")
     };
 
     const dialogRef = this.dialog.open(DialogCreateAccountSuccessComponent, dialogConfig);
@@ -150,11 +179,18 @@ export class AccountComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       data => {
         if (data) {
-          this.router.navigate(["/go-login"]);
+          if (this.changerMotPasse) {
+            this.logout();
+          } else {
+            this.router.navigate(["/go-accueil"]);
+          }
+
         }
       }
     );
   }
+
+
 
 }
 

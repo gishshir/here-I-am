@@ -48,12 +48,12 @@ export class NotificationService {
 
   //--------------------------------------------------
   // Observable User source
-  private changeUserSource = new Subject<User>();
+  private changeUserSource = new Subject<User | null>();
   // observable User streams
   changeUser$ = this.changeUserSource.asObservable();
 
   // services message commands
-  changeUser(user?: User) {
+  changeUser(user: User | null) {
     console.log("NotificationService#changeUser() " + (user ? user.pseudo : null));
     this.changeUserSource.next(user);
   }

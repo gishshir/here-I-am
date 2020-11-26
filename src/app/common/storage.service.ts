@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
-import { AccountService } from '../account/account.service';
 import { AppPosition } from '../trajets/position.type';
 import { Trajet } from '../trajets/trajet.type';
 import { Journal, JournalLevel } from '../journal/journal.type';
@@ -19,7 +18,7 @@ export class AppStorageService {
     private notificationService: NotificationService) {
 
     this.notificationService.changeUser$.subscribe(
-      (user?: User) => this.currentUser = user
+      (user: User | null) => this.currentUser = user
     );
 
 

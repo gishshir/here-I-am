@@ -8,7 +8,7 @@ import { AccountRoutingModule } from './account-routing.module';
 
 import { LoginComponent } from './login/login.component';
 import { CreateAccountComponent } from './creation/creation.component';
-import { DialogCreateAccountSuccessComponent } from './creation/dialog-success.component';
+import { DialogCreateAccountSuccessComponent } from './dialog/dialog-success.component';
 import { AccountComponent } from './modify/account.component';
 
 

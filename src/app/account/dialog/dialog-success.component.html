@@ -1,16 +1,16 @@
 <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
 
-    <h2 fxFlex="initial" mat-dialog-title>Création du compte réussie!</h2>
+    <h2 fxFlex="initial" mat-dialog-title>{{title}}</h2>
 
     <mat-dialog-content fxFlex="initial">
 
         <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
-            <div fxFlex="initial">Le compte a été créé avec succès:</div>
+            <div fxFlex="initial">{{message}}</div>
             <div fxFlex="initial"><b>login</b>: {{login}}</div>
             <div fxFlex="initial"><b>pseudo</b>: {{pseudo}}</div>
         </div>
         <div fxLayout="column" fxLayoutGap="50px" fxLayoutAlign="end center">
-            <h4>Vous allez être redirigé vers la page d'authentification..</h4>
+            <h4>{{redirectmessage}}</h4>
         </div>
 
     </mat-dialog-content>

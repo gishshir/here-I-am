@@ -9,14 +9,20 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class DialogCreateAccountSuccessComponent implements OnInit {
 
+  title: string;
   login: string;
   pseudo: string;
+  message: string;
+  redirectmessage: string;
 
   constructor(
     private dialogRef: MatDialogRef<DialogCreateAccountSuccessComponent>,
     @Inject(MAT_DIALOG_DATA) data) {
 
-    this.login = data.login;
+    this.title = data.title;
+    this.message = data.message;
+    this.redirectmessage = data.redirectmessage,
+      this.login = data.login;
     this.pseudo = data.pseudo;
   }
 

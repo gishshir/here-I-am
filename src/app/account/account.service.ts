@@ -1,6 +1,6 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { catchError, map } from 'rxjs/operators';
@@ -59,11 +59,51 @@ export class AccountService {
   }
 
   // ============================================
+  _callModifyAccount(credentials: CredentialsDto, pseudo: string, email: string, newpassword: string | null): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/account";
+
+    let accountToModify: any = {
+
+      login: credentials.login,
+      password: credentials.password,
+      newpassword: newpassword,
+      pseudo: pseudo,
+      email: email
+    };
+
+    // mock
+    let accountInfo: AccountInfo = this.accountInfo;
+    if (pseudo != null) {
+      accountInfo.utilisateur.pseudo = pseudo;
+    }
+    if (email != null) {
+      accountInfo.account.email = email;
+    }
+
+    return of(accountInfo);
+    // return this.http.put<AccountInfo>(url, accountToModify, this.commonService.httpOptionsHeaderJson)
+    //   .pipe(catchError(this.commonService.handleError));
+
+  }
+  modifierCompte(credentials: CredentialsDto, pseudo: string, email: string, newpassword: string | null, handler: AccountInfoHandler): void {
+
+    this._callModifyAccount(credentials, pseudo, email, newpassword).subscribe(
+      // next
+      (data: AccountInfo) => handler.onGetAccountInfo(data)
+      ,
+      // error
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
+
+    );
+
+  }
+  // ============================================
   _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/account"
 
-    let userToCreate: any = {
+    let accountToCreate: any = {
 
       login: credentials.login,
       password: credentials.password,
@@ -71,7 +111,7 @@ export class AccountService {
       email: email
     };
 
-    return this.http.post<AccountInfo>(url, userToCreate, this.commonService.httpOptionsHeaderJson)
+    return this.http.post<AccountInfo>(url, accountToCreate, this.commonService.httpOptionsHeaderJson)
       .pipe(catchError(this.commonService.handleError));
 
   }
@@ -196,6 +236,8 @@ export class AccountService {
         this.notificationService.informClosedSession(true);
 
         handler.onMessage(m);
+        this.router.navigate(["/go-login"]);
+
       },
       error: (e: Message) => handler.onError(e)
     });

@@ -86,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // abonnement au changement d'utilisateur
     notificationService.changeUser$.subscribe(
-      (user?: User) => this.mettreAJourBanniere((user ? user.pseudo : null)));
+      (user: User | null) => this.mettreAJourBanniere((user ? user.pseudo : null)));
 
     // abonnement à l'usage intensif du réseau
     notificationService.networkUsage$.subscribe(
@@ -118,8 +118,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.accountService.logout({
       onMessage: (m: Message) => {
         this.response = m;
-        this.loggedIn = false;
-        this.router.navigate(["/go-login"]);
+        //this.loggedIn = false;
+        // this.router.navigate(["/go-login"]);
       },
       onError: (e: Message) => this.response = e
     });
@@ -132,7 +132,7 @@ export class AppComponent implements OnInit, OnDestroy {
     //this.route.navigate(['/go-accueil']);
   }
 
-  private mettreAJourBanniere(pseudo?: string) {
+  private mettreAJourBanniere(pseudo: string | null) {
     console.log("AppComponent#mettreAJourBanniere() " + pseudo);
     this.title = pseudo != null ?
       pseudo : "Où sont mes amis ?";

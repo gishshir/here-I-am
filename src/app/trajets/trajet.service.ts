@@ -26,7 +26,7 @@ export class TrajetService {
 
     // abonnement au changement d'utilisateur
     this.notificationService.changeUser$.subscribe(
-      (user?: User) => {
+      (user: User | null) => {
         if (user) {
           console.log("pseudo: " + user.pseudo);
           this.sauvegarderTrajetsArchives();

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogCreateAccountSuccessComponent } from './dialog-success.component';
+import { DialogCreateAccountSuccessComponent } from '../dialog/dialog-success.component';
 
 describe('DialogSuccessComponent', () => {
   let component: DialogCreateAccountSuccessComponent;

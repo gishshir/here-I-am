@@ -8,7 +8,7 @@ import { map, catchError, delay } from 'rxjs/operators';
 import { AccountInfo } from '../account.type';
 import { Router } from '@angular/router';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
-import { DialogCreateAccountSuccessComponent } from './dialog-success.component';
+import { DialogCreateAccountSuccessComponent } from '../dialog/dialog-success.component';
 
 
 
@@ -90,7 +90,10 @@ export class CreateAccountComponent implements OnInit {
 
     dialogConfig.data = {
       login: user.login,
-      pseudo: user.pseudo
+      pseudo: user.pseudo,
+      title: "Création du compte réussie!",
+      message: "Le compte a été créé avec succès!",
+      redirectmessage: "Vous allez être redirigé vers la page d'authentification!"
     };
 
     const dialogRef = this.dialog.open(DialogCreateAccountSuccessComponent, dialogConfig);

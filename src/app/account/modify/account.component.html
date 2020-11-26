@@ -24,14 +24,20 @@
 
                 <mat-form-field fxFlex appearance="legacy">
                     <mat-label>Nouveau mot de passe</mat-label>
-                    <input type="password" matInput placeholder="mot de passe" formControlName="newPasswordControl">
-                    <mat-error *ngIf="newPasswordControl.invalid ">Mot de passe invalide!
+                    <input type="password" matInput placeholder="mot de passe" formControlName="newPasswordControl"
+                        required>
+                    <mat-hint>Au minimum 4 caractères</mat-hint>
+                    <mat-error *ngIf="newPasswordControl.invalid">
+                        <div *ngIf="newPasswordControl.errors.requiredIfVisible">Mot de passe obligatoire!!</div>
+                        <div *ngIf="newPasswordControl.errors.minlength">minimum 4 caractères!</div>
                     </mat-error>
                 </mat-form-field>
 
                 <mat-form-field fxFlex appearance="legacy">
                     <mat-label>Contrôle du mot de passe</mat-label>
-                    <input type="password" matInput placeholder="mot de passe" formControlName="password2Control">
+                    <input type="password" matInput placeholder="mot de passe" formControlName="password2Control"
+                        required>
+                    <mat-hint>mot de passe identique</mat-hint>
                     <mat-error *ngIf="password2Control.invalid">
                         <div *ngIf="password2Control.errors.mustMatch"> mot de passe différent!</div>
                     </mat-error>

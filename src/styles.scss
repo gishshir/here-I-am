@@ -4,6 +4,10 @@
 .mat-app-background {
   background-color: aliceblue !important;
 }
+.mat-raised-button:disabled {
+  background-color: orange;
+  cursor: not-allowed;
+}
 
 .container {
 

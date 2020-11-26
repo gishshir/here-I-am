@@ -30,13 +30,13 @@ export class AccountComponent implements OnInit {
     {
       loginControl: ['', []],
       oldPasswordControl: ['', [Validators.required, Validators.minLength(4)]],
-      newPasswordControl: ['', [Validators.required, Validators.minLength(4)]],
-      password2Control: ['', [Validators.required, Validators.minLength(4)]],
+      newPasswordControl: ['', [new RequiredIfVisible(this), Validators.minLength(4)]],
+      password2Control: ['', [Validators.minLength(4)]],
       pseudoControl: ['', [Validators.required, Validators.minLength(6)], [new UniquePseudoValidator(this.accountService)]],
       emailControl: ['', [Validators.required, Validators.email], [new UniqueEmailValidator(this.accountService)]]
     },
     {
-      validator: MustMatch('password1Control', 'password2Control')
+      validator: MustMatch('newPasswordControl', 'password2Control')
     }
 
   );
@@ -66,6 +66,7 @@ export class AccountComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.enablePasswordChangeControle(false);
     this.accountService.getAccountInfo({
       onError: (e: Message) => console.log(e.msg),
       onGetAccountInfo: (a: AccountInfo) => this.onGetAccountInfo(a)
@@ -83,7 +84,31 @@ export class AccountComponent implements OnInit {
   }
   onModeChangeMotPasse($event: MatSlideToggleChange) {
     this.changerMotPasse = $event.checked;
+
+    if (!this.changerMotPasse) {
+      this.newPasswordControl.reset();
+      this.password2Control.reset();
+      this.enablePasswordChangeControle(false);
+
+      this.modifyAccountFormGroup.updateValueAndValidity();
+      console.log("valide: " + this.modifyAccountFormGroup.valid);
+    } else {
+      this.enablePasswordChangeControle(true);
+    }
   }
+
+  private enablePasswordChangeControle(enable: boolean): void {
+
+    if (enable) {
+      this.newPasswordControl.enable();
+      this.password2Control.enable();
+    } else {
+      this.newPasswordControl.disable();
+      this.password2Control.disable();
+    }
+
+  }
+
   onSubmit() {
     console.log("onSubmit() : " + this.modifyAccountFormGroup.value);
 
@@ -165,6 +190,21 @@ export class UniquePseudoValidator implements AsyncValidator {
       map(isTaken => (isTaken ? { uniquePseudo: true } : null)),
       catchError(() => of(null))
     );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class RequiredIfVisible implements AsyncValidator {
+
+  constructor(private component: AccountComponent) { }
+
+  validate(
+    ctrl: AbstractControl
+  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+    if (this.component.changerMotPasse && !ctrl.value) {
+      return of({ requiredIfVisible: true });
+    }
+    return null;
   }
 }
 

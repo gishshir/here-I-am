@@ -21,13 +21,17 @@
         <mat-form-field fxFlex appearance="legacy">
             <mat-label>Mot de passe</mat-label>
             <input type="password" matInput placeholder="mot de passe" formControlName="password1Control" required>
-            <mat-error *ngIf="password1Control.invalid && password1Control.errors.required">Mot de passe obligatoire!
+            <mat-hint>Au minimum 4 caractères</mat-hint>
+            <mat-error *ngIf="password1Control.invalid">
+                <div *ngIf="password1Control.errors.required">Mot de passe obligatoire!!</div>
+                <div *ngIf="password1Control.errors.minlength">minimum 4 caractères!</div>
             </mat-error>
         </mat-form-field>
 
         <mat-form-field fxFlex appearance="legacy">
             <mat-label>Contrôle du mot de passe</mat-label>
             <input type="password" matInput placeholder="mot de passe" formControlName="password2Control" required>
+            <mat-hint>mot de passe identique</mat-hint>
             <mat-error *ngIf="password2Control.invalid">
                 <div *ngIf="password2Control.errors.required">Mot de passe obligatoire!</div>
                 <div *ngIf="password2Control.errors.mustMatch"> mot de passe différent!</div>

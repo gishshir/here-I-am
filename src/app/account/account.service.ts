@@ -1,7 +1,7 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { LoggerService } from '../common/logger.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CommonService, MessageHandler, Handler, BoolResponseHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER } from '../common/common.service';
 import { catchError, map } from 'rxjs/operators';
 import { Message, BoolResponse } from '../common/message.type';
@@ -40,26 +40,32 @@ export class AccountService {
     return this.userLoggedIn;
   }
 
-  // TODO appeller le service
+  // ============================================
+  private _callGetAccountInfo(): Observable<any> {
+
+    let url = TOMCAT_API_SERVER + "/account";
+
+    return this.http.get(url)
+      .pipe(catchError(this.commonService.handleError));
+
+  }
   getAccountInfo(handler: AccountInfoHandler) {
 
-    let accountInfo: AccountInfo = {
-
-      utilisateur: this.userLoggedIn,
-      account: {
-        id: -1,
-        userid: -1,
-        email: 'monemail@gmail.com',
-        etat: AccountState.Open
+    this._callGetAccountInfo().subscribe(
+      // next
+      (a: AccountInfo) => {
+        this.accountInfo = a;
+        handler.onGetAccountInfo(a);
       }
-    };
+      ,
+      // error
+      (error: string) => this.commonService._propageErrorToHandler(error, handler)
 
-    this.accountInfo = accountInfo;
-    handler.onGetAccountInfo(accountInfo);
+    );
   }
 
   // ============================================
-  _callModifyAccount(credentials: CredentialsDto, pseudo: string, email: string, newpassword: string | null): Observable<any> {
+  private _callModifyAccount(credentials: CredentialsDto, pseudo: string, email: string, newpassword: string | null): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/account";
 
@@ -72,25 +78,19 @@ export class AccountService {
       email: email
     };
 
-    // mock
-    let accountInfo: AccountInfo = this.accountInfo;
-    if (pseudo != null) {
-      accountInfo.utilisateur.pseudo = pseudo;
-    }
-    if (email != null) {
-      accountInfo.account.email = email;
-    }
-
-    return of(accountInfo);
-    // return this.http.put<AccountInfo>(url, accountToModify, this.commonService.httpOptionsHeaderJson)
-    //   .pipe(catchError(this.commonService.handleError));
+    return this.http.put<AccountInfo>(url, accountToModify, this.commonService.httpOptionsHeaderJson)
+      .pipe(catchError(this.commonService.handleError));
 
   }
   modifierCompte(credentials: CredentialsDto, pseudo: string, email: string, newpassword: string | null, handler: AccountInfoHandler): void {
 
     this._callModifyAccount(credentials, pseudo, email, newpassword).subscribe(
       // next
-      (data: AccountInfo) => handler.onGetAccountInfo(data)
+      (data: AccountInfo) => {
+        this.userLoggedIn = data.utilisateur;
+        this.accountInfo = data;
+        handler.onGetAccountInfo(data);
+      }
       ,
       // error
       (error: string) => this.commonService._propageErrorToHandler(error, handler)
@@ -99,9 +99,9 @@ export class AccountService {
 
   }
   // ============================================
-  _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
+  private _callCreateAccount(credentials: CredentialsDto, pseudo: string, email): Observable<any> {
 
-    let url = TOMCAT_API_SERVER + "/account"
+    let url = TOMCAT_API_SERVER + "/account/new"
 
     let accountToCreate: any = {
 
@@ -132,7 +132,7 @@ export class AccountService {
 
   // vérifie si il existe en Bdd un user avec ce login
   // ============================================
-  _callVerifyLogin(login: string): Observable<any> {
+  private _callVerifyLogin(login: string): Observable<any> {
 
     let url = TOMCAT_API_SERVER + "/account/verify/login/" + login;
     return this.http.get<BoolResponse>(url);

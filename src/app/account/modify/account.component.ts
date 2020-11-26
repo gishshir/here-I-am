@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Message } from 'src/app/common/message.type';
+import { NotificationService } from 'src/app/common/notification/notification.service';
 import { AccountService, MustMatch, UniqueEmailValidator, UniquePseudoValidator } from '../account.service';
 import { AccountInfo } from '../account.type';
 import { DialogCreateAccountSuccessComponent } from '../dialog/dialog-success.component';
@@ -62,7 +63,7 @@ export class AccountComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router,
-    public dialog: MatDialog) { }
+    public dialog: MatDialog, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
 
@@ -139,8 +140,9 @@ export class AccountComponent implements OnInit {
       onGetAccountInfo: (a: AccountInfo) => {
         this.response = { msg: "Le compte a été modifié avec succès!", error: false };
         delay(1000);
-        let user: User = this.accountService.buildUser(credentials.login, pseudo);
+        let user: User = a.utilisateur;
         this.dialogContinuer(user);
+        this.notificationService.changeUser(user);
       },
       onError: (e: Message) => this.response = e
     });

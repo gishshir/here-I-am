@@ -52,6 +52,9 @@ export class CommonService {
     if (this.notificationService == undefined) {
       console.error("notification service undefined!");
     }
+    if (this.logger == undefined) {
+      console.error("logger service undefined!");
+    }
   }
 
 
@@ -99,7 +102,9 @@ export class CommonService {
     }
     // return an observable with a user-facing error message
     // call observer.error(...)
-    this.logger.logError(NAME, message);
+    if (this.logger) {
+      this.logger.logError(NAME, message);
+    }
     return throwError(message);
   }
   _propageErrorToHandler(error: string, handler?: Handler): void {

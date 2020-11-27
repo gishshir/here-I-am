@@ -36,6 +36,7 @@ export class JournalComponent implements OnInit {
     let activateJournal = loggerService.isJournalActivated();
     this.selectedValue = activateJournal ? "on" : "off";
     this.selectedLevel = storageService.restoreLogLevel();
+    console.log("selected level: " + this.selectedLevel);
 
     this.buildTitre();
 
@@ -56,6 +57,7 @@ export class JournalComponent implements OnInit {
         continue;
       }
       let journalItem: JournalItem = { value: Number(level), viewValue: JournalLevel[Number(level)] };
+      console.log("options: " + journalItem.value + " - " + journalItem.viewValue);
       this.levels.push(journalItem);
     }
   }
@@ -89,6 +91,7 @@ export class JournalComponent implements OnInit {
 
   onChangeLevel(): void {
     this.storageService.storeLogLevel(this.selectedLevel);
+    console.log("selected level: " + this.selectedLevel);
     this.refreshJournal();
   }
 

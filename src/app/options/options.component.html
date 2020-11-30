@@ -1,1 +1,30 @@
-<p>options works!</p>
+<div class="container" fxLayout="column" fxLayoutAlign="start center">
+    <h2 fxFlex>Mes options</h2>
+
+
+    <div fxFlex fxLayout="column" fxLayoutAlign="start start">
+        <div fxFlex fxLayout fxLayoutGap="15px" fxLayoutAlign="start center">
+            <mat-checkbox fxFlex [(ngModel)]="clearTrajet" (change)="onClearTrajetChange($event)">supprimer
+                automatiquement
+                les trajets anciens de plus de
+            </mat-checkbox>
+            <mat-form-field fxFlex appearance="legacy" name="days" style="width: 80px;">
+                <input matInput placeholder="nombre de jours" minlength="1" [(ngModel)]="trajetdays"
+                    [required]="clearTrajet" (change)="onTrajetDaysChange($event)" [readonly]="!clearTrajet">
+                <span matSuffix>jours</span>
+            </mat-form-field>
+        </div>
+
+        <mat-checkbox fxFlex [(ngModel)]="alerteMiseRelation" (change)="onAlerteMiseRelationChange($event)">recevoir une
+            alerte pour une demande de mise en relation
+        </mat-checkbox>
+
+
+        <mat-checkbox fxFlex [(ngModel)]="alerteStartTrajet" (change)="onAllerteStartTrajetChange($event)">recevoir une
+            alerte lors du démarrage d'un trajet d'un ami
+        </mat-checkbox>
+
+    </div>
+
+</div>
+<app-notification *ngIf="response" [message]="response"></app-notification>

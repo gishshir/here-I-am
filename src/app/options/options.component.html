@@ -2,7 +2,7 @@
     <h2 fxFlex>Mes options</h2>
 
 
-    <div fxFlex fxLayout="column" fxLayoutAlign="start start">
+    <div *ngIf="trajetdays" fxFlex fxLayout="column" fxLayoutAlign="start start">
         <div fxFlex fxLayout fxLayoutGap="15px" fxLayoutAlign="start center">
             <mat-checkbox fxFlex [(ngModel)]="clearTrajet" (change)="onClearTrajetChange($event)">supprimer
                 automatiquement

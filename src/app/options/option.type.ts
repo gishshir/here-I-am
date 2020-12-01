@@ -1,15 +1,20 @@
 export class Option {
 
     name: OptionEnum;
-    value: string;
+    checked: boolean = false;
+    value?: string;
 
-    constructor(name: OptionEnum, value: string) {
+    constructor(name: OptionEnum, checked: boolean, value?: string) {
         this.name = name;
+        this.checked = checked;
         this.value = value;
     }
+
 }
 
 export enum OptionEnum {
 
-    clearTrajet, alerteMiseRelation, alerteStartTrajet
+    clearTrajet = "clearTrajet",
+    alerteMiseRelation = "alerteMiseRelation",
+    alerteStartTrajet = "alerteStartTrajet"
 }

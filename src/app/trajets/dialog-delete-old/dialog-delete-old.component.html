@@ -1,0 +1,23 @@
+<div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center">
+
+    <h2 fxFlex="initial" mat-dialog-title>Confirmation de suppression</h2>
+
+    <mat-dialog-content fxFlex="initial" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start center"
+        style="max-width: 455px;">
+
+        <div fxFlex="grow">{{oldTrajetsInfo.nombre}} trajets anciens à supprimer</div>
+        <div fxFlex="grow">Antérieurs à la date: {{beforeDate}}</div>
+
+        <div fxFlex>
+            <h5 class="noMarge">Actuellement une alerte de suppression des vieux trajets est paramètrée</h5>
+            <h5 class="noMarge"> (menu Options) pour les trajets de plus de {{oldTrajetsInfo.alerteNbDays}} jours.</h5>
+        </div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions fxFlex="initial" fxLayout fxLayoutGap="10px">
+        <button fxFlex="initial" class="mat-raised-button" (click)="close()">Annuler</button>
+        <button fxFlex="initial" class="mat-raised-button mat-primary" (click)="delete()">Supprimer</button>
+    </mat-dialog-actions>
+
+</div>

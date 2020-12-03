@@ -36,3 +36,10 @@ export enum TrajetState {
     pausing = "Pausing"
 }
 
+export interface OldTrajetsInfo {
+
+    nombre: number,
+    beforeTs: number,
+    alerteNbDays: number
+}
+

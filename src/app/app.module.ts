@@ -41,6 +41,7 @@ import { TrajetGeolocationComponent } from './trajets/trajet-geolocation/trajet-
 import { GeoportailComponent } from './geoportail/geoportail.component';
 import { JournalComponent } from './journal/journal.component';
 import { OptionsComponent } from './options/options.component';
+import { DialogDeleteOldTrajetsComponent } from './trajets/dialog-delete-old/dialog-delete-old.component';
 
 
 
@@ -77,7 +78,8 @@ import { OptionsComponent } from './options/options.component';
     TrajetGeolocationComponent,
     GeoportailComponent,
     JournalComponent,
-    OptionsComponent
+    OptionsComponent,
+    DialogDeleteOldTrajetsComponent
   ],
   imports: [
     BrowserModule,

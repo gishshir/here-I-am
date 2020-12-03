@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Trajet, TrajetState } from './trajet.type';
+import { OldTrajetsInfo, Trajet, TrajetState } from './trajet.type';
 import { TrajetService } from './trajet.service';
 import { ToolsService } from '../common/tools.service';
 import { LoggerService } from '../common/logger.service';
@@ -9,6 +9,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NotificationService } from '../common/notification/notification.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { DialogDeleteOldTrajetsComponent } from './dialog-delete-old/dialog-delete-old.component';
 
 
 const NAME = "TrajetsComponent";
@@ -16,12 +17,15 @@ const NAME = "TrajetsComponent";
 @Component({
   selector: 'app-trajets',
   templateUrl: './trajets.component.html',
-  styleUrls: ['./trajets.component.css']
+  styleUrls: ['./trajets.component.scss']
 })
 export class TrajetsComponent implements OnInit {
 
   selectedTrajet: Trajet;
   today: string;
+
+  // Vieux trajets à  supprimer
+  oldTrajetsInfo: OldTrajetsInfo;
 
   response: Message;
 
@@ -36,6 +40,8 @@ export class TrajetsComponent implements OnInit {
     this.today = toolsService.formatDate(this.toolsService.getNowTimestampEnSec());
     // s'inscrit aux evenements de changement de trajet ou etat de trajet
     this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
+
+    this.chercherTrajetsASupprimer();
     this.refreshList(-1);
   }
   ngOnInit(): void {
@@ -77,6 +83,44 @@ export class TrajetsComponent implements OnInit {
 
   }
 
+  confirmSupprimerOldTrajets(): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      oldTrajetsInfo: this.oldTrajetsInfo
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteOldTrajetsComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data) {
+          this.supprimerOldTrajets();
+        }
+      }
+    );
+  }
+
+  private supprimerOldTrajets(): void {
+    console.log("supprimerOldTrajets()");
+    this.trajetService.deleteOldTrajets({
+
+      onMessage: (m: Message) => {
+        this.response = m,
+          this.refreshList(-1);
+      },
+      onError: (e: Message) => this.response = e
+
+    }
+
+
+    );
+  }
+
   confirmSupprimerTrajet(trajet: Trajet): void {
 
     const dialogConfig = new MatDialogConfig();
@@ -109,6 +153,19 @@ export class TrajetsComponent implements OnInit {
 
         this.response = m;
         this.refreshList(-1);
+      },
+      onError: (e: Message) => this.response = e
+    });
+  }
+
+  private chercherTrajetsASupprimer(): void {
+
+    this.logger.log(NAME, "chercher nombre de trajets à supprimer");
+    this.trajetService.findNumberOfOldTrajetToDelete({
+
+      onResponse: (info: OldTrajetsInfo) => {
+        console.log(info.nombre + " trajets à supprimer...");
+        this.oldTrajetsInfo = info;
       },
       onError: (e: Message) => this.response = e
     });

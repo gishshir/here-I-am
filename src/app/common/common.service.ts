@@ -159,3 +159,7 @@ export interface BoolResponseHandler extends Handler {
 export interface StringResponseHandler extends Handler {
   onResponse(value: string): void;
 }
+
+export interface NumberResponseHandler extends Handler {
+  onResponse(value: number): void;
+}

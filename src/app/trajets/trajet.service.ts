@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { Trajet, TrajetState, TrajetMeans, TrajetEtPositions } from './trajet.type';
-import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER, BoolResponseHandler } from '../common/common.service';
+import { Trajet, TrajetState, TrajetMeans, TrajetEtPositions, OldTrajetsInfo } from './trajet.type';
+import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER, BoolResponseHandler, NumberResponseHandler } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { ToolsService } from '../common/tools.service';
 import { AppStorageService } from '../common/storage.service';
@@ -36,6 +36,41 @@ export class TrajetService {
 
 
   }
+  // ============================================
+  // gestion des trajets anciens
+  // ============================================
+
+  private _callfindNumberOfOldTrajetToDelete(): Observable<OldTrajetsInfo> {
+
+    let url = TOMCAT_API_SERVER + "/trajets/old";
+
+    return this.http.get<OldTrajetsInfo>(url)
+      .pipe(catchError(this.commonService.handleError));
+  }
+  findNumberOfOldTrajetToDelete(handler: OldTrajetsHandler): void {
+
+    this._callfindNumberOfOldTrajetToDelete().subscribe(
+
+      (nb: OldTrajetsInfo) => handler.onResponse(nb),
+      (e: Message) => handler.onError(e)
+    );
+  }
+
+  // ============================================
+  private _callDeleteOldTrajets(): Observable<Message> {
+
+    let url = TOMCAT_API_SERVER + "/trajets/old";
+    return this.http.post<Message>(url, null)
+      .pipe(catchError(this.commonService.handleError));
+  }
+  deleteOldTrajets(handler: MessageHandler): void {
+
+    this._callDeleteOldTrajets().subscribe(
+
+      this.commonService._createMessageObserver(handler)
+    );
+  }
+  // ===========================================
 
   // chercher un trajet par son id, soit pour l'utilisateur courant soit pour un ami.
   private _callFindTrajetById(trajetid: number, ami: boolean): Observable<any> {
@@ -481,9 +516,15 @@ export interface TrajetsHandler extends Handler {
   onGetList(liste: Trajet[]): void;
 
 }
+export interface OldTrajetsHandler extends Handler {
 
+  onResponse(info: OldTrajetsInfo): void;
+
+}
 export interface TrajetHandler extends Handler {
 
   onGetTrajet(trajet?: Trajet): void;
 }
+
+//
 

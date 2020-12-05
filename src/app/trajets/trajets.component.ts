@@ -107,7 +107,7 @@ export class TrajetsComponent implements OnInit {
 
   private supprimerOldTrajets(): void {
     console.log("supprimerOldTrajets()");
-    this.trajetService.deleteOldTrajets({
+    this.trajetService.deleteOldTrajets(this.oldTrajetsInfo, {
 
       onMessage: (m: Message) => {
         this.response = m,

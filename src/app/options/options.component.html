@@ -15,12 +15,14 @@
             </mat-form-field>
         </div>
 
-        <mat-checkbox fxFlex [(ngModel)]="alerteMiseRelation" (change)="onAlerteMiseRelationChange($event)">recevoir une
+        <mat-checkbox fxFlex [(ngModel)]="alerteMiseRelation" disabled (change)="onAlerteMiseRelationChange($event)">
+            recevoir une
             alerte pour une demande de mise en relation
         </mat-checkbox>
 
 
-        <mat-checkbox fxFlex [(ngModel)]="alerteStartTrajet" (change)="onAllerteStartTrajetChange($event)">recevoir une
+        <mat-checkbox fxFlex [(ngModel)]="alerteStartTrajet" disabled (change)="onAllerteStartTrajetChange($event)">
+            recevoir une
             alerte lors du démarrage d'un trajet d'un ami
         </mat-checkbox>
 

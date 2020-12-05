@@ -57,15 +57,15 @@ export class TrajetService {
   }
 
   // ============================================
-  private _callDeleteOldTrajets(): Observable<Message> {
+  private _callDeleteOldTrajets(info: OldTrajetsInfo): Observable<Message> {
 
-    let url = TOMCAT_API_SERVER + "/trajets/old";
-    return this.http.post<Message>(url, null)
+    let url = TOMCAT_API_SERVER + "/trajets/old/" + info.beforeTs;
+    return this.http.delete<Message>(url)
       .pipe(catchError(this.commonService.handleError));
   }
-  deleteOldTrajets(handler: MessageHandler): void {
+  deleteOldTrajets(info: OldTrajetsInfo, handler: MessageHandler): void {
 
-    this._callDeleteOldTrajets().subscribe(
+    this._callDeleteOldTrajets(info).subscribe(
 
       this.commonService._createMessageObserver(handler)
     );
@@ -340,7 +340,7 @@ export class TrajetService {
 
     let url = TOMCAT_API_SERVER + "/trajet/" + id;
 
-    return this.http.request<Message>('delete', url)
+    return this.http.delete<Message>(url)
       .pipe(
         catchError(this.commonService.handleError)
       );

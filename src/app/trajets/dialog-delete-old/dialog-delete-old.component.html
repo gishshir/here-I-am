@@ -6,7 +6,8 @@
         style="max-width: 455px;">
 
         <div fxFlex="grow">{{oldTrajetsInfo.nombre}} trajets anciens à supprimer</div>
-        <div fxFlex="grow">Antérieurs à la date: {{beforeDate}}</div>
+        <div fxFlex="grow">antérieurs à la date du {{beforeDate}}</div>
+        <div fxFlex="grow">La suppression concerne également toutes les données géographiques.</div>
 
         <div fxFlex>
             <h5 class="noMarge">Actuellement une alerte de suppression des vieux trajets est paramètrée</h5>
@@ -17,7 +18,8 @@
 
     <mat-dialog-actions fxFlex="initial" fxLayout fxLayoutGap="10px">
         <button fxFlex="initial" class="mat-raised-button" (click)="close()">Annuler</button>
-        <button fxFlex="initial" class="mat-raised-button mat-primary" (click)="delete()">Supprimer</button>
+        <button fxFlex="initial" class="mat-raised-button mat-primary" (click)="delete()"
+            title="Supprimer les {{oldTrajetsInfo.nombre}} trajets anciens.">Supprimer</button>
     </mat-dialog-actions>
 
 </div>

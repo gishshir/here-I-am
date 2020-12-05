@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 30, 2020 at 04:48 PM
+-- Generation Time: Dec 05, 2020 at 03:47 PM
 -- Server version: 10.5.7-MariaDB
 -- PHP Version: 7.4.5
 
@@ -31,7 +31,8 @@ CREATE TABLE `user_option` (
   `id` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `optionid` int(11) NOT NULL,
-  `value` varchar(25) NOT NULL
+  `checked` text DEFAULT NULL COMMENT 'option choisie ou non par l''utilisateur.\r\ntrue or false or null',
+  `value` varchar(25) DEFAULT NULL COMMENT 'valeur de l''option (boolean, number, text ou null)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -43,6 +44,7 @@ CREATE TABLE `user_option` (
 --
 ALTER TABLE `user_option`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `IND_USER_OPT` (`userid`,`optionid`),
   ADD KEY `IND_USERID` (`userid`),
   ADD KEY `IND_OPTION` (`optionid`);
 

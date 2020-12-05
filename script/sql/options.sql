@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 30, 2020 at 04:48 PM
+-- Generation Time: Dec 05, 2020 at 03:46 PM
 -- Server version: 10.5.7-MariaDB
 -- PHP Version: 7.4.5
 
@@ -30,17 +30,18 @@ SET time_zone = "+00:00";
 CREATE TABLE `options` (
   `id` int(11) NOT NULL,
   `name` varchar(25) NOT NULL COMMENT 'nom de l''option',
-  `value` varchar(25) NOT NULL COMMENT 'valeur par défaut (boolean ou number)'
+  `checked` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'checked ou pas par défaut',
+  `value` varchar(25) DEFAULT NULL COMMENT 'valeur par défaut (boolean ou number ou text ou rien)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `options`
 --
 
-INSERT INTO `options` (`id`, `name`, `value`) VALUES
-(1, 'clearTrajet', '15'),
-(2, 'alerteMiseRelation', 'true'),
-(3, 'alerteStartTrajet', 'true');
+INSERT INTO `options` (`id`, `name`, `checked`, `value`) VALUES
+(1, 'clearTrajet', 0, '15'),
+(2, 'alerteMiseRelation', 0, NULL),
+(3, 'alerteStartTrajet', 0, NULL);
 
 --
 -- Indexes for dumped tables

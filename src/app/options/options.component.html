@@ -2,28 +2,32 @@
     <h2 fxFlex>Mes options</h2>
 
 
-    <div *ngIf="trajetdays" fxFlex fxLayout="column" fxLayoutAlign="start start">
-        <div fxFlex fxLayout fxLayoutGap="15px" fxLayoutAlign="start center">
-            <mat-checkbox fxFlex [(ngModel)]="clearTrajet" (change)="onClearTrajetChange($event)">supprimer
-                automatiquement
-                les trajets anciens de plus de
+    <div fxFlex="auto" fxLayout="column" fxLayoutAlign="start start" id="option-container">
+
+        <div fxFlex id="get-alert-label">Recevoir une alerte pour :</div>
+
+        <div fxFlex="initial" fxLayout="row wrap" style="align-items: baseline;">
+            <mat-checkbox fxFlex [(ngModel)]="clearTrajet" (change)="onClearTrajetChange($event)">
+                supprimer les trajets anciens&nbsp;&nbsp;
             </mat-checkbox>
-            <mat-form-field fxFlex appearance="legacy" name="days" style="width: 80px;">
-                <input matInput placeholder="nombre de jours" minlength="1" [(ngModel)]="trajetdays"
-                    [required]="clearTrajet" (change)="onTrajetDaysChange($event)" [readonly]="!clearTrajet">
+            <mat-form-field fxFlex id="nb-days-input" appearance="legacy" name="days">
+                <span matPrefix>de plus de&nbsp;</span>
+                <input matInput minlength="1" [(ngModel)]="trajetdays" [required]="clearTrajet"
+                    (change)="onTrajetDaysChange($event)" [readonly]="!clearTrajet">
+
                 <span matSuffix>jours</span>
             </mat-form-field>
         </div>
 
-        <mat-checkbox fxFlex [(ngModel)]="alerteMiseRelation" disabled (change)="onAlerteMiseRelationChange($event)">
-            recevoir une
-            alerte pour une demande de mise en relation
+        <mat-checkbox fxFlex="initial" [(ngModel)]="alerteMiseRelation" disabled
+            (change)="onAlerteMiseRelationChange($event)">
+            une demande de mise en relation
         </mat-checkbox>
 
 
-        <mat-checkbox fxFlex [(ngModel)]="alerteStartTrajet" disabled (change)="onAllerteStartTrajetChange($event)">
-            recevoir une
-            alerte lors du démarrage d'un trajet d'un ami
+        <mat-checkbox fxFlex="initial" [(ngModel)]="alerteStartTrajet" disabled
+            (change)="onAllerteStartTrajetChange($event)">
+            lors du démarrage d'un trajet d'un ami
         </mat-checkbox>
 
     </div>

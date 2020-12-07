@@ -153,6 +153,7 @@ export class TrajetsComponent implements OnInit {
       onMessage: (m: Message) => {
 
         this.response = m;
+        this.chercherTrajetsASupprimer();
         this.refreshList(-1);
       },
       onError: (e: Message) => this.response = e

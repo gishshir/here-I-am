@@ -11,10 +11,10 @@ import { Trajet, TrajetState } from '../trajet.type';
 })
 export class TrajetHomeIconComponent implements OnInit {
 
-  trajetEtat: TrajetState = TrajetState.ended;
-  iconColor: string = 'basic';
-  trajetClass: string = 'home-icon';
-  iconName: string = 'home';
+  trajetEtat: TrajetState;
+  iconColor: string;
+  trajetClass: string;
+  iconName: string;
 
   constructor(notificationService: NotificationService, private trajetService: TrajetService) {
 
@@ -22,9 +22,23 @@ export class TrajetHomeIconComponent implements OnInit {
     notificationService.monTrajet$.subscribe(
       (t: Trajet) => this.onChangeMonTrajet(t)
     );
+
+    // deconnection
+    notificationService.closedSession$.subscribe(
+      (b) => this.init()
+    )
   }
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  private init(): void {
+
+    this.trajetEtat = TrajetState.ended;
+    this.iconColor = 'basic';
+    this.trajetClass = 'home-icon';
+    this.iconName = 'home';
   }
 
   private onChangeMonTrajet(t: Trajet): void {

@@ -8,24 +8,36 @@ import { TrajetState } from '../trajet.type';
 })
 export class TrajetStateIconComponent implements OnInit {
 
-  @Input() trajetState: TrajetState;
+  private _state: TrajetState;
+  @Input() set trajetState(state: TrajetState) {
+    this._state = state;
+    this.onChangeState();
+  }
+  get trajetState(): TrajetState {
+    return this._state;
+  }
+
+  description: string = "trajet...";
+  iconName: string;
+  iconColor: string = "basic";
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  getDescription(): string {
+  private onChangeState() {
 
-    let description: string = "";
     switch (this.trajetState) {
 
-      case TrajetState.started: description = "Trajet en cours..."; break;
-      case TrajetState.ended: description = "Trajet terminé."; break;
-      case TrajetState.pausing: description = "Pause pendant le trajet"; break;
+      case TrajetState.started: this.description = "Trajet en cours...";
+        this.iconName = "speed"; this.iconColor = "accent"; break;
+      case TrajetState.ended: this.description = "Trajet terminé.";
+        this.iconName = "keyboard_tab"; this.iconColor = "primary"; break;
+      case TrajetState.pausing: this.description = "Pause pendant le trajet";
+        this.iconName = "pause_circle_outline"; this.iconColor = "warn"; break;
 
     }
-    return description;
   }
 
 }

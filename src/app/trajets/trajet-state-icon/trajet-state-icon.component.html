@@ -1,7 +1,5 @@
 <ng-container *ngIf="trajetState">
-    <span title="{{getDescription()}}" [ngSwitch]="trajetState">
-        <mat-icon *ngSwitchCase="'Started'" class="material-icons md-24" color="accent">speed</mat-icon>
-        <mat-icon *ngSwitchCase="'Pausing'" class="material-icons md-24" color="warn">pause_circle_outline</mat-icon>
-        <mat-icon *ngSwitchCase="'Ended'" class="material-icons md-24" color="primary">keyboard_tab</mat-icon>
+    <span title="{{description}}">
+        <mat-icon class="material-icons md-24" [color]="iconColor">{{iconName}}</mat-icon>
     </span>
 </ng-container>

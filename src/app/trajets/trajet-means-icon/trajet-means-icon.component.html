@@ -1,22 +1,8 @@
 <ng-container *ngIf="trajetMean">
     <span title="{{getDescription()}}" [@arret-marche]="isArret ? 'arret':'marche'" [ngSwitch]="trajetMean">
 
-        <mat-icon *ngSwitchCase="'Train'" [style.height]="taille" class="material-icons md-24" color="primary">
-            directions_railway</mat-icon>
-        <mat-icon *ngSwitchCase="'Moto'" [style.height]="taille" class="material-icons md-24" color="primary">
-            two_wheeler</mat-icon>
-        <mat-icon *ngSwitchCase="'Bateau'" [style.height]="taille" class="material-icons md-24" color="primary">
-            directions_boat</mat-icon>
-        <mat-icon *ngSwitchCase="'Pied'" [style.height]="taille" class="material-icons md-24" color="primary">
-            directions_walk</mat-icon>
-        <mat-icon *ngSwitchCase="'Avion'" [style.height]="taille" class="material-icons md-24" color="primary">
-            flight</mat-icon>
-        <mat-icon *ngSwitchCase="'Velo'" [style.height]="taille" class="material-icons md-24" color="primary">
-            directions_bike</mat-icon>
-        <mat-icon *ngSwitchCase="'Voiture'" [style.height]="taille" class="material-icons md-24" color="primary">
-            directions_car</mat-icon>
-        <mat-icon *ngSwitchCase="'Bus'" [style.height]="taille" class="material-icons md-24" color="primary">
-            directions_bus</mat-icon>
+        <mat-icon [style.height]="taille" class="material-icons md-24" color="primary">
+            {{getCurrentIconName()}}</mat-icon>
 
     </span>
 </ng-container>

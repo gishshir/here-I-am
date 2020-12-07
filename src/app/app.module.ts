@@ -42,6 +42,7 @@ import { GeoportailComponent } from './geoportail/geoportail.component';
 import { JournalComponent } from './journal/journal.component';
 import { OptionsComponent } from './options/options.component';
 import { DialogDeleteOldTrajetsComponent } from './trajets/dialog-delete-old/dialog-delete-old.component';
+import { TrajetHomeIconComponent } from './trajets/trajet-home-icon/trajet-home-icon.component';
 
 
 
@@ -79,7 +80,8 @@ import { DialogDeleteOldTrajetsComponent } from './trajets/dialog-delete-old/dia
     GeoportailComponent,
     JournalComponent,
     OptionsComponent,
-    DialogDeleteOldTrajetsComponent
+    DialogDeleteOldTrajetsComponent,
+    TrajetHomeIconComponent
   ],
   imports: [
     BrowserModule,

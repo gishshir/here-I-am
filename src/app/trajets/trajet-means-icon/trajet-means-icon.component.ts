@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TrajetMeans } from '../trajet.type';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { TrajetService } from '../trajet.service';
 
 @Component({
   selector: 'app-trajet-means-icon',
@@ -36,13 +37,17 @@ export class TrajetMeansIconComponent implements OnInit {
   @Input() taille: number = 24;
   @Input() isArret: boolean = true;
 
-  constructor() { }
+  constructor(private trajetService: TrajetService) { }
 
   ngOnInit(): void {
   }
 
   getDescription(): string {
     return TrajetMeansIconComponent.displayName(this.trajetMean);
+  }
+
+  getCurrentIconName(): string {
+    return this.trajetService.getIconName(this.trajetMean);
   }
 
   static displayName(mean: TrajetMeans): string {

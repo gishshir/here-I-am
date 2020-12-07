@@ -2,26 +2,15 @@
 <div class="bandeau mat-toolbar mat-primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="20px" role="banner">
 
   <!--go accueil-->
-  <div fxFlex="initial" aria-label="Accès à la page principale" color="basic" title="Accueil" routerLink="/go-accueil"
-    routerLinkActive="active" style="cursor: pointer;">
-    <mat-icon class="home-icon material-icons md-48">home</mat-icon>
-  </div>
+  <app-trajet-home-icon></app-trajet-home-icon>
   <h3 fxFlex="1 1 auto">{{title}}</h3>
 
   <!--geolocation -->
-  <!-- <a fxFlex="initial" title="géo-localisation" (click)="showDialogGeolocation()" style="cursor: pointer;">
-    <mat-icon class="material-icons md-24" title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">
-      location_on</mat-icon>
-  </a> -->
   <button mat-button class="menuitem" title="géo-localisation" (click)="showDialogGeolocation()">
     <mat-icon title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">location_on</mat-icon>
   </button>
 
   <!--usage du reseau -->
-  <!-- <div fxFlex="initial" title="Usage du réseau">
-    <mat-icon class="material-icons md-24" title="{{getNetworkIconTitle()}}" color="{{getNetworkColor()}}">network_check
-    </mat-icon>
-  </div> -->
   <button mat-button class="menuitem" title="Etat du réseau" [matMenuTriggerFor]="networkmenu">
     <mat-icon title="{{getNetworkIconTitle()}}" color="{{getNetworkColor()}}">network_check</mat-icon>
     <mat-menu #networkmenu="matMenu">

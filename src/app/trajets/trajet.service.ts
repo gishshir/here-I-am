@@ -33,9 +33,26 @@ export class TrajetService {
         }
       }
     );
-
-
   }
+
+
+  getIconName(mean: TrajetMeans): string {
+    let name: string = 'home';
+
+    switch (mean) {
+      case TrajetMeans.avion: name = "flight"; break;
+      case TrajetMeans.bateau: name = "directions_boat"; break;
+      case TrajetMeans.bus: name = "directions_bus"; break;
+      case TrajetMeans.moto: name = "two_wheeler"; break;
+      case TrajetMeans.pied: name = "directions_walk"; break;
+      case TrajetMeans.train: name = "directions_railway"; break;
+      case TrajetMeans.velo: name = "directions_bike"; break;
+      case TrajetMeans.voiture: name = "directions_car"; break;
+    }
+
+    return name;
+  }
+
   // ============================================
   // gestion des trajets anciens
   // ============================================

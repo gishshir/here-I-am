@@ -6,12 +6,12 @@ import { Router } from '@angular/router';
 import { AccountService } from './account/account.service';
 import { NotificationService } from './common/notification/notification.service';
 import { GeolocationService, GeolocationState } from './geolocation/geolocation.service';
-import { TrajetService } from './trajets/trajet.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { NetworkState } from './common/common.service';
 import { User } from './account/user.type';
 import { LoggerService } from './common/logger.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',

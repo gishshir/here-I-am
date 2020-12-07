@@ -4,9 +4,9 @@
     <!-- COL1 liste de mes trajets -->
     <div fxFlex="initial" fxLayout="column" fxLayoutAlign="start none" fxLayoutGap="20px">
         <h2 fxFlex="initial">Liste de mes trajets
-            <mat-icon *ngIf="oldTrajetsInfo && oldTrajetsInfo.nombre > 0" class="trajet-icon material-icons md-24"
-                title="{{oldTrajetsInfo.nombre}} trajets anciens à supprimer." (click)="confirmSupprimerOldTrajets()"
-                color="accent">delete_outline
+            <mat-icon *ngIf="oldTrajetsInfo && oldTrajetsInfo.nombre > 0" id="old-icon"
+                class=" trajet-icon material-icons md-24" title="{{oldTrajetsInfo.nombre}} trajets anciens à supprimer."
+                (click)="confirmSupprimerOldTrajets()" color="accent">delete_outline
             </mat-icon>
         </h2>
         <table fxFlex mat-table [dataSource]="dataSource" class="mat-elevation-z8">

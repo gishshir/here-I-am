@@ -27,3 +27,19 @@
 .mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-type {
     padding-right: 5px;
 }
+
+/* The animation code */
+@keyframes old-rotate {
+    0%   {transform: rotate(0deg);}
+    25%  {transform: rotate(45deg);}
+    50%  {transform: rotate(0deg);}
+    75%  {transform: rotate(-45deg);}
+    100% {transform: rotate(0deg);}
+  }
+
+  /* The element to apply the animation to */
+#old-icon {
+    animation-name: old-rotate;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+  }

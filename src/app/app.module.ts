@@ -43,6 +43,9 @@ import { JournalComponent } from './journal/journal.component';
 import { OptionsComponent } from './options/options.component';
 import { DialogDeleteOldTrajetsComponent } from './trajets/dialog-delete-old/dialog-delete-old.component';
 import { TrajetHomeIconComponent } from './trajets/trajet-home-icon/trajet-home-icon.component';
+import { AlertesComponent } from './alertes/alertes.component';
+import { AlerteAmiMenuComponent } from './alertes/alerte-ami-menu/alerte-ami-menu.component';
+import { AlerteComponent } from './alertes/alerte/alerte.component';
 
 
 
@@ -81,7 +84,10 @@ import { TrajetHomeIconComponent } from './trajets/trajet-home-icon/trajet-home-
     JournalComponent,
     OptionsComponent,
     DialogDeleteOldTrajetsComponent,
-    TrajetHomeIconComponent
+    TrajetHomeIconComponent,
+    AlertesComponent,
+    AlerteAmiMenuComponent,
+    AlerteComponent
   ],
   imports: [
     BrowserModule,

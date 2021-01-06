@@ -1,0 +1,14 @@
+<button mat-button class="menuitem" *ngIf="hasAlertes()" title="alertes" [matMenuTriggerFor]="alertemenu"
+    (menuOpened)="onMenuOpen()">
+    <mat-icon class="alert-icon-swing" title="alertes en cours" [color]="getIconColor()">notification_important
+    </mat-icon>
+    <mat-menu #alertemenu="matMenu">
+        <div *ngFor="let alerte of alertes">
+            <app-alerte [alerte]="alerte"></app-alerte>
+        </div>
+        <button mat-button class="menuitem" title="tout valider" (click)="validerAlertes()">
+            <mat-icon [color]="getIconColor()">send</mat-icon>
+            Valider toutes les alertes
+        </button>
+    </mat-menu>
+</button>

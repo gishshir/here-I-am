@@ -5,6 +5,10 @@
   <app-trajet-home-icon></app-trajet-home-icon>
   <h3 fxFlex="1 1 auto">{{title}}</h3>
 
+
+  <!-- alerte menu-->
+  <app-alerte-ami-menu (eventMessage)="onMessage($event)"></app-alerte-ami-menu>
+
   <!--geolocation -->
   <button mat-button class="menuitem" title="géo-localisation" (click)="showDialogGeolocation()">
     <mat-icon title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">location_on</mat-icon>

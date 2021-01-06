@@ -11,7 +11,6 @@ import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dia
 import { NetworkState } from './common/common.service';
 import { User } from './account/user.type';
 import { LoggerService } from './common/logger.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
@@ -74,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   constructor(private geolocationService: GeolocationService, private accountService: AccountService,
-    notificationService: NotificationService, private router: Router, private dialog: MatDialog,
+    notificationService: NotificationService, private dialog: MatDialog,
     logger: LoggerService) {
 
     console.log("production: " + environment.production);

@@ -1,0 +1,17 @@
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    -webkit-box-orient: vertical;  
+    
+}
+
+.block-alerte {
+    margin: 10px;
+    font-size: 0.75em;
+}
+
+.block-alerte :over {
+    background-color: aqua;
+}
+

@@ -24,11 +24,8 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     return this._amiTrajet;
   }
 
-  @Output() eventMessage = new EventEmitter<Message>();
-
   //geoportail: Geoportail;
   titre: string = "Position de mon ami(e)";
-  //url: string;
 
   private _amiTrajet: Trajet;
 
@@ -44,27 +41,6 @@ export class AmiGeolocationComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
 
-  // createOrUpdateGeoportail() {
-
-  //   // on ne fait rien si on a déjà l'info pour le meme trajet
-  //   if (this.geoportail && this._amiTrajet && this.geoportail.trajetid == this._amiTrajet.id) {
-  //     console.log("... createOrUpdateGeoportail() non nécessaire!");
-  //     return;
-  //   }
-
-  //   // sinon on cherche l'info en remote...
-  //   this.geoportail = null;
-  //   if (this._amiTrajet) {
-  //     this.positionService.createOrUpdateGeoportail(this._amiTrajet.id, true, {
-
-  //       onGetGeoportailInfo: (g: Geoportail) => {
-  //         this.geoportail = g;
-  //         this.url = g.url;
-  //       },
-  //       onError: (e: Message) => console.log(e.msg)
-  //     });
-  //   }
-  // }
 
 
   // demarre timer si necessaire

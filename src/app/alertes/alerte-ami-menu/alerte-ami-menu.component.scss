@@ -1,0 +1,14 @@
+.alert-icon-swing {
+    animation-name: anim-alert-icon;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;  
+}
+
+@keyframes anim-alert-icon {
+
+    0%   {transform: rotate(0deg)}
+    25%  {transform: rotate(25deg)}
+    50% {transform: rotate(0deg)}
+    75%  {transform: rotate(-25deg)}
+    100%   {transform: rotate(0deg)}
+}

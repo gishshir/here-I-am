@@ -39,6 +39,7 @@ export class AlerteComponent implements OnInit {
     if (this.alerte) {
       if (this.alerte.type == AlerteType.warn) {
         color = "warn";
+        console.log("alerte de type warn!!");
       } else {
         color = "primary"
       }

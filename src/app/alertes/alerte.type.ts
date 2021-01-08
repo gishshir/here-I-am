@@ -16,6 +16,6 @@ export class CountAlerteInfo {
 }
 
 export enum AlerteType {
-    info,
-    warn
+    info = "info",
+    warn = "warn"
 }

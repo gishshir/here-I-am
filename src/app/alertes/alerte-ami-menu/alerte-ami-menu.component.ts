@@ -13,7 +13,7 @@ import { Alerte, CountAlerteInfo } from '../alerte.type';
 export class AlerteAmiMenuComponent implements OnInit, OnDestroy {
 
   alertesInfo: CountAlerteInfo;
-  alertes: Alerte[];
+  alertes: Array<Alerte>;
 
   @Output() eventMessage = new EventEmitter<Message>();
 
@@ -59,10 +59,19 @@ export class AlerteAmiMenuComponent implements OnInit, OnDestroy {
 
   validerAlertes(): void {
 
+    let alertesEnCours: Array<Alerte> = this.alertes;
+
     this.stopTimer();
-    // TODO appel du service
-    this.eventMessage.emit({ msg: 'validation des alertes réussie!', "error": false });
-    this.startTimer();
+
+    this.alerteService.validerListAlertes(alertesEnCours, {
+      onMessage: (m: Message) => {
+        this.eventMessage.emit({ msg: 'validation des alertes réussie!', "error": false });
+        this.startTimer();
+      },
+      onError: (e: Message) => console.log(e.msg)
+    });
+
+
   }
   hasAlertes(): boolean {
     return this.alertesInfo == null ? false :
@@ -107,7 +116,7 @@ export class AlerteAmiMenuComponent implements OnInit, OnDestroy {
 
     this.alerteService.listCurrentAlertes({
 
-      onGetList: (list: Alerte[]) => {
+      onGetList: (list: Array<Alerte>) => {
         this.alertes = list;
 
       },

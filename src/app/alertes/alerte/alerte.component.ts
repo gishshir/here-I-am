@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ToolsService } from 'src/app/common/tools.service';
 import { Alerte, AlerteType } from '../alerte.type';
 
 @Component({
@@ -12,7 +13,7 @@ export class AlerteComponent implements OnInit {
   @Input() alerte: Alerte;
 
 
-  constructor() {
+  constructor(private tools: ToolsService) {
   }
 
   ngOnInit(): void {
@@ -46,6 +47,9 @@ export class AlerteComponent implements OnInit {
   }
 
 
+  getDate(): string {
 
+    return this.tools.formatDateAndTime(this.alerte.timestamp);
+  }
 
 }

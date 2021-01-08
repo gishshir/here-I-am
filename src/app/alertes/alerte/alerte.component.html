@@ -1,6 +1,7 @@
 <ng-container *ngIf="alerte">
     <div class="block-alerte">
         <mat-icon title="alertes en cours" [color]="getIconColor()">{{getIcon()}}</mat-icon>
+        <b>Le {{getDate()}}</b>
         <p class="line-clamp" [innerHTML]="alerte.message"></p>
         <hr />
     </div>

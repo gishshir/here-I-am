@@ -10,10 +10,10 @@ import { Option, OptionEnum } from './option.type';
 })
 export class OptionsComponent implements OnInit {
 
-  clearTrajet: boolean;
-  trajetdays: number;
-  alerteMiseRelation: boolean;
-  alerteStartTrajet: boolean;
+  clearOldTrajet: boolean;
+  oldtrajetdays: number;
+  alerteEventRelation: boolean;
+  alerteEventTrajet: boolean;
 
   response: Message;
 
@@ -34,49 +34,49 @@ export class OptionsComponent implements OnInit {
     console.log("initOptions");
 
     // clear trajet
-    let optClearTrajet = listOptions.find((o: Option) => o.name == OptionEnum.clearTrajet);
-    this.clearTrajet = optClearTrajet.checked;
-    this.trajetdays = Number(optClearTrajet.value);
+    let optClearOldTrajet = listOptions.find((o: Option) => o.name == OptionEnum.clearOldTrajet);
+    this.clearOldTrajet = optClearOldTrajet.checked;
+    this.oldtrajetdays = Number(optClearOldTrajet.value);
 
     // alerte mise en relation
-    let optAlerteMiseEnRelation = listOptions.find((o: Option) => o.name == OptionEnum.alerteMiseRelation);
-    this.alerteMiseRelation = optAlerteMiseEnRelation.checked;
+    let optAlerteEventEnRelation = listOptions.find((o: Option) => o.name == OptionEnum.alerteEventRelation);
+    this.alerteEventRelation = optAlerteEventEnRelation.checked;
 
     // alerte start trajet
-    let optAlerteStartTrajet = listOptions.find((o: Option) => o.name == OptionEnum.alerteStartTrajet);
-    this.alerteStartTrajet = optAlerteStartTrajet.checked;
+    let optAlerteEventTrajet = listOptions.find((o: Option) => o.name == OptionEnum.alerteEventTrajet);
+    this.alerteEventTrajet = optAlerteEventTrajet.checked;
 
 
   }
 
 
 
-  onAlerteMiseRelationChange($event): void {
+  onAlerteEventRelationChange($event): void {
 
-    console.log("onAlerteMiseRelationChange() " + $event.checked);
-    this.enregistrerOption(new Option(OptionEnum.alerteMiseRelation, this.alerteMiseRelation));
+    console.log("onAlerteEventRelationChange() " + $event.checked);
+    this.enregistrerOption(new Option(OptionEnum.alerteEventRelation, this.alerteEventRelation));
   }
 
-  onAllerteStartTrajetChange($event): void {
+  onAlerteEventTrajetChange($event): void {
 
-    console.log("onAllerteStartTrajetChange() " + $event.checked);
-    this.enregistrerOption(new Option(OptionEnum.alerteStartTrajet, this.alerteStartTrajet));
+    console.log("onAlerteEventTrajetChange() " + $event.checked);
+    this.enregistrerOption(new Option(OptionEnum.alerteEventTrajet, this.alerteEventTrajet));
   }
 
-  onTrajetDaysChange($event): void {
-    console.log("onTrajetDaysChange() " + this.trajetdays);
-    this.enregistrerClearTrajetChange();
+  onOldTrajetDaysChange($event): void {
+    console.log("onOldTrajetDaysChange() " + this.oldtrajetdays);
+    this.enregistrerClearOldTrajetChange();
   }
-  onClearTrajetChange($event): void {
+  onClearOldTrajetChange($event): void {
 
-    console.log("onClearTrajetChange() " + $event.checked);
-    this.enregistrerClearTrajetChange();
+    console.log("onClearOldTrajetChange() " + $event.checked);
+    this.enregistrerClearOldTrajetChange();
   }
 
-  private enregistrerClearTrajetChange(): void {
+  private enregistrerClearOldTrajetChange(): void {
 
-    let nbDays: string = this.trajetdays + '';
-    this.enregistrerOption(new Option(OptionEnum.clearTrajet, this.clearTrajet, nbDays));
+    let nbDays: string = this.oldtrajetdays + '';
+    this.enregistrerOption(new Option(OptionEnum.clearOldTrajet, this.clearOldTrajet, nbDays));
   }
 
   private enregistrerOption(option: Option): void {

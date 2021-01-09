@@ -14,7 +14,7 @@ export class Option {
 
 export enum OptionEnum {
 
-    clearTrajet = "clearTrajet",
-    alerteMiseRelation = "alerteMiseRelation",
-    alerteStartTrajet = "alerteStartTrajet"
+    clearOldTrajet = "clearOldTrajet",
+    alerteEventRelation = "alerteEventRelation",
+    alerteEventTrajet = "alerteEventTrajet"
 }

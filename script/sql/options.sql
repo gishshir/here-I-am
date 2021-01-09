@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 05, 2020 at 03:46 PM
+-- Generation Time: Jan 09, 2021 at 03:24 PM
 -- Server version: 10.5.7-MariaDB
 -- PHP Version: 7.4.5
 
@@ -39,9 +39,9 @@ CREATE TABLE `options` (
 --
 
 INSERT INTO `options` (`id`, `name`, `checked`, `value`) VALUES
-(1, 'clearTrajet', 0, '15'),
-(2, 'alerteMiseRelation', 0, NULL),
-(3, 'alerteStartTrajet', 0, NULL);
+(1, 'clearOldTrajet', 1, '15'),
+(2, 'alerteEventRelation', 1, NULL),
+(3, 'alerteEventTrajet', 1, NULL);
 
 --
 -- Indexes for dumped tables

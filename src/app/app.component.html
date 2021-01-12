@@ -7,7 +7,8 @@
 
 
   <!-- alerte menu-->
-  <app-alerte-ami-menu (eventMessage)="onMessage($event)"></app-alerte-ami-menu>
+  <app-alerte-ami-menu id="menu-alerte" (eventMessage)="onMessage($event)">
+  </app-alerte-ami-menu>
 
   <!--geolocation -->
   <button mat-button class="menuitem" title="géo-localisation" (click)="showDialogGeolocation()">

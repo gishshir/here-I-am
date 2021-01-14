@@ -34,6 +34,7 @@ export const TOMCAT_API_SERVER = environment.apiUrl;
 
 const SESSION_CLOSED: string = "SESSION_CLOSED";
 const TOKEN_TOO_OLD: string = "TOKEN_TOO_OLD";
+export const ERREUR_500: string = "ERREUR_500";
 
 const NAME = "CommonService";
 
@@ -62,13 +63,14 @@ export class CommonService {
   * HttpErrorResponse
   * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
   * .headers: [header...]
-  * .message: "Http failure.... 400"
+  * .message: "<technique>"
   * .status: 400
   * .url: "http://..../update.php" par ex
   */
   handleError(httpError: HttpErrorResponse): Observable<never> {
 
-    let message = 'Erreur technique! consulter la sortie console';
+    let message = "";
+    let httpMessage = (httpError.error.message) ? httpError.error.message : httpError.message;
 
     if (httpError.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
@@ -81,13 +83,12 @@ export class CommonService {
       // The response body may contain clues as to what went wrong,
       let body: string = JSON.stringify(httpError.error);
       console.error(
-        `Backend returned code ${httpError.status}, ` +
-        `body was: ${body}`);
+        `Backend returned code ${httpError.status}`);
 
       // session fermée - utilisateur non authentifié
       // code 401 Unauthorized : voir si on peut renouveller le token
-      if (httpError.status == 401 && httpError.error.msg) {
-        if (httpError.error.msg == "Token to be renewed!") {
+      if (httpError.status == 401) {
+        if (httpMessage == "Token to be renewed!") {
           message = TOKEN_TOO_OLD;
         } else {
           message = SESSION_CLOSED;
@@ -95,9 +96,10 @@ export class CommonService {
       }
 
       // message metier depuis api
-      else if ((httpError.status >= 400 && httpError.status < 500)
-        && httpError.error.msg) {
-        message = httpError.error.msg;
+      else if (httpError.status >= 400 && httpError.status < 500) {
+        message = httpMessage;
+      } else {
+        message = ERREUR_500;
       }
     }
     // return an observable with a user-facing error message
@@ -115,6 +117,8 @@ export class CommonService {
       console.log("reconnexion automatique...");
       this.notificationService.informInvalidToken(true);
       return;
+    } else if (error === ERREUR_500) {
+      error = 'Erreur technique! consulter la sortie console';
     }
     if (handler) {
       let errorMsg = {

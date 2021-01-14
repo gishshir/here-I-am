@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Trajet, TrajetState, TrajetMeans, TrajetEtPositions, OldTrajetsInfo } from './trajet.type';
-import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER, BoolResponseHandler, NumberResponseHandler } from '../common/common.service';
+import { CommonService, Handler, MessageHandler, HTTP_HEADER_URL, TOMCAT_API_SERVER, ERREUR_500 } from '../common/common.service';
 import { Message } from '../common/message.type';
 import { ToolsService } from '../common/tools.service';
 import { AppStorageService } from '../common/storage.service';
@@ -315,8 +315,12 @@ export class TrajetService {
       ,
       // error
       (error: string) => {
-        this.localStorage.storeCurrentTrajet(newTrajet);
-        handler.onGetTrajet(newTrajet);
+        if (error == ERREUR_500) {
+          this.localStorage.storeCurrentTrajet(newTrajet);
+          handler.onGetTrajet(newTrajet);
+        } else {
+          this.commonService._propageErrorToHandler(error, handler)
+        }
       }
 
     );
@@ -339,11 +343,14 @@ export class TrajetService {
       ,
       // error
       (error: string) => {
-        this.localStorage.storeCurrentTrajet(trajetToSave);
-        if (trajetToSave.etat == TrajetState.ended) {
-          this.localStorage.archiveTrajet(trajetToSave);
+
+        if (error == ERREUR_500) {
+          this.localStorage.storeCurrentTrajet(trajetToSave);
+          if (trajetToSave.etat == TrajetState.ended) {
+            this.localStorage.archiveTrajet(trajetToSave);
+          }
+          handler.onGetTrajet(trajetToSave);
         }
-        handler.onGetTrajet(trajetToSave);
       }
 
     );
@@ -430,15 +437,19 @@ export class TrajetService {
         ,
         // error
         (error: string) => {
-          let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
-          if (trajetLocal) {
-            trajetLocal.etat = newState;
-            if (newState == TrajetState.ended) {
-              trajetLocal.endtime = timestamp;
+          if (error === ERREUR_500) {
+            let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
+            if (trajetLocal) {
+              trajetLocal.etat = newState;
+              if (newState == TrajetState.ended) {
+                trajetLocal.endtime = timestamp;
+              }
+              this.localStorage.storeCurrentTrajet(trajetLocal);
+              handler.onGetTrajet(trajetLocal);
             }
-            this.localStorage.storeCurrentTrajet(trajetLocal);
-            handler.onGetTrajet(trajetLocal);
-          } else {
+          }
+
+          else {
             this.commonService._propageErrorToHandler(error, handler);
           }
         }
@@ -463,12 +474,17 @@ export class TrajetService {
       ,
       // error
       (error: string) => {
-        let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
-        if (trajetLocal) {
-          trajetLocal.mean = newMean;
-          this.localStorage.storeCurrentTrajet(trajetLocal);
-          handler.onGetTrajet(trajetLocal);
-        } else {
+
+        if (error == ERREUR_500) {
+
+          let trajetLocal: Trajet = this.localStorage.restoreCurrentTrajet();
+          if (trajetLocal) {
+            trajetLocal.mean = newMean;
+            this.localStorage.storeCurrentTrajet(trajetLocal);
+            handler.onGetTrajet(trajetLocal);
+          }
+        }
+        else {
           this.commonService._propageErrorToHandler(error, handler);
         }
       }

@@ -61,7 +61,7 @@ export class CommonService {
 
   /*
   * HttpErrorResponse
-  * .error : body de la reponse - ex {"msg": "toto", "error": true} ou autre chose!
+  * .error : body de la reponse - ex {"msg": "toto"} ou autre chose!
   * .headers: [header...]
   * .message: "<technique>"
   * .status: 400
@@ -70,7 +70,7 @@ export class CommonService {
   handleError(httpError: HttpErrorResponse): Observable<never> {
 
     let message = "";
-    let httpMessage = (httpError.error.message) ? httpError.error.message : httpError.message;
+    let httpMessage = (httpError.error.msg) ? httpError.error.msg : httpError.message;
 
     if (httpError.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

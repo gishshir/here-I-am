@@ -46,6 +46,8 @@ import { TrajetHomeIconComponent } from './trajets/trajet-home-icon/trajet-home-
 import { AlertesComponent } from './alertes/alertes.component';
 import { AlerteAmiMenuComponent } from './alertes/alerte-ami-menu/alerte-ami-menu.component';
 import { AlerteComponent } from './alertes/alerte/alerte.component';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
 
 
 
@@ -87,7 +89,9 @@ import { AlerteComponent } from './alertes/alerte/alerte.component';
     TrajetHomeIconComponent,
     AlertesComponent,
     AlerteAmiMenuComponent,
-    AlerteComponent
+    AlerteComponent,
+    FooterComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

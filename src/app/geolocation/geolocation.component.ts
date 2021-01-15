@@ -4,9 +4,8 @@ import { Message } from '../common/message.type';
 import { AppPosition } from '../trajets/position.type';
 import { GeolocationService } from './geolocation.service';
 import { ToolsService } from '../common/tools.service';
-import { Geoportail } from '../geoportail/geoportail.type';
+import { Geoportail } from './geoportail.type';
 import { PositionService } from './position.service';
-import { Subscription } from 'rxjs';
 
 /*
 * composant interne utilise dans

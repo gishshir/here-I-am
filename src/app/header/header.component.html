@@ -1,0 +1,71 @@
+<!-- Toolbar -->
+<div fxFlex class="bandeau mat-toolbar mat-primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="2px"
+    role="banner">
+
+    <!--go accueil-->
+    <app-trajet-home-icon></app-trajet-home-icon>
+    <div id="menu-pseudo" fxFlex="1 1 auto">{{title}}</div>
+
+
+    <!-- alerte menu-->
+    <app-alerte-ami-menu id="menu-alerte" (eventMessage)="onMessage($event)">
+    </app-alerte-ami-menu>
+
+    <!--geolocation -->
+    <button mat-button class="menuitem" title="géo-localisation" (click)="showDialogGeolocation()">
+        <mat-icon title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">location_on</mat-icon>
+    </button>
+
+    <!--usage du reseau -->
+    <button mat-button class="menuitem" title="Etat du réseau" [matMenuTriggerFor]="networkmenu">
+        <mat-icon title="{{getNetworkIconTitle()}}" color="{{getNetworkColor()}}">network_check</mat-icon>
+        <mat-menu #networkmenu="matMenu">
+            <button mat-menu-item disabled>
+                <mat-icon color="{{getNetworkColor()}}">network_check</mat-icon>
+                {{getNetworkIconTitle()}}
+            </button>
+        </mat-menu>
+    </button>
+
+    <!-- ==============-->
+    <!-- MORE MENU-->
+    <!-- ==============-->
+    <button mat-button class="menuitem" [matMenuTriggerFor]="moremenu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #moremenu="matMenu">
+        <ng-container *ngIf="loggedIn">
+            <button mat-menu-item routerLink="/go-options">
+                <mat-icon>miscellaneous_services</mat-icon>Options
+            </button>
+            <!-- go account-->
+            <button mat-menu-item routerLink="/go-account-modify">
+                <mat-icon>person</mat-icon>Compte
+            </button>
+
+            <!-- go journal -->
+            <button mat-menu-item routerLink="/go-journal" [title]="journalOn?'journal actif':'journal inactif'">
+                <mat-icon [color]="journalOn?'primary':'warn'">article</mat-icon>Journal
+            </button>
+
+            <!--go accueil-->
+            <button mat-menu-item routerLink="/go-accueil" aria-label="Accès à la page principale" title="Login">
+                <mat-icon color="primary">home</mat-icon>accueil
+            </button>
+
+            <!--go logout-->
+            <button mat-menu-item aria-label="déconnection" title="Logout" (click)="logout()">
+                <mat-icon color="accent">toggle_off</mat-icon>logout
+            </button>
+        </ng-container>
+
+
+        <!--go login-->
+        <button *ngIf="!loggedIn" mat-menu-item routerLink="/go-login" aria-label="Accès à la page d'authentification"
+            title="Login">
+            <mat-icon color="accent">login</mat-icon>login
+        </button>
+
+    </mat-menu>
+
+</div>

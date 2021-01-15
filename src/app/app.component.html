@@ -1,84 +1,18 @@
-<!-- Toolbar -->
-<div class="bandeau mat-toolbar mat-primary" fxLayout fxLayoutAlign="none center" fxLayoutGap="20px" role="banner">
+<div fxLayout="column" fxLayoutAlign="space-between stretch">
 
-  <!--go accueil-->
-  <app-trajet-home-icon></app-trajet-home-icon>
-  <h3 fxFlex="1 1 auto">{{title}}</h3>
+  <app-header fxFlex (eventMessage)="onResponse($event)"></app-header>
 
+  <div fxFlex role="main">
 
-  <!-- alerte menu-->
-  <app-alerte-ami-menu id="menu-alerte" (eventMessage)="onMessage($event)">
-  </app-alerte-ami-menu>
+    <!-- The routed views render in the <router-outlet>-->
+    <router-outlet></router-outlet>
 
-  <!--geolocation -->
-  <button mat-button class="menuitem" title="géo-localisation" (click)="showDialogGeolocation()">
-    <mat-icon title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">location_on</mat-icon>
-  </button>
+    <app-notification *ngIf="response" [message]="response"></app-notification>
 
-  <!--usage du reseau -->
-  <button mat-button class="menuitem" title="Etat du réseau" [matMenuTriggerFor]="networkmenu">
-    <mat-icon title="{{getNetworkIconTitle()}}" color="{{getNetworkColor()}}">network_check</mat-icon>
-    <mat-menu #networkmenu="matMenu">
-      <button mat-menu-item disabled>
-        <mat-icon color="{{getNetworkColor()}}">network_check</mat-icon>
-        {{getNetworkIconTitle()}}
-      </button>
-    </mat-menu>
-  </button>
-
-  <!-- ==============-->
-  <!-- MORE MENU-->
-  <!-- ==============-->
-  <button mat-button class="menuitem" [matMenuTriggerFor]="moremenu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #moremenu="matMenu">
-    <ng-container *ngIf="loggedIn">
-      <button mat-menu-item routerLink="/go-options">
-        <mat-icon>miscellaneous_services</mat-icon>Options
-      </button>
-      <!-- go account-->
-      <button mat-menu-item routerLink="/go-account-modify">
-        <mat-icon>person</mat-icon>Compte
-      </button>
-
-      <!-- go journal -->
-      <button mat-menu-item routerLink="/go-journal" [title]="journalOn?'journal actif':'journal inactif'">
-        <mat-icon [color]="journalOn?'primary':'warn'">article</mat-icon>Journal
-      </button>
-
-      <!--go accueil-->
-      <button mat-menu-item routerLink="/go-accueil" aria-label="Accès à la page principale" title="Login">
-        <mat-icon color="primary">home</mat-icon>accueil
-      </button>
-
-      <!--go logout-->
-      <button mat-menu-item aria-label="déconnection" title="Logout" (click)="logout()">
-        <mat-icon color="accent">toggle_off</mat-icon>logout
-      </button>
-    </ng-container>
+  </div>
 
 
-    <!--go login-->
-    <button *ngIf="!loggedIn" mat-menu-item routerLink="/go-login" aria-label="Accès à la page d'authentification"
-      title="Login">
-      <mat-icon color="accent">login</mat-icon>login
-    </button>
+  <app-footer fxFlex id="footer"></app-footer>
 
-  </mat-menu>
-
-</div>
-
-<div role="main">
-
-  <!-- The routed views render in the <router-outlet>-->
-  <router-outlet></router-outlet>
-
-  <app-notification *ngIf="response" [message]="response"></app-notification>
-
-  <!-- Footer -->
-  <footer>
-    <!--pied de page...-->
-  </footer>
 
 </div>

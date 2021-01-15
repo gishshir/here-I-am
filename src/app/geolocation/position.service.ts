@@ -6,7 +6,7 @@ import { MessageHandler, CommonService, Handler, HTTP_HEADER_URL, TOMCAT_API_SER
 import { Message } from '../common/message.type';
 import { catchError, filter, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Geoportail } from '../geoportail/geoportail.type';
+import { Geoportail } from '../geolocation/geoportail.type';
 
 
 import * as fileSaver from 'file-saver';

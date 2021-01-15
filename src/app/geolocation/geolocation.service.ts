@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit, Inject, HostListener } from '@angular/core';
+import { Injectable, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { NotificationService } from '../common/notification/notification.service';
 import { Message } from '../common/message.type';
 import { Trajet, TrajetState, TrajetMeans } from '../trajets/trajet.type';
@@ -343,4 +343,3 @@ export class GeolocationService implements OnInit, OnDestroy {
   }
 
 }
-

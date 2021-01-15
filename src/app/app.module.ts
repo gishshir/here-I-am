@@ -38,7 +38,6 @@ import { AmiGeolocationComponent } from './amis/ami-geolocation/ami-geolocation.
 import { GeolocationComponent } from './geolocation/geolocation.component';
 import { DialogGeolocationComponent } from './geolocation/dialog-geolocation/dialog-geolocation.component';
 import { TrajetGeolocationComponent } from './trajets/trajet-geolocation/trajet-geolocation.component';
-import { GeoportailComponent } from './geoportail/geoportail.component';
 import { JournalComponent } from './journal/journal.component';
 import { OptionsComponent } from './options/options.component';
 import { DialogDeleteOldTrajetsComponent } from './trajets/dialog-delete-old/dialog-delete-old.component';
@@ -82,7 +81,6 @@ import { HeaderComponent } from './header/header.component';
     GeolocationComponent,
     DialogGeolocationComponent,
     TrajetGeolocationComponent,
-    GeoportailComponent,
     JournalComponent,
     OptionsComponent,
     DialogDeleteOldTrajetsComponent,

@@ -2,9 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Trajet, TrajetState } from '../trajet.type';
 import { AppPosition } from '../position.type';
 import { Message } from 'src/app/common/message.type';
-import { ToolsService } from 'src/app/common/tools.service';
 import { PositionService } from 'src/app/geolocation/position.service';
-import { Geoportail } from 'src/app/geoportail/geoportail.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
 
 @Component({

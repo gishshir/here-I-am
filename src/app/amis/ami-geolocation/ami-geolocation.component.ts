@@ -4,7 +4,6 @@ import { Message } from 'src/app/common/message.type';
 import { AppPosition } from 'src/app/trajets/position.type';
 import { NotificationService } from 'src/app/common/notification/notification.service';
 import { PositionService } from 'src/app/geolocation/position.service';
-import { Geoportail } from 'src/app/geoportail/geoportail.type';
 import { NetworkState } from 'src/app/common/common.service';
 
 @Component({

@@ -15,6 +15,7 @@ export class AlerteAmiMenuComponent implements OnInit, OnDestroy {
   alertesInfo: CountAlerteInfo;
   alertes: Array<Alerte>;
 
+  @Input() lockscreen: boolean = false;
   @Output() eventMessage = new EventEmitter<Message>();
 
   // token sur le timer

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NotificationService } from 'src/app/common/notification/notification.service';
 import { TrajetDetailComponent } from '../trajet-detail/trajet-detail.component';
 import { TrajetService } from '../trajet.service';
@@ -15,6 +15,8 @@ export class TrajetHomeIconComponent implements OnInit {
   iconColor: string;
   trajetClass: string;
   iconName: string;
+
+  @Input() lockscreen: boolean = true;
 
   constructor(notificationService: NotificationService, private trajetService: TrajetService) {
 
@@ -37,7 +39,6 @@ export class TrajetHomeIconComponent implements OnInit {
 
     this.trajetEtat = TrajetState.ended;
     this.iconColor = 'basic';
-    this.trajetClass = 'home-icon';
     this.iconName = 'home';
   }
 

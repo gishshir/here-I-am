@@ -47,6 +47,7 @@ import { AlerteAmiMenuComponent } from './alertes/alerte-ami-menu/alerte-ami-men
 import { AlerteComponent } from './alertes/alerte/alerte.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { LockscreenComponent } from './lockscreen/lockscreen.component';
 
 
 
@@ -89,7 +90,8 @@ import { HeaderComponent } from './header/header.component';
     AlerteAmiMenuComponent,
     AlerteComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    LockscreenComponent
   ],
   imports: [
     BrowserModule,

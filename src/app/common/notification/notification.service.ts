@@ -163,4 +163,16 @@ export class NotificationService {
     this.journalSource.next(activate);
   }
   //---------------------------------------------------------------
+
+  //--------------------------------------------------
+  //Observable boolean source
+  private lockScreenSource = new Subject<boolean>();
+  // observable boolean streams
+  lockScreen$ = this.lockScreenSource.asObservable();
+
+  activateLockScreen(value: boolean) {
+    console.log("NotificationService#activateLockScreen() " + value);
+    this.lockScreenSource.next(value);
+  }
+  //--------------------------------------------------
 }

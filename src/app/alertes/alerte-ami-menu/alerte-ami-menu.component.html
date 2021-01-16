@@ -6,7 +6,7 @@
         <div *ngFor="let alerte of alertes">
             <app-alerte [alerte]="alerte"></app-alerte>
         </div>
-        <button mat-button class="menuitem" title="tout valider" (click)="validerAlertes()">
+        <button mat-button class="menuitem" title="tout valider" [disabled]="lockscreen" (click)="validerAlertes()">
             <mat-icon [color]="getIconColor()">send</mat-icon>
             Valider toutes les alertes
         </button>

@@ -22,6 +22,8 @@ export class HeaderComponent implements OnDestroy {
 
   journalOn: boolean;
 
+  lockscreen: boolean = false;
+
   @Output() eventMessage = new EventEmitter<Message>();
 
   // Network state
@@ -82,6 +84,11 @@ export class HeaderComponent implements OnDestroy {
 
     // initialisation
     this.journalOn = logger.isJournalActivated();
+
+    // abonnement au vérouillage d'écran
+    notificationService.lockScreen$.subscribe(
+      (value: boolean) => this.lockscreen = value
+    );
 
     // abonnement au changement d'utilisateur
     notificationService.changeUser$.subscribe(

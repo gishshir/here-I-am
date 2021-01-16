@@ -9,9 +9,11 @@ import { AppGuardGuard } from './app-guard.guard';
 import { StartingGuard } from "./starting/starting.guard";
 import { JournalComponent } from './journal/journal.component';
 import { OptionsComponent } from './options/options.component';
+import { LockscreenComponent } from './lockscreen/lockscreen.component';
 
 const routes: Routes = [
 
+  { path: 'go-lockscreen', component: LockscreenComponent, canActivate: [AppGuardGuard] },
   { path: 'go-accueil', component: AccueilComponent, canActivate: [AppGuardGuard] },
   { path: 'go-amis', component: AmisComponent, canActivate: [AppGuardGuard] },
   { path: 'go-trajets', component: TrajetsComponent, canActivate: [AppGuardGuard] },

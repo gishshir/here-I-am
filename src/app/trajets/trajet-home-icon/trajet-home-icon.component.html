@@ -1,4 +1,4 @@
-<div fxFlex="initial" id="home-div-icon" aria-label="Accès à la page principale" title="Accueil"
-    routerLink="/go-accueil" routerLinkActive="active" style="cursor: pointer;">
-    <mat-icon [ngClass]="trajetClass" [color]="iconColor">{{iconName}}</mat-icon>
-</div>
+<button mat-button class="menuitem" fxFlex="initial" aria-label="Accès à la page principale" [disabled]="lockscreen"
+    title="Accueil" routerLink="/go-accueil" routerLinkActive="active" style="cursor: pointer;">
+    <mat-icon id="home-icon" [color]="iconColor">{{iconName}}</mat-icon>
+</button>

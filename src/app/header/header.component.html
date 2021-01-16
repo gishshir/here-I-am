@@ -3,21 +3,23 @@
     role="banner">
 
     <!--go accueil-->
-    <app-trajet-home-icon></app-trajet-home-icon>
+    <app-trajet-home-icon [lockscreen]="lockscreen"></app-trajet-home-icon>
     <div id="menu-pseudo" fxFlex="1 1 auto">{{title}}</div>
 
 
     <!-- alerte menu-->
-    <app-alerte-ami-menu id="menu-alerte" (eventMessage)="onMessage($event)">
+    <app-alerte-ami-menu id="menu-alerte" [lockscreen]="lockscreen" (eventMessage)="onMessage($event)">
     </app-alerte-ami-menu>
 
     <!--geolocation -->
-    <button mat-button class="menuitem" title="géo-localisation" (click)="showDialogGeolocation()">
+    <button mat-button class="menuitem" title="géo-localisation" [disabled]="lockscreen"
+        (click)="showDialogGeolocation()">
         <mat-icon title="{{getGeolocationIconTitle()}}" color="{{getGeolocationColor()}}">location_on</mat-icon>
     </button>
 
     <!--usage du reseau -->
-    <button mat-button class="menuitem" title="Etat du réseau" [matMenuTriggerFor]="networkmenu">
+    <button mat-button class="menuitem" title="Etat du réseau" [disabled]="lockscreen"
+        [matMenuTriggerFor]="networkmenu">
         <mat-icon title="{{getNetworkIconTitle()}}" color="{{getNetworkColor()}}">network_check</mat-icon>
         <mat-menu #networkmenu="matMenu">
             <button mat-menu-item disabled>
@@ -30,11 +32,16 @@
     <!-- ==============-->
     <!-- MORE MENU-->
     <!-- ==============-->
-    <button mat-button class="menuitem" [matMenuTriggerFor]="moremenu">
+    <button mat-button class="menuitem" [disabled]="lockscreen" [matMenuTriggerFor]="moremenu">
         <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #moremenu="matMenu">
         <ng-container *ngIf="loggedIn">
+            <!-- go lock-->
+            <button mat-menu-item routerLink="/go-lockscreen">
+                <mat-icon>lock</mat-icon>Vérouillage
+            </button>
+            <!-- go options-->
             <button mat-menu-item routerLink="/go-options">
                 <mat-icon>miscellaneous_services</mat-icon>Options
             </button>

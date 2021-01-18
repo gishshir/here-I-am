@@ -47,6 +47,19 @@ export class NotificationService {
   //--------------------------------------------------
 
   //--------------------------------------------------
+  // Observable Message source
+  private emitMessageSource = new Subject<Message>();
+  // observable Message streams
+  emitMessage$ = this.emitMessageSource.asObservable();
+
+  // services message commands
+  emitMessage(message?: Message) {
+    console.log("NotificationService#emitMessage() " + message.msg);
+    this.emitMessageSource.next(message);
+  }
+  //--------------------------------------------------
+
+  //--------------------------------------------------
   // Observable User source
   private changeUserSource = new Subject<User | null>();
   // observable User streams

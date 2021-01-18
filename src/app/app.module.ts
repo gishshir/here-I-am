@@ -48,6 +48,7 @@ import { AlerteComponent } from './alertes/alerte/alerte.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { LockscreenComponent } from './lockscreen/lockscreen.component';
+import { DialogUnlockComponent } from './lockscreen/dialog-unlock/dialog-unlock.component';
 
 
 
@@ -91,7 +92,8 @@ import { LockscreenComponent } from './lockscreen/lockscreen.component';
     AlerteComponent,
     FooterComponent,
     HeaderComponent,
-    LockscreenComponent
+    LockscreenComponent,
+    DialogUnlockComponent
   ],
   imports: [
     BrowserModule,

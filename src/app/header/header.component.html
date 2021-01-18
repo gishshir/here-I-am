@@ -35,7 +35,7 @@
     <button mat-button class="menuitem" [disabled]="lockscreen" [matMenuTriggerFor]="moremenu">
         <mat-icon>more_vert</mat-icon>
     </button>
-    <mat-menu #moremenu="matMenu">
+    <mat-menu id="menu-detail" #moremenu="matMenu">
         <ng-container *ngIf="loggedIn">
             <!-- go lock-->
             <button mat-menu-item routerLink="/go-lockscreen">

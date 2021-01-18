@@ -36,10 +36,10 @@ export class TrajetsComponent implements OnInit {
 
   constructor(private trajetService: TrajetService, private toolsService: ToolsService,
     private logger: LoggerService, public dialog: MatDialog,
-    private notificationService: NotificationService) {
+    notificationService: NotificationService) {
     this.today = toolsService.formatDate(this.toolsService.getNowTimestampEnSec());
     // s'inscrit aux evenements de changement de trajet ou etat de trajet
-    this.notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
+    notificationService.monTrajet$.subscribe((t: Trajet) => this.onChangeState(t));
 
     this.chercherTrajetsASupprimer();
     this.refreshList(-1);

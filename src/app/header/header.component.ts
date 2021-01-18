@@ -102,8 +102,12 @@ export class HeaderComponent implements OnDestroy {
     notificationService.geolocation$.subscribe(
       (state: GeolocationState) => this._geolocationState = state);
 
-    // abonnement aux messages
+    // abonnement aux geo messages
     notificationService.emitGeoMessage$.subscribe(
+      (m: Message) => this.onMessage(m));
+
+    // abonnement aux geo messages
+    notificationService.emitMessage$.subscribe(
       (m: Message) => this.onMessage(m));
 
     // s'inscrit aux notifications d'activation du journal

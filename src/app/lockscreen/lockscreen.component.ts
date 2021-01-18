@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { DialogUnlockComponent } from './dialog-unlock/dialog-unlock.component';
 import { NotificationService } from '../common/notification/notification.service';
 
 @Component({
@@ -9,17 +11,30 @@ import { NotificationService } from '../common/notification/notification.service
 })
 export class LockscreenComponent implements OnInit {
 
-  constructor(private router: Router, private notificationService: NotificationService) { }
+
+  constructor(private router: Router, private notificationService: NotificationService,
+    public dialog: MatDialog,) { }
 
   ngOnInit(): void {
     console.log("lock screen...");
     this.notificationService.activateLockScreen(true);
   }
 
-  unlock($event): void {
-    this.notificationService.activateLockScreen(false);
-    this.router.navigate(["/go-accueil"]);
+  onclick($event): void {
+    this.notificationService.emitMessage({ msg: "Click droit pour déverouiller!", error: false });
+  }
 
+  confirmUnlock($event): void {
+
+    const dialogRef = this.dialog.open(DialogUnlockComponent, null);
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data) {
+          this.notificationService.activateLockScreen(false);
+          this.router.navigate(["/go-accueil"]);
+        }
+      }
+    );
   }
 
 }

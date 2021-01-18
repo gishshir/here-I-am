@@ -1,5 +1,5 @@
 <div fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="50px">
-    <button mat-fab id="lock-button" fxFlex="initial" (contextmenu)="unlock($event)"
+    <button mat-fab id="lock-button" fxFlex="initial" (contextmenu)="confirmUnlock($event)" (click)="onclick($event)"
         title="clic droit pour dévérouiller">
         <mat-icon inline="true" color="basic">lock</mat-icon>
     </button>

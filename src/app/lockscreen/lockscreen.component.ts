@@ -21,7 +21,7 @@ export class LockscreenComponent implements OnInit {
   }
 
   onclick($event): void {
-    this.notificationService.emitMessage({ msg: "Click droit pour déverouiller!", error: false });
+    this.notificationService.emitMessage({ msg: "Click droit pour déverrouiller!", error: false });
   }
 
   confirmUnlock($event): void {

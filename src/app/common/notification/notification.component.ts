@@ -21,7 +21,6 @@ export class NotificationComponent implements OnInit {
   constructor(public snackBar: MatSnackBar, notificationService: NotificationService) {
 
     // abonnement aux messages applicatifs
-    console.log("NotificationComponent constructor...");
     notificationService.emitMessage$.subscribe(
       (m: Message) => this.openSnackBar(m)
     );
